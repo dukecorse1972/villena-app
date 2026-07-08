@@ -107,11 +107,20 @@ function findClosestHourly(dias: DiaPrediccion[], field: 'temperatura' | 'estado
   return best?.value ?? null;
 }
 
+// AEMET solo publica una predicción horaria nueva de tarde en tarde, y
+// cada resolución completa exige 2 peticiones a su API (más lentas que
+// una llamada normal). Cachear en memoria del isolate mientras esté
+// caliente evita repetir ese viaje en cada apertura del widget.
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
+let cached: { body: { temperature: number; condition: string | null }; fetchedAt: number } | null = null;
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
 
   const jsonResponse = (body: unknown, status = 200) =>
     new Response(JSON.stringify(body), { status, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } });
+
+  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return jsonResponse(cached.body);
 
   const apiKey = Deno.env.get('AEMET_API_KEY');
   if (!apiKey) return jsonResponse({ error: 'Falta configurar AEMET_API_KEY' }, 500);
@@ -131,11 +140,16 @@ Deno.serve(async (req) => {
 
     if (temperatureStr === null) return jsonResponse({ error: 'AEMET no trae temperatura horaria' }, 502);
 
-    return jsonResponse({
+    const body = {
       temperature: Number(temperatureStr),
       condition:   skyCode ? toCondition(skyCode) : null,
-    });
+    };
+    cached = { body, fetchedAt: Date.now() };
+    return jsonResponse(body);
   } catch (err) {
+    // Si falla y hay algo en caché aunque esté algo pasado, mejor
+    // devolver eso que dejar el widget sin datos.
+    if (cached) return jsonResponse(cached.body);
     return jsonResponse({ error: err instanceof Error ? err.message : 'Error desconocido' }, 500);
   }
 });
