@@ -47,7 +47,7 @@ export function useAudio(src: string | null = null) {
     setPlaying(false);
   }, []);
 
-  const toggle = useCallback(() => { playing ? pause() : play(); }, [playing, play, pause]);
+  const toggle = useCallback(() => { if (playing) pause(); else play(); }, [playing, play, pause]);
 
   const seek = useCallback((pct: number) => {
     const clamped = Math.max(0, Math.min(100, pct));

@@ -30,14 +30,16 @@ export default function MusicaPage() {
   useEffect(() => () => {
     if (progressTimerRef.current !== null) clearInterval(progressTimerRef.current);
     if (gainNodeRef.current && audioCtxRef.current) {
-      try { gainNodeRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.1); } catch(_e) {}
+      try { gainNodeRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.1); }
+      catch { /* el nodo de audio ya puede estar cerrado: ignorar */ }
     }
   }, []);
 
   const stopAudioNodes = () => {
     if (progressTimerRef.current !== null) clearInterval(progressTimerRef.current);
     if (gainNodeRef.current && audioCtxRef.current) {
-      try { gainNodeRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.15); } catch(_e) {}
+      try { gainNodeRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.15); }
+      catch { /* el nodo de audio ya puede estar cerrado: ignorar */ }
     }
     gainNodeRef.current = null;
   };
@@ -98,7 +100,8 @@ export default function MusicaPage() {
             const next = prev + (100 / 2100);
             if (next >= 100) {
               if (progressTimerRef.current !== null) clearInterval(progressTimerRef.current);
-              try { if (gainNodeRef.current && audioCtxRef.current) gainNodeRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.3); } catch(_e) {}
+              try { if (gainNodeRef.current && audioCtxRef.current) gainNodeRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.3); }
+              catch { /* el nodo de audio ya puede estar cerrado: ignorar */ }
               setAudioPlaying(false);
               return 0;
             }
@@ -107,7 +110,7 @@ export default function MusicaPage() {
         }, 100);
 
         setAudioPlaying(true);
-      } catch(e) {
+      } catch {
         setAudioPlaying(false);
       }
     }
