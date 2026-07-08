@@ -49,6 +49,8 @@
   width: 100%;
   height: 160px;
   background: var(--color-bg-card);
+  background-size: cover;
+  background-position: center;
   position: relative;
   display: flex;
   align-items: center;
@@ -233,6 +235,13 @@
   justify-content: center;
   gap: 6px;
   border: 1px solid rgba(196, 151, 42, 0.1);
+  overflow: hidden;
+}
+
+.induImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .induLabel {

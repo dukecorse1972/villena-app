@@ -1,0 +1,87 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.dropzone {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px dashed var(--border-oro-25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropzone.square {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+}
+
+.dropzone.circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dropzone.active {
+  border-color: var(--color-oro);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 4px;
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--color-text-mid);
+  line-height: 1.2;
+}
+
+.dropzone .preview + .overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.dropzone:hover .preview + .overlay,
+.dropzone.active .preview + .overlay {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.errorMsg {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #e07868;
+}

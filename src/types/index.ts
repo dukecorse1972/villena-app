@@ -28,6 +28,10 @@ export interface Comparsa {
   description?: string;
   founded_year?: number;
   num_socios?: number;
+  // Fotos de los apartados de la ficha (desfile, indumentaria)
+  desfile_img?: string;
+  traje_gala_img?: string;
+  estandarte_img?: string;
 }
 
 export interface Aviso {

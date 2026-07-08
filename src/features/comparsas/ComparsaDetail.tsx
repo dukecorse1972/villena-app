@@ -50,8 +50,11 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
       </div>
 
       {/* ── Hero con imagen de desfile ── */}
-      <div className={styles.hero}>
-        <span className={styles.heroLabel}>IMAGEN DE DESFILE</span>
+      <div
+        className={styles.hero}
+        style={comparsa.desfile_img ? { backgroundImage: `url(${comparsa.desfile_img})` } : undefined}
+      >
+        {!comparsa.desfile_img && <span className={styles.heroLabel}>IMAGEN DE DESFILE</span>}
         {/* Escudo superpuesto */}
         <div className={styles.shieldWrap}>
           <div
@@ -110,14 +113,23 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
       <div className={styles.sectionPadded}>
         <h2 className={styles.sectionTitleNoLeft}>Indumentaria y Símbolos</h2>
         <div className={styles.indu2col}>
-          {['TRAJE DE GALA', 'ESTANDARTE'].map(label => (
+          {[
+            { label: 'TRAJE DE GALA', img: comparsa.traje_gala_img },
+            { label: 'ESTANDARTE', img: comparsa.estandarte_img },
+          ].map(({ label, img }) => (
             <div key={label} className={styles.induCard}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.35)" strokeWidth="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-              <span className={styles.induLabel}>{label}</span>
+              {img ? (
+                <img src={img} alt={label} className={styles.induImg} />
+              ) : (
+                <>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.35)" strokeWidth="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <span className={styles.induLabel}>{label}</span>
+                </>
+              )}
             </div>
           ))}
         </div>

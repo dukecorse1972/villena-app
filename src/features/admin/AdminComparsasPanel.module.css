@@ -28,6 +28,12 @@
   color: var(--color-bg-app);
 }
 
+.photoRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
 .detail {
   display: flex;
   flex-direction: column;
@@ -155,6 +161,8 @@
 }
 
 .cargoInfo {
+  flex: 1;
+  min-width: 0;
   font-family: var(--font-body);
   font-size: 13px;
   color: var(--color-text-primary);

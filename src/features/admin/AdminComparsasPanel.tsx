@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getAllComparsasAdmin, updateComparsa } from '../../services/comparsasService';
 import { getCargosByComparsa, createCargo, updateCargo, deleteCargo } from '../../services/cargosService';
+import { uploadComparsaImage } from '../../services/storage';
+import ImageDropzone from '../../components/ImageDropzone';
 import type { Comparsa, Cargo } from '../../types';
 import styles from './AdminComparsasPanel.module.css';
 
@@ -127,6 +129,30 @@ export default function AdminComparsasPanel() {
     }
   };
 
+  const handleLogoUpload = async (file: File) => {
+    if (!selectedId) return;
+    const url = await uploadComparsaImage(`logos/${selectedId}`, file);
+    await updateComparsa(selectedId, { img: url });
+    setComparsas((prev) => prev.map((c) => (c.id === selectedId ? { ...c, img: url } : c)));
+  };
+
+  const handleApartadoUpload = async (
+    field: 'desfile_img' | 'traje_gala_img' | 'estandarte_img',
+    folder: string,
+    file: File,
+  ) => {
+    if (!selectedId) return;
+    const url = await uploadComparsaImage(`${folder}/${selectedId}`, file);
+    await updateComparsa(selectedId, { [field]: url });
+    setComparsas((prev) => prev.map((c) => (c.id === selectedId ? { ...c, [field]: url } : c)));
+  };
+
+  const handleCargoPhotoUpload = async (cargo: Cargo, file: File) => {
+    const url = await uploadComparsaImage(`cargos/${cargo.id}`, file);
+    await updateCargo(cargo.id, { photo_url: url });
+    setCargos((prev) => prev.map((c) => (c.id === cargo.id ? { ...c, photo_url: url } : c)));
+  };
+
   return (
     <div className={styles.panel}>
       <div className={styles.list}>
@@ -144,6 +170,33 @@ export default function AdminComparsasPanel() {
       {selected && (
         <div className={styles.detail}>
           <p className={styles.detailTitle}>{selected.name}</p>
+
+          <div className={styles.photoRow}>
+            <ImageDropzone
+              label="Logo / escudo"
+              imageUrl={selected.img}
+              variant="square"
+              onFileSelected={handleLogoUpload}
+            />
+            <ImageDropzone
+              label="Imagen de desfile"
+              imageUrl={selected.desfile_img}
+              variant="square"
+              onFileSelected={(file) => handleApartadoUpload('desfile_img', 'desfile', file)}
+            />
+            <ImageDropzone
+              label="Traje de gala"
+              imageUrl={selected.traje_gala_img}
+              variant="square"
+              onFileSelected={(file) => handleApartadoUpload('traje_gala_img', 'traje-gala', file)}
+            />
+            <ImageDropzone
+              label="Estandarte"
+              imageUrl={selected.estandarte_img}
+              variant="square"
+              onFileSelected={(file) => handleApartadoUpload('estandarte_img', 'estandarte', file)}
+            />
+          </div>
 
           <form className={styles.form} onSubmit={handleSaveComparsa}>
             <div>
@@ -220,6 +273,11 @@ export default function AdminComparsasPanel() {
             {cargosLoading && <span className={styles.label}>Cargando cargos…</span>}
             {!cargosLoading && cargos.map((cargo) => (
               <div key={cargo.id} className={styles.cargoItem}>
+                <ImageDropzone
+                  imageUrl={cargo.photo_url}
+                  variant="circle"
+                  onFileSelected={(file) => handleCargoPhotoUpload(cargo, file)}
+                />
                 <span className={styles.cargoInfo}>
                   <span className={styles.cargoRole}>{cargo.role}</span>
                   {cargo.person_name}

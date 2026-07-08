@@ -41,26 +41,32 @@ export interface Database {
 
       comparsas: {
         Row: {
-          id:           string;
-          name:         string;
-          bando:        Bando;
-          color:        string;
-          img_url:      string | null;
-          description:  string | null;
-          founded_year: number | null;
-          num_socios:   number | null;
-          created_at:   string;
-          updated_at:   string;
+          id:                  string;
+          name:                string;
+          bando:               Bando;
+          color:               string;
+          img_url:             string | null;
+          description:         string | null;
+          founded_year:        number | null;
+          num_socios:          number | null;
+          desfile_img_url:     string | null;
+          traje_gala_img_url:  string | null;
+          estandarte_img_url:  string | null;
+          created_at:          string;
+          updated_at:          string;
         };
         Insert: {
-          id:            string;
-          name:          string;
-          bando:         Bando;
-          color?:        string;
-          img_url?:      string | null;
-          description?:  string | null;
-          founded_year?: number | null;
-          num_socios?:   number | null;
+          id:                   string;
+          name:                 string;
+          bando:                Bando;
+          color?:               string;
+          img_url?:             string | null;
+          description?:         string | null;
+          founded_year?:        number | null;
+          num_socios?:          number | null;
+          desfile_img_url?:     string | null;
+          traje_gala_img_url?:  string | null;
+          estandarte_img_url?:  string | null;
         };
         Update: Partial<Database['public']['Tables']['comparsas']['Insert']>;
       };
