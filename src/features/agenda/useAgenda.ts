@@ -21,10 +21,13 @@ export function useAgenda() {
   const [isLoading, setIsLoading]           = useState(false);
   const [error, setError]                   = useState<string | null>(null);
 
-  // Carga eventos cuando cambia el día o el filtro
+  // Carga eventos cuando cambia el día o el filtro.
+  // setIsLoading/setError se marcan de forma síncrona al principio del efecto
+  // a propósito, para que la UI muestre "cargando" desde el primer render tras
+  // el cambio — es el patrón de fetching en efectos que documenta React.
   useEffect(() => {
     let cancelled = false;
-    setIsLoading(true);
+    setIsLoading(true); // eslint-disable-line react-hooks/set-state-in-effect
     setError(null);
 
     getEvents(FESTIVAL.YEAR, selectedDay, filter)
