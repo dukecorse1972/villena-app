@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { festivalISODate, dayOfMonth, weekdayShortLabel, daysInMonth, firstWeekdayOffset } from './dates';
+import { festivalISODate, dayOfMonth, weekdayShortLabel, daysInMonth, firstWeekdayOffset, festivalTodayDay } from './dates';
 import { FESTIVAL } from '../constants';
 
 describe('festivalISODate', () => {
@@ -51,5 +51,27 @@ describe('firstWeekdayOffset', () => {
   it('un mes que empieza en domingo tiene 6 celdas vacías', () => {
     // Noviembre de 2026 empieza en domingo
     expect(firstWeekdayOffset(2026, 11)).toBe(6);
+  });
+});
+
+describe('festivalTodayDay', () => {
+  it('si hoy cae dentro del mes de fiestas, devuelve el día real', () => {
+    const hoy = new Date(FESTIVAL.YEAR, FESTIVAL.MONTH_INDEX - 1, 6); // 6 de septiembre
+    expect(festivalTodayDay(hoy)).toBe(6);
+  });
+
+  it('si hoy es antes de las fiestas (ej. julio), devuelve el primer día del programa', () => {
+    const hoy = new Date(FESTIVAL.YEAR, 6, 8); // 8 de julio
+    expect(festivalTodayDay(hoy)).toBe(FESTIVAL.START_DAY);
+  });
+
+  it('si hoy es después de septiembre, devuelve el primer día del programa', () => {
+    const hoy = new Date(FESTIVAL.YEAR, FESTIVAL.MONTH_INDEX, 15); // octubre
+    expect(festivalTodayDay(hoy)).toBe(FESTIVAL.START_DAY);
+  });
+
+  it('si es septiembre pero de otro año, devuelve el primer día del programa', () => {
+    const hoy = new Date(FESTIVAL.YEAR - 1, FESTIVAL.MONTH_INDEX - 1, 6);
+    expect(festivalTodayDay(hoy)).toBe(FESTIVAL.START_DAY);
   });
 });

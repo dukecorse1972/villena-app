@@ -35,3 +35,15 @@ export function firstWeekdayOffset(year: number, monthIndex1: number): number {
   const jsDay = new Date(year, monthIndex1 - 1, 1).getDay(); // 0=domingo..6=sábado
   return jsDay === 0 ? 6 : jsDay - 1; // convertido a lunes=0..domingo=6
 }
+
+/**
+ * Día del mes de fiestas que debería estar seleccionado "hoy" en la Agenda.
+ * Si la fecha real cae dentro del mes/año del festival, devuelve ese día.
+ * Si no (antes o después de las fiestas, o de otro año), devuelve el primer
+ * día del programa (FESTIVAL.START_DAY) — no tiene sentido "seleccionar hoy"
+ * cuando hoy no es un día de fiestas.
+ */
+export function festivalTodayDay(now: Date = new Date()): number {
+  const isFestivalMonth = now.getFullYear() === FESTIVAL.YEAR && now.getMonth() + 1 === FESTIVAL.MONTH_INDEX;
+  return isFestivalMonth ? now.getDate() : FESTIVAL.START_DAY;
+}

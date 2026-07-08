@@ -4,8 +4,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { getEvents, toggleFavorite } from '../../services/eventsService';
 import { syncFavoritesFromDB, addFavorite, removeFavorite } from '../../services/favoritosService';
 import { isSupabaseConfigured } from '../../services/supabase';
-import { STORAGE_KEYS, FESTIVAL } from '../../constants';
-import { festivalISODate } from '../../utils/dates';
+import { STORAGE_KEYS } from '../../constants';
+import { festivalISODate, festivalTodayDay } from '../../utils/dates';
 import type { FiestaEvent, Favorites } from '../../types';
 
 const FILTER_OPTIONS = ['Todos', 'Desfiles', 'Religiosos', 'Música', 'Cultural'] as const;
@@ -13,7 +13,9 @@ const FILTER_OPTIONS = ['Todos', 'Desfiles', 'Religiosos', 'Música', 'Cultural'
 export function useAgenda() {
   const { user } = useAuth();
 
-  const [selectedDay, setSelectedDay]     = useState<number>(FESTIVAL.START_DAY);
+  // Arranca en el día real de hoy si hoy cae dentro de las fiestas;
+  // si no, en el primer día del programa (ver festivalTodayDay).
+  const [selectedDay, setSelectedDay]     = useState<number>(() => festivalTodayDay());
   const [filter, setFilter]               = useState('Todos');
   const [selectedEvent, setSelectedEvent] = useState<FiestaEvent | null>(null);
   const [favorites, setFavorites]         = useLocalStorage<Favorites>(STORAGE_KEYS.FAVORITES, {});
