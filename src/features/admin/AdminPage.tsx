@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import AdminGuard from './AdminGuard';
 import AdminAvisosPanel from './AdminAvisosPanel';
+import AdminEventosPanel from './AdminEventosPanel';
+import AdminComparsasPanel from './AdminComparsasPanel';
 import styles from './AdminPage.module.css';
 
 type Section = 'avisos' | 'eventos' | 'comparsas';
 
-const SECTIONS: { id: Section; label: string; ready: boolean }[] = [
-  { id: 'avisos',    label: 'Avisos',    ready: true },
-  { id: 'eventos',   label: 'Eventos',   ready: false },
-  { id: 'comparsas', label: 'Comparsas', ready: false },
+const SECTIONS: { id: Section; label: string }[] = [
+  { id: 'avisos',    label: 'Avisos' },
+  { id: 'eventos',   label: 'Eventos' },
+  { id: 'comparsas', label: 'Comparsas' },
 ];
 
 /**
  * Punto de entrada del backoffice (Fase 1, Tanda 3).
- * 3.1: cimientos de acceso. 3.2: Avisos (esta sub-tanda). 3.3/3.4:
- * Eventos y Comparsas, todavía como "Próximamente" aquí mismo.
+ * 3.1: cimientos de acceso. 3.2: Avisos. 3.3: Eventos. 3.4: Comparsas + Cargos.
  */
 export default function AdminPage() {
   const [section, setSection] = useState<Section>('avisos');
@@ -38,8 +39,8 @@ export default function AdminPage() {
         </div>
 
         {section === 'avisos' && <AdminAvisosPanel />}
-        {section === 'eventos' && <div className={styles.comingSoon}>Gestión de eventos — próximamente.</div>}
-        {section === 'comparsas' && <div className={styles.comingSoon}>Gestión de comparsas y cargos — próximamente.</div>}
+        {section === 'eventos' && <AdminEventosPanel />}
+        {section === 'comparsas' && <AdminComparsasPanel />}
       </div>
     </AdminGuard>
   );

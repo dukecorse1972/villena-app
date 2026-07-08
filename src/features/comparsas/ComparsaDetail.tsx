@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import type { Comparsa, Bando } from '../../types';
+import { useState, useEffect } from 'react';
+import type { Comparsa, Bando, Cargo } from '../../types';
+import { getCargosByComparsa } from '../../services/cargosService';
 import styles from './ComparsaDetail.module.css';
 
 interface ComparsaDetailProps {
@@ -8,7 +9,8 @@ interface ComparsaDetailProps {
   onBack: () => void;
 }
 
-const CARGOS_LABELS = ['Capitán', 'Sargento', 'Abanderado', 'Alférez', 'Teniente', 'Maestre', 'Porta-estandarte'];
+const DEFAULT_HISTORY_TEXT =
+  'La historia de esta comparsa forma parte del rico patrimonio festero de Villena. Próximamente encontrarás aquí toda la información sobre sus orígenes, tradiciones y evolución a lo largo de los años.';
 
 const PersonIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.4)" strokeWidth="1.5">
@@ -20,6 +22,12 @@ const PersonIcon = () => (
 export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDetailProps) {
   const [voteStars, setVoteStars]       = useState(0);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
+  const [cargos, setCargos] = useState<Cargo[]>([]);
+
+  useEffect(() => {
+    if (!comparsa) return;
+    getCargosByComparsa(comparsa.id).then(setCargos).catch(() => setCargos([]));
+  }, [comparsa]);
 
   if (!comparsa) return null;
 
@@ -71,25 +79,31 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
           <span className={styles.tagBando}>
             {bando === 'Moro' ? 'Bando Moro' : 'Bando Cristiano'}
           </span>
-          <span className={styles.tagMuted}>Fundación: —</span>
-          <span className={styles.tagMuted}>Nº socios: —</span>
+          <span className={styles.tagMuted}>Fundación: {comparsa.founded_year ?? '—'}</span>
+          <span className={styles.tagMuted}>Nº socios: {comparsa.num_socios ?? '—'}</span>
         </div>
       </div>
 
       {/* ── Cargos del año ── */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Cargos del Año</h2>
-        <div className={styles.cargosScroll}>
-          {CARGOS_LABELS.map(cargo => (
-            <div key={cargo} className={styles.cargoItem}>
-              <div className={styles.cargoAvatar}>
-                <PersonIcon />
+        {cargos.length > 0 ? (
+          <div className={styles.cargosScroll}>
+            {cargos.map(cargo => (
+              <div key={cargo.id} className={styles.cargoItem}>
+                <div className={styles.cargoAvatar}>
+                  {cargo.photo_url
+                    ? <img src={cargo.photo_url} alt={cargo.person_name} className={styles.cargoAvatarImg} />
+                    : <PersonIcon />}
+                </div>
+                <span className={styles.cargoName}>{cargo.person_name}</span>
+                <span className={styles.cargoRole}>{cargo.role}</span>
               </div>
-              <span className={styles.cargoName}>—</span>
-              <span className={styles.cargoRole}>{cargo}</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.historyText}>Todavía no se han publicado los cargos de este año.</p>
+        )}
       </div>
 
       {/* ── Indumentaria ── */}
@@ -113,7 +127,7 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
       <div className={styles.sectionPadded}>
         <h2 className={styles.sectionTitleNoLeft}>Nuestra Historia</h2>
         <p className={styles.historyText}>
-          La historia de esta comparsa forma parte del rico patrimonio festero de Villena. Próximamente encontrarás aquí toda la información sobre sus orígenes, tradiciones y evolución a lo largo de los años.
+          {comparsa.description || DEFAULT_HISTORY_TEXT}
         </p>
       </div>
 

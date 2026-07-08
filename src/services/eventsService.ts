@@ -1,7 +1,7 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { allEvents } from '../data/events';
 import { festivalISODate } from '../utils/dates';
-import type { FiestaEvent, Favorites } from '../types';
+import type { FiestaEvent, EventType, Favorites } from '../types';
 
 /**
  * Obtiene eventos filtrados por fecha y tipo.
@@ -49,4 +49,62 @@ export function toggleFavorite(eventId: string, favorites: Favorites): Favorites
 export function getFavoriteEvents(favorites: Favorites, day: number): FiestaEvent[] {
   const date = festivalISODate(day);
   return allEvents.filter((ev) => ev.date === date && favorites[ev.id]);
+}
+
+// ── Backoffice ────────────────────────────────────────────────────────────────
+
+export interface EventoInput {
+  id:           string;
+  title:        string;
+  time:         string;
+  location:     string;
+  type:         EventType;
+  date:         string;
+  img_url?:     string;
+  description?: string;
+}
+
+/**
+ * Todos los eventos, ordenados cronológicamente — para gestión en el
+ * backoffice (a diferencia de getEvents, que filtra por un día concreto).
+ * Sin Supabase configurado, devuelve los datos locales tal cual.
+ */
+export async function getAllEventos(): Promise<FiestaEvent[]> {
+  if (!isSupabaseConfigured) return allEvents;
+
+  const { data, error } = await supabase
+    .from('eventos')
+    .select('*')
+    .order('date')
+    .order('time');
+
+  if (error) throw new Error(error.message);
+  return (data ?? []) as FiestaEvent[];
+}
+
+export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  const { data, error } = await supabase
+    .from('eventos')
+    .insert(input as never)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function updateEvento(id: string, changes: Partial<Omit<EventoInput, 'id'>>): Promise<void> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  const { error } = await supabase.from('eventos').update(changes as never).eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteEvento(id: string): Promise<void> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  const { error } = await supabase.from('eventos').delete().eq('id', id);
+  if (error) throw new Error(error.message);
 }

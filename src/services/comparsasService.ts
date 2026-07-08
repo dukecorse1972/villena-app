@@ -46,3 +46,32 @@ export async function getComparsas(side: 'Cristianas' | 'Moras'): Promise<Compar
 export function getComparsaById(id: string): Comparsa | undefined {
   return allComparsas.find((c) => c.id === id);
 }
+
+// ── Backoffice ────────────────────────────────────────────────────────────────
+
+/**
+ * Todas las comparsas (ambos bandos), para gestión en el backoffice.
+ * Sin Supabase configurado, devuelve los datos locales tal cual.
+ */
+export async function getAllComparsasAdmin(): Promise<Comparsa[]> {
+  if (!isSupabaseConfigured) return allComparsas;
+
+  const { data, error } = await supabase
+    .from('comparsas')
+    .select('*')
+    .order('bando')
+    .order('name');
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).map(rowToComparsa);
+}
+
+export async function updateComparsa(
+  id: string,
+  changes: { description?: string; founded_year?: number; num_socios?: number },
+): Promise<void> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  const { error } = await supabase.from('comparsas').update(changes as never).eq('id', id);
+  if (error) throw new Error(error.message);
+}
