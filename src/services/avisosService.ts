@@ -68,3 +68,36 @@ export async function getAvisos(): Promise<Aviso[]> {
 
   return LOCAL_AVISOS;
 }
+
+// ── Escritura (backoffice) ───────────────────────────────────────────────────
+// Sin fallback local: crear/editar/borrar avisos solo tiene sentido contra la
+// base de datos real, protegido por RLS (solo admins pueden escribir).
+
+export async function createAviso(text: string, isNew = true): Promise<Aviso> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  // El cast `as never` es el mismo workaround ya usado en favoritosService.ts
+  // para un problema conocido de inferencia de tipos de supabase-js v2.
+  const { data, error } = await supabase
+    .from('avisos')
+    .insert({ text, is_new: isNew } as never)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function updateAviso(id: string, changes: { text?: string; is_new?: boolean }): Promise<void> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  const { error } = await supabase.from('avisos').update(changes as never).eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteAviso(id: string): Promise<void> {
+  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+
+  const { error } = await supabase.from('avisos').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
