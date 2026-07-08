@@ -5,6 +5,7 @@ export const ROUTES = {
   COMPARSAS: '/comparsas',
   MUSICA:    '/musica',
   INFO:      '/info',
+  ADMIN:     '/admin',
 } as const;
 
 // ── Claves de localStorage ────────────────────────────────────────────────────

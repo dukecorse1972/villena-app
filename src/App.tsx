@@ -6,6 +6,7 @@ import AgendaPage    from './features/agenda/AgendaPage';
 import ComparsasPage from './features/comparsas/ComparsasPage';
 import MusicaPage    from './features/musica/MusicaPage';
 import InfoPage      from './features/info/InfoPage';
+import AdminPage     from './features/admin/AdminPage';
 import EventModal    from './features/agenda/EventModal';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { toggleFavorite } from './services/eventsService';
@@ -45,6 +46,7 @@ export default function App() {
           <Route path={ROUTES.COMPARSAS} element={<ComparsasPage />} />
           <Route path={ROUTES.MUSICA}    element={<MusicaPage />} />
           <Route path={ROUTES.INFO}      element={<InfoPage />} />
+          <Route path={ROUTES.ADMIN}     element={<AdminPage />} />
           <Route path="*"                element={<Navigate to={ROUTES.INICIO} replace />} />
         </Routes>
       </div>

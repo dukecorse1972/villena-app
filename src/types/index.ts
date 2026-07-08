@@ -53,4 +53,13 @@ export interface Marcha {
   year: string;
 }
 
+export interface Cargo {
+  id: string;
+  comparsa_id: string;
+  role: string;
+  person_name: string;
+  photo_url?: string;
+  sort_order: number;
+}
+
 export type Favorites = Record<string, boolean>;

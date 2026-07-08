@@ -117,6 +117,41 @@ export interface Database {
           evento_id?: string;
         };
       };
+
+      admins: {
+        Row: {
+          user_id:    string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+        };
+        Update: {
+          user_id?: string;
+        };
+      };
+
+      cargos: {
+        Row: {
+          id:          string;
+          comparsa_id: string;
+          role:        string;
+          person_name: string;
+          photo_url:   string | null;
+          sort_order:  number;
+          created_at:  string;
+          updated_at:  string;
+        };
+        Insert: {
+          id?:          string;
+          comparsa_id:  string;
+          role:         string;
+          person_name:  string;
+          photo_url?:   string | null;
+          sort_order?:  number;
+        };
+        Update: Partial<Database['public']['Tables']['cargos']['Insert']>;
+      };
     };
   };
 }
