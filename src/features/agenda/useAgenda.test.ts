@@ -1,6 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useAgenda } from './useAgenda';
+import { festivalISODate } from '../../utils/dates';
 
 // Stub de useAuth: sin sesión activa, sin llamadas async a Supabase
 vi.mock('../../hooks/useAuth', () => ({
@@ -35,7 +36,7 @@ describe('useAgenda — estado inicial', () => {
     const { result } = renderHook(() => useAgenda());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     const { filteredEvents, selectedDay } = result.current;
-    expect(filteredEvents.every((e) => e.day === selectedDay)).toBe(true);
+    expect(filteredEvents.every((e) => e.date === festivalISODate(selectedDay))).toBe(true);
   });
 
   it('no hay evento seleccionado al arrancar', () => {
@@ -56,7 +57,7 @@ describe('useAgenda — cambio de día', () => {
     act(() => result.current.setSelectedDay(7));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.selectedDay).toBe(7);
-    expect(result.current.filteredEvents.every((e) => e.day === 7)).toBe(true);
+    expect(result.current.filteredEvents.every((e) => e.date === festivalISODate(7))).toBe(true);
   });
 });
 

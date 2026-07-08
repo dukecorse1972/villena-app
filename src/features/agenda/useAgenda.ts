@@ -5,6 +5,7 @@ import { getEvents, toggleFavorite } from '../../services/eventsService';
 import { syncFavoritesFromDB, addFavorite, removeFavorite } from '../../services/favoritosService';
 import { isSupabaseConfigured } from '../../services/supabase';
 import { STORAGE_KEYS, FESTIVAL } from '../../constants';
+import { festivalISODate } from '../../utils/dates';
 import type { FiestaEvent, Favorites } from '../../types';
 
 const FILTER_OPTIONS = ['Todos', 'Desfiles', 'Religiosos', 'Música', 'Cultural'] as const;
@@ -12,7 +13,7 @@ const FILTER_OPTIONS = ['Todos', 'Desfiles', 'Religiosos', 'Música', 'Cultural'
 export function useAgenda() {
   const { user } = useAuth();
 
-  const [selectedDay, setSelectedDay]     = useState(4);
+  const [selectedDay, setSelectedDay]     = useState<number>(FESTIVAL.START_DAY);
   const [filter, setFilter]               = useState('Todos');
   const [selectedEvent, setSelectedEvent] = useState<FiestaEvent | null>(null);
   const [favorites, setFavorites]         = useLocalStorage<Favorites>(STORAGE_KEYS.FAVORITES, {});
@@ -21,7 +22,9 @@ export function useAgenda() {
   const [isLoading, setIsLoading]           = useState(false);
   const [error, setError]                   = useState<string | null>(null);
 
-  // Carga eventos cuando cambia el día o el filtro.
+  const selectedDate = festivalISODate(selectedDay);
+
+  // Carga eventos cuando cambia la fecha o el filtro.
   // setIsLoading/setError se marcan de forma síncrona al principio del efecto
   // a propósito, para que la UI muestre "cargando" desde el primer render tras
   // el cambio — es el patrón de fetching en efectos que documenta React.
@@ -30,13 +33,13 @@ export function useAgenda() {
     setIsLoading(true); // eslint-disable-line react-hooks/set-state-in-effect
     setError(null);
 
-    getEvents(FESTIVAL.YEAR, selectedDay, filter)
+    getEvents(selectedDate, filter)
       .then((data) => { if (!cancelled) setFilteredEvents(data); })
       .catch((err: Error) => { if (!cancelled) setError(err.message); })
       .finally(() => { if (!cancelled) setIsLoading(false); });
 
     return () => { cancelled = true; };
-  }, [selectedDay, filter]);
+  }, [selectedDate, filter]);
 
   // Sincroniza favoritos desde Supabase cuando el usuario inicia sesión
   useEffect(() => {

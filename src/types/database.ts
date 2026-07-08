@@ -20,8 +20,7 @@ export interface Database {
           time:        string;
           location:    string;
           type:        EventType;
-          day:         number;
-          year:        number;
+          date:        string; // 'YYYY-MM-DD'
           img_url:     string | null;
           description: string | null;
           created_at:  string;
@@ -33,8 +32,7 @@ export interface Database {
           time:        string;
           location:    string;
           type:        EventType;
-          day:         number;
-          year?:       number;
+          date:        string;
           img_url?:    string | null;
           description?: string | null;
         };

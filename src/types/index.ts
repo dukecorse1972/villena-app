@@ -7,13 +7,13 @@ export type InfoView = 'servicios' | 'avisos' | null;
 
 export interface FiestaEvent {
   id: string;
+  /** Fecha ISO completa ('YYYY-MM-DD'), no solo el día del mes. */
+  date: string;
   time: string;
   title: string;
   location: string;
   type: EventType;
-  day: number;
   // Campos opcionales presentes en Supabase pero no en los datos locales
-  year?: number;
   img_url?: string;
   description?: string;
 }

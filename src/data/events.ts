@@ -1,7 +1,16 @@
 import type { FiestaEvent, EventType } from '../types';
+import { festivalISODate } from '../utils/dates';
 
-// 30 eventos hardcodeados del prototipo original
-export const allEvents: FiestaEvent[] = [
+interface RawFiestaEvent {
+  id: string; time: string; title: string; location: string; type: EventType;
+  /** Día del mes de fiestas (4-9); se convierte a fecha ISO real en allEvents. */
+  day: number;
+}
+
+// 30 eventos hardcodeados del prototipo original.
+// `day` se escribe como número por comodidad de lectura/edición; allEvents
+// lo convierte a fecha ISO real usando FESTIVAL.YEAR/MONTH_INDEX.
+const rawEvents: RawFiestaEvent[] = [
   { id: 'e1',  time: '08:00', title: 'Diana General',                     location: 'Plaza de Santiago',    type: 'Desfiles',   day: 4 },
   { id: 'e2',  time: '12:00', title: 'Alarde de Infantería',              location: 'Av. Constitución',     type: 'Desfiles',   day: 4 },
   { id: 'e3',  time: '20:00', title: 'Misa de Campaña',                   location: 'Iglesia de Santiago',  type: 'Religiosos', day: 4 },
@@ -33,6 +42,11 @@ export const allEvents: FiestaEvent[] = [
   { id: 'e29', time: '18:00', title: 'Recreación Histórica Conquista',   location: 'Castillo Atalaya',     type: 'Cultural',   day: 9 },
   { id: 'e30', time: '22:30', title: 'Traca Final y Fuegos Artificiales', location: 'Paseo Chapí',         type: 'Cultural',   day: 9 },
 ];
+
+export const allEvents: FiestaEvent[] = rawEvents.map(({ day, ...rest }) => ({
+  ...rest,
+  date: festivalISODate(day),
+}));
 
 // Colores por tipo de evento
 export const typeColors: Record<EventType, { bg: string; border: string; text: string }> = {
@@ -77,10 +91,7 @@ export const locCoords: Record<string, [number, number]> = {
   'Casco Histórico':     [38.6333, -0.8670],
 };
 
-// Días festivos y de desfiles
+// Días festivos y de desfiles (día del mes de fiestas, no fecha completa)
 export const festiveDays = new Set([4, 5, 6, 7, 8, 9]);
 export const moroDays    = new Set([5, 7, 8]);
 export const ctianDays   = new Set([4, 6, 9]);
-
-// Días de semana para Sep 2026 (empieza martes → 1 celda vacía lunes)
-export const SEP_OFFSET = 1;

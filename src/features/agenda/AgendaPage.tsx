@@ -1,7 +1,9 @@
 import { useAgenda } from './useAgenda';
 import EventCard from './EventCard';
 import EventModal from './EventModal';
-import { festiveDays, moroDays, ctianDays, SEP_OFFSET } from '../../data/events';
+import { festiveDays, moroDays, ctianDays } from '../../data/events';
+import { FESTIVAL } from '../../constants';
+import { daysInMonth, firstWeekdayOffset } from '../../utils/dates';
 import styles from './AgendaPage.module.css';
 
 const DAYS_OF_WEEK = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
@@ -18,11 +20,13 @@ export default function AgendaPage() {
     favorites, toggleFavorite,
   } = useAgenda();
 
-  // Generar celdas del calendario para Sep 2026
-  // Sep 2026 empieza el martes → 1 celda vacía (lunes)
-  const calCells = [];
-  for (let i = 0; i < SEP_OFFSET; i++) calCells.push(null);
-  for (let d = 1; d <= 30; d++) calCells.push(d);
+  // Generar celdas del calendario a partir del año/mes del festival, en vez
+  // de un offset y un número de días fijados a mano cada edición.
+  const offset      = firstWeekdayOffset(FESTIVAL.YEAR, FESTIVAL.MONTH_INDEX);
+  const totalDays   = daysInMonth(FESTIVAL.YEAR, FESTIVAL.MONTH_INDEX);
+  const calCells: (number | null)[] = [];
+  for (let i = 0; i < offset; i++) calCells.push(null);
+  for (let d = 1; d <= totalDays; d++) calCells.push(d);
   while (calCells.length % 7 !== 0) calCells.push(null);
 
   return (
@@ -36,7 +40,7 @@ export default function AgendaPage() {
       <div className={styles.calendar}>
         {/* Cabecera mes + leyenda */}
         <div className={styles.calHeader}>
-          <span className={styles.calMonth}>SEPTIEMBRE 2026</span>
+          <span className={styles.calMonth}>{FESTIVAL.MONTH.toUpperCase()} {FESTIVAL.YEAR}</span>
           <div className={styles.calLegend}>
             <span className={styles.legendItem}>
               <span className={styles.dotMoro} />

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { Favorites } from '../types';
-import { FESTIVAL } from '../constants';
+import { festivalISODate } from '../utils/dates';
 
 // Forzar fallback a datos locales para que los tests sean deterministas
 // independientemente de si .env.local tiene claves de Supabase configuradas.
@@ -13,24 +13,24 @@ import { getEvents, toggleFavorite, getFavoriteEvents } from './eventsService';
 
 describe('getEvents', () => {
   it('devuelve solo los eventos del día solicitado', async () => {
-    const events = await getEvents(FESTIVAL.YEAR, 4, 'Todos');
+    const events = await getEvents(festivalISODate(4), 'Todos');
     expect(events.length).toBeGreaterThan(0);
-    expect(events.every((e) => e.day === 4)).toBe(true);
+    expect(events.every((e) => e.date === festivalISODate(4))).toBe(true);
   });
 
   it('filtra por tipo de evento', async () => {
-    const events = await getEvents(FESTIVAL.YEAR, 4, 'Desfiles');
+    const events = await getEvents(festivalISODate(4), 'Desfiles');
     expect(events.every((e) => e.type === 'Desfiles')).toBe(true);
   });
 
   it('devuelve array vacío para un día sin eventos', async () => {
-    const events = await getEvents(FESTIVAL.YEAR, 99, 'Todos');
+    const events = await getEvents(festivalISODate(30), 'Todos');
     expect(events).toHaveLength(0);
   });
 
   it('con filtro Todos devuelve todos los tipos del día', async () => {
-    const todos   = await getEvents(FESTIVAL.YEAR, 8, 'Todos');
-    const desfiles = await getEvents(FESTIVAL.YEAR, 8, 'Desfiles');
+    const todos   = await getEvents(festivalISODate(8), 'Todos');
+    const desfiles = await getEvents(festivalISODate(8), 'Desfiles');
     expect(todos.length).toBeGreaterThanOrEqual(desfiles.length);
   });
 });
@@ -62,7 +62,7 @@ describe('getFavoriteEvents', () => {
   it('devuelve los favoritos del día indicado', () => {
     const favs: Favorites = { e1: true, e2: true };
     const results = getFavoriteEvents(favs, 4);
-    expect(results.every((e) => e.day === 4)).toBe(true);
+    expect(results.every((e) => e.date === festivalISODate(4))).toBe(true);
     expect(results.every((e) => !!favs[e.id])).toBe(true);
   });
 
@@ -73,6 +73,6 @@ describe('getFavoriteEvents', () => {
   it('no devuelve favoritos de otro día', () => {
     const favs = { e1: true }; // e1 es día 4
     const results = getFavoriteEvents(favs, 7);
-    expect(results.every((e) => e.day === 7)).toBe(true);
+    expect(results.every((e) => e.date === festivalISODate(7))).toBe(true);
   });
 });

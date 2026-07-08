@@ -1,4 +1,6 @@
-import type { FiestaEvent } from '../../types';
+import type { FiestaEvent, EventType } from '../../types';
+import { FESTIVAL } from '../../constants';
+import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
 import styles from './InicioPage.module.css';
 
 interface InicioPageProps {
@@ -8,20 +10,30 @@ interface InicioPageProps {
   onEventClick: (event: FiestaEvent) => void;
 }
 
-import type { EventType } from '../../types';
-
 interface FeaturedCard {
   id: string; img: string; title: string;
-  time: string; location: string; type: EventType; day: number; dow: string;
+  time: string; location: string; type: EventType; date: string;
 }
 
-const featuredCards: FeaturedCard[] = [
-  { id: 'e1', img: 'https://images.unsplash.com/photo-1755781988015-d1e9c6256e1d?w=480&h=336&fit=crop&auto=format', title: 'Diana General',      time: '08:00', location: 'Plaza de Santiago', type: 'Desfiles', day: 4, dow: 'Vie' },
-  { id: 'e2', img: 'https://images.unsplash.com/photo-1677055290576-ecbf1babede7?w=480&h=336&fit=crop&auto=format', title: 'Alarde de Infantería', time: '12:00', location: 'Av. Constitución',    type: 'Desfiles', day: 4, dow: 'Vie' },
-  { id: 'e4', img: 'https://images.unsplash.com/photo-1718563300857-d2f084703fe9?w=480&h=336&fit=crop&auto=format', title: 'Entrada Cristiana',    time: '23:00', location: 'Av. Constitución',    type: 'Desfiles', day: 5, dow: 'Sáb' },
-  { id: 'e5', img: 'https://images.unsplash.com/photo-1533551268962-824e232f7ee1?w=480&h=336&fit=crop&auto=format', title: 'Contrabando',          time: '11:00', location: 'Casco Antiguo',       type: 'Desfiles', day: 6, dow: 'Dom' },
-  { id: 'e7', img: 'https://images.unsplash.com/photo-1677055380601-393348dc342c?w=480&h=336&fit=crop&auto=format', title: 'Entrada Mora',         time: '23:00', location: 'Av. Constitución',    type: 'Desfiles', day: 7, dow: 'Lun' },
+interface RawFeaturedCard {
+  id: string; img: string; title: string;
+  time: string; location: string; type: EventType; day: number;
+}
+
+const rawFeaturedCards: RawFeaturedCard[] = [
+  { id: 'e1', img: 'https://images.unsplash.com/photo-1755781988015-d1e9c6256e1d?w=480&h=336&fit=crop&auto=format', title: 'Diana General',      time: '08:00', location: 'Plaza de Santiago', type: 'Desfiles', day: 4 },
+  { id: 'e2', img: 'https://images.unsplash.com/photo-1677055290576-ecbf1babede7?w=480&h=336&fit=crop&auto=format', title: 'Alarde de Infantería', time: '12:00', location: 'Av. Constitución',    type: 'Desfiles', day: 4 },
+  { id: 'e4', img: 'https://images.unsplash.com/photo-1718563300857-d2f084703fe9?w=480&h=336&fit=crop&auto=format', title: 'Entrada Cristiana',    time: '23:00', location: 'Av. Constitución',    type: 'Desfiles', day: 5 },
+  { id: 'e5', img: 'https://images.unsplash.com/photo-1533551268962-824e232f7ee1?w=480&h=336&fit=crop&auto=format', title: 'Contrabando',          time: '11:00', location: 'Casco Antiguo',       type: 'Desfiles', day: 6 },
+  { id: 'e7', img: 'https://images.unsplash.com/photo-1677055380601-393348dc342c?w=480&h=336&fit=crop&auto=format', title: 'Entrada Mora',         time: '23:00', location: 'Av. Constitución',    type: 'Desfiles', day: 7 },
 ];
+
+// dow ('Vie', 'Sáb'...) se calcula a partir de la fecha real en vez de
+// escribirse a mano — antes había que recalcularlo cada año sin avisar.
+const featuredCards: FeaturedCard[] = rawFeaturedCards.map(({ day, ...rest }) => ({
+  ...rest,
+  date: festivalISODate(day),
+}));
 
 const news = [
   {
@@ -128,9 +140,9 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
                 <div className={styles.eventGradient} />
                 {/* Badge fecha */}
                 <div className={styles.dateBadge}>
-                  <span className={styles.dateBadgeMonth}>Sep</span>
-                  <span className={styles.dateBadgeDay}>{card.day}</span>
-                  <span className={styles.dateBadgeDow}>{card.dow}</span>
+                  <span className={styles.dateBadgeMonth}>{FESTIVAL.MONTH.slice(0, 3)}</span>
+                  <span className={styles.dateBadgeDay}>{dayOfMonth(card.date)}</span>
+                  <span className={styles.dateBadgeDow}>{weekdayShortLabel(card.date)}</span>
                 </div>
                 {/* Título + hora */}
                 <div className={styles.eventInfo}>

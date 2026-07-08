@@ -1,24 +1,22 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { allEvents } from '../data/events';
+import { festivalISODate } from '../utils/dates';
 import type { FiestaEvent, Favorites } from '../types';
 
 /**
- * Obtiene eventos filtrados por año, día y tipo.
+ * Obtiene eventos filtrados por fecha y tipo.
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
  *
- * El filtro por `year` es obligatorio: la tabla `eventos` puede acumular
- * varias ediciones (día 5 de 2026, día 5 de 2027...) y sin filtrar por año
- * la consulta por `day` devolvería eventos de todas las ediciones mezclados.
- * Los datos locales de fallback son de una única edición sin campo `year`,
- * así que no necesitan (ni pueden) filtrarse por año.
+ * `date` es una fecha ISO completa ('YYYY-MM-DD'), no un día suelto:
+ * cada fila de `eventos` tiene su propia fecha real, así que distintas
+ * ediciones del festival nunca pueden mezclarse en la misma consulta.
  */
-export async function getEvents(year: number, day: number, filter: string): Promise<FiestaEvent[]> {
+export async function getEvents(date: string, filter: string): Promise<FiestaEvent[]> {
   if (isSupabaseConfigured) {
     let query = supabase
       .from('eventos')
       .select('*')
-      .eq('year', year)
-      .eq('day', day)
+      .eq('date', date)
       .order('time');
 
     if (filter !== 'Todos') {
@@ -31,9 +29,9 @@ export async function getEvents(year: number, day: number, filter: string): Prom
   }
 
   return allEvents.filter((ev) => {
-    const matchDay  = ev.day === day;
+    const matchDate = ev.date === date;
     const matchType = filter === 'Todos' || ev.type === filter;
-    return matchDay && matchType;
+    return matchDate && matchType;
   });
 }
 
@@ -45,9 +43,10 @@ export function toggleFavorite(eventId: string, favorites: Favorites): Favorites
 }
 
 /**
- * Devuelve los eventos favoritos para un día concreto.
+ * Devuelve los eventos favoritos para un día del mes de fiestas.
  * Siempre usa datos locales como referencia base (los ids son los mismos).
  */
 export function getFavoriteEvents(favorites: Favorites, day: number): FiestaEvent[] {
-  return allEvents.filter((ev) => ev.day === day && favorites[ev.id]);
+  const date = festivalISODate(day);
+  return allEvents.filter((ev) => ev.date === date && favorites[ev.id]);
 }
