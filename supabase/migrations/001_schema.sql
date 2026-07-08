@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS public.eventos (
   type        text        NOT NULL
               CHECK (type IN ('Desfiles', 'Religiosos', 'Música', 'Cultural')),
   day         integer     NOT NULL CHECK (day BETWEEN 1 AND 30),
-  year        integer     NOT NULL DEFAULT 2025,
+  year        integer     NOT NULL DEFAULT 2026,
   img_url     text,                             -- foto del tipo de acto
   description text,                             -- descripción larga
   created_at  timestamptz NOT NULL DEFAULT now(),

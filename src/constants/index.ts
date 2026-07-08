@@ -15,7 +15,7 @@ export const STORAGE_KEYS = {
 // ── Configuración general del festival ───────────────────────────────────────
 export const FESTIVAL = {
   CITY:      'Villena',
-  YEAR:      2025,
+  YEAR:      2026,
   MONTH:     'Septiembre',
   START_DAY: 4,
   END_DAY:   9,
