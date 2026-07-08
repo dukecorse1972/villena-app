@@ -13,6 +13,11 @@ export const STORAGE_KEYS = {
   FAVORITES: 'villena_favorites',
 } as const;
 
+// ── Auth ──────────────────────────────────────────────────────────────────────
+// Debe coincidir con el scheme registrado en AndroidManifest.xml (intent-filter)
+// e Info.plist (CFBundleURLTypes), y con la Redirect URL permitida en Supabase.
+export const NATIVE_AUTH_REDIRECT = 'es.villena.fiestas://auth-callback';
+
 // ── Configuración general del festival ───────────────────────────────────────
 export const FESTIVAL = {
   CITY:        'Villena',

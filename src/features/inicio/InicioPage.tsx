@@ -4,6 +4,7 @@ import { FESTIVAL } from '../../constants';
 import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
 import { getCurrentTemperature } from '../../services/weatherService';
 import { getAvisos } from '../../services/avisosService';
+import { openExternalLink } from '../../utils/openExternalLink';
 import styles from './InicioPage.module.css';
 
 const LIVE_STREAM_URL = 'https://www.intercomarcal.com/';
@@ -130,7 +131,12 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
             <span className={styles.liveLabel}>En Directo</span>
           </div>
           <p className={styles.liveText}>Entrada Cristiana — Intercomarcal</p>
-          <a href={LIVE_STREAM_URL} target="_blank" rel="noopener noreferrer" className={styles.watchBtn}>
+          <a
+            href={LIVE_STREAM_URL}
+            rel="noopener noreferrer"
+            className={styles.watchBtn}
+            onClick={(e) => { e.preventDefault(); openExternalLink(LIVE_STREAM_URL); }}
+          >
             <svg width="9" height="9" viewBox="0 0 9 9" fill="#0b1a0b"><polygon points="0,0 9,4.5 0,9" /></svg>
             <span className={styles.watchBtnLabel}>Ver</span>
           </a>

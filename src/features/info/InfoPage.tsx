@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getAvisos, timeAgo } from '../../services/avisosService';
 import { useAuth } from '../../hooks/useAuth';
+import UserAvatar from '../../components/UserAvatar';
 import LoginSection from './LoginSection';
 import type { InfoView, Aviso } from '../../types';
 import styles from './InfoPage.module.css';
@@ -91,9 +92,7 @@ export default function InfoPage() {
         <h1>Info Práctica</h1>
         <button className={styles.authBtn} onClick={() => setLoginOpen(true)}>
           {user ? (
-            user.user_metadata?.avatar_url
-              ? <img src={user.user_metadata.avatar_url as string} className={styles.authAvatar} alt="" />
-              : <span className={styles.authInitial}>{(user.email?.[0] ?? '?').toUpperCase()}</span>
+            <UserAvatar user={user} imgClassName={styles.authAvatar} fallbackClassName={styles.authInitial} />
           ) : (
             <span className={styles.authLabel}>Acceder</span>
           )}

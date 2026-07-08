@@ -1,5 +1,6 @@
 import { typePhotos, typeDescs, locCoords } from '../../data/events';
 import type { FiestaEvent } from '../../types';
+import { openExternalLink } from '../../utils/openExternalLink';
 import styles from './EventModal.module.css';
 
 interface EventModalProps {
@@ -89,9 +90,9 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
             {/* Cómo llegar */}
             <a
               href={mapsUrl}
-              target="_blank"
               rel="noopener noreferrer"
               className={styles.btnNav}
+              onClick={(e) => { e.preventDefault(); openExternalLink(mapsUrl); }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
               <span className={styles.btnNavLabel}>CÓMO LLEGAR</span>

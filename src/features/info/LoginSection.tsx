@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import Modal from '../../components/Modal';
+import UserAvatar from '../../components/UserAvatar';
 import styles from './LoginSection.module.css';
 
 interface Props {
@@ -77,10 +78,7 @@ export default function LoginSection({ open, onClose }: Props) {
         {user ? (
           <div className={styles.loggedIn}>
             <div className={styles.avatarLg}>
-              {user.user_metadata?.avatar_url
-                ? <img src={user.user_metadata.avatar_url as string} className={styles.avatarImg} alt="" />
-                : <span>{(user.email?.[0] ?? '?').toUpperCase()}</span>
-              }
+              <UserAvatar user={user} imgClassName={styles.avatarImg} />
             </div>
             <div className={styles.userEmail}>{user.email}</div>
             <div className={styles.syncBadge}>
