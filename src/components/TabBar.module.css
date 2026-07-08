@@ -1,6 +1,7 @@
 .bar {
   flex-shrink: 0;
-  height: var(--tab-height);
+  height: calc(var(--tab-height) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
   background: var(--color-bg-app);
   border-top: 1px solid var(--border-oro-15);
   display: flex;

@@ -57,6 +57,14 @@
   --tab-height:   68px;
   --radius-card:  16px;
   --radius-chip:  20px;
+
+  /* ── Áreas seguras (notch / gesture bar) ──
+     env() devuelve 0px en navegador normal; en Capacitor
+     (iOS con notch/gesture bar) devuelve el hueco real. */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
 }
 
 /* ═══════════════════════════════════════════════

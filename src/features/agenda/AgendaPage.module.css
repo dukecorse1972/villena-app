@@ -4,7 +4,7 @@
 
 /* ── Title ── */
 .titleBar {
-  padding: 8px 20px 14px;
+  padding: calc(8px + var(--safe-top)) 20px 14px;
 }
 
 .titleBar h1 {

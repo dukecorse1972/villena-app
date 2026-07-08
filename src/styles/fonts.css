@@ -1,0 +1,40 @@
+/* ═══════════════════════════════════════════════
+   FUENTES AUTOALOJADAS (Cinzel + Lato)
+   Antes se cargaban desde fonts.googleapis.com — en una
+   app empaquetada con Capacitor el primer arranque puede
+   no tener red, o tenerla mala durante los días de fiesta.
+   Solo se incluye el subset "latin" (cubre acentos y ñ del
+   español, U+0000-00FF), no "latin-ext".
+   ═══════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/cinzel-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/lato-300.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lato-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/lato-700.woff2') format('woff2');
+}

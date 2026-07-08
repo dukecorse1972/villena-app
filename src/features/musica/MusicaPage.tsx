@@ -152,7 +152,7 @@ export default function MusicaPage() {
       />
 
       {/* ── Título ── */}
-      <div style={{ position: 'relative', zIndex: 2, marginTop: '52px', textAlign: 'center', padding: '0 20px' }}>
+      <div style={{ position: 'relative', zIndex: 2, marginTop: 'calc(52px + var(--safe-top))', textAlign: 'center', padding: '0 20px' }}>
         <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: '27px', fontWeight: '700', color: '#c9af75', margin: '0 0 8px', letterSpacing: '2px', textShadow: '2px 2px 0 rgba(0,0,0,.6),3px 3px 0 rgba(0,0,0,.3),0 0 30px rgba(201,175,117,.25)' }}>
           VILLENA SUENA
         </h1>

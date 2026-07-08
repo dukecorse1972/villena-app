@@ -9,6 +9,7 @@ import InfoPage      from './features/info/InfoPage';
 import AdminPage     from './features/admin/AdminPage';
 import EventModal    from './features/agenda/EventModal';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useAndroidBackButton } from './hooks/useAndroidBackButton';
 import { toggleFavorite } from './services/eventsService';
 import { ROUTES, STORAGE_KEYS } from './constants';
 import type { FiestaEvent, Favorites } from './types';
@@ -16,6 +17,7 @@ import type { FiestaEvent, Favorites } from './types';
 export default function App() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  useAndroidBackButton();
 
   const [homeEvent, setHomeEvent] = useState<FiestaEvent | null>(null);
   const [favorites, setFavorites] = useLocalStorage<Favorites>(STORAGE_KEYS.FAVORITES, {});
@@ -32,7 +34,7 @@ export default function App() {
     <div style={{ width: '100%', height: '100dvh', background: appBg, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
 
       {/* Área de contenido — scroll aquí, no dentro de las páginas */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', paddingBottom: '68px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', paddingBottom: 'calc(var(--tab-height) + var(--safe-bottom))' }}>
         <Routes>
           <Route path={ROUTES.INICIO}    element={
             <InicioPage

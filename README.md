@@ -11,6 +11,7 @@ Aplicación web (SPA) con la agenda de actos, comparsas e información práctica
 - [React Router 7](https://reactrouter.com/) (navegación)
 - [Supabase](https://supabase.com/) (base de datos, auth y backend)
 - [Vitest](https://vitest.dev/) + Testing Library (tests)
+- [Capacitor](https://capacitorjs.com/) (empaquetado como app nativa iOS/Android)
 
 ## Requisitos
 
@@ -56,3 +57,18 @@ supabase/
 ## Variables de entorno
 
 Ver `.env.example`. Si `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` no están configuradas, los servicios de datos usan automáticamente los datos locales de `src/data/`.
+
+## Empaquetado nativo (Capacitor)
+
+El proyecto se compila también como app nativa para iOS y Android sin cambiar el código de `src/` — Capacitor solo envuelve el build de `dist/` en un contenedor nativo.
+
+```bash
+npm run cap:sync      # build + copia el build a android/ e ios/
+npm run cap:android   # build + sync + abre el proyecto en Android Studio
+npm run cap:ios       # build + sync + abre el proyecto en Xcode (requiere macOS)
+```
+
+- `capacitor.config.ts` — configuración de Capacitor (`appId`, `appName`, `webDir`).
+- `android/`, `ios/` — proyectos nativos generados por Capacitor. Se versionan en git (cada uno trae su propio `.gitignore` para excluir `build/`, `.gradle/`, `Pods/`, etc.), **no se regeneran a mano**.
+- `resources/` — icono (`icon.png`, 1024×1024) y splash (`splash.png`) de origen. Para regenerar todos los tamaños tras cambiar el icono: `npx capacitor-assets generate`.
+- Compilar y firmar la app final para las tiendas requiere Android Studio (Android) o Xcode en macOS (iOS) — no es posible solo con Node.
