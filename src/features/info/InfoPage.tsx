@@ -59,20 +59,13 @@ interface GalleryPhoto {
 export default function InfoPage() {
   const [searchParams] = useSearchParams();
   const initialView = searchParams.get('view') as InfoView;
-  const [mainTab,    setMainTab]    = useState('servicios');
+  // La pestaña inicial depende de ?view=... en la URL, ya disponible en el
+  // primer render — se deriva aquí en vez de sincronizarla con un efecto.
+  const [mainTab,    setMainTab]    = useState(initialView === 'avisos' ? 'multimedia' : 'servicios');
   const [multiTab,   setMultiTab]   = useState('avisos');
   const [avisos,     setAvisos]     = useState<Aviso[]>([]);
   const [loginOpen,  setLoginOpen]  = useState(false);
   const { user } = useAuth();
-
-  useEffect(() => {
-    if (initialView === 'avisos') {
-      setMainTab('multimedia');
-      setMultiTab('avisos');
-    } else if (initialView === 'servicios') {
-      setMainTab('servicios');
-    }
-  }, [initialView]);
 
   useEffect(() => {
     getAvisos().then(setAvisos).catch(() => setAvisos([]));

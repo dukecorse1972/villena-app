@@ -13,13 +13,12 @@ export interface AuthActions {
 
 export function useAuth(): AuthActions {
   const [user,      setUser]      = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Sin Supabase configurado no hay sesión que cargar: se sabe desde el
+  // primer render, así que se calcula aquí en vez de fijarlo en un efecto.
+  const [isLoading, setIsLoading] = useState(isSupabaseConfigured);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
-      setIsLoading(false);
-      return;
-    }
+    if (!isSupabaseConfigured) return;
 
     // Sesión inicial
     supabase.auth.getSession().then(({ data: { session } }) => {
