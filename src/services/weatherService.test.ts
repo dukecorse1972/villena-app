@@ -1,38 +1,44 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { getCurrentTemperature } from './weatherService';
+import { getCurrentWeather } from './weatherService';
 
-describe('getCurrentTemperature', () => {
+const invokeMock = vi.fn();
+
+vi.mock('./supabase', () => ({
+  supabase: { functions: { invoke: (...args: unknown[]) => invokeMock(...args) } },
+}));
+
+describe('getCurrentWeather', () => {
   afterEach(() => {
-    vi.unstubAllGlobals();
+    invokeMock.mockReset();
   });
 
-  it('devuelve la temperatura cuando la API responde correctamente', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ current: { temperature_2m: 26.4 } }),
-    }));
+  it('devuelve temperatura y condición cuando la función responde correctamente', async () => {
+    invokeMock.mockResolvedValue({ data: { temperature: 26.4, condition: 'despejado' }, error: null });
 
-    expect(await getCurrentTemperature()).toBe(26.4);
+    expect(await getCurrentWeather()).toEqual({ temperature: 26.4, condition: 'despejado' });
   });
 
-  it('devuelve null si la respuesta no es OK', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
+  it('devuelve condition null si AEMET no trae estado del cielo', async () => {
+    invokeMock.mockResolvedValue({ data: { temperature: 18, condition: null }, error: null });
 
-    expect(await getCurrentTemperature()).toBeNull();
+    expect(await getCurrentWeather()).toEqual({ temperature: 18, condition: null });
   });
 
-  it('devuelve null si la petición falla (sin red, etc.)', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network error')));
+  it('devuelve null si la función responde con error', async () => {
+    invokeMock.mockResolvedValue({ data: null, error: new Error('fallo') });
 
-    expect(await getCurrentTemperature()).toBeNull();
+    expect(await getCurrentWeather()).toBeNull();
   });
 
-  it('devuelve null si el payload no trae el campo esperado', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({}),
-    }));
+  it('devuelve null si la invocación lanza (sin red, etc.)', async () => {
+    invokeMock.mockRejectedValue(new Error('network error'));
 
-    expect(await getCurrentTemperature()).toBeNull();
+    expect(await getCurrentWeather()).toBeNull();
+  });
+
+  it('devuelve null si el payload no trae una temperatura numérica', async () => {
+    invokeMock.mockResolvedValue({ data: { temperature: 'N/A' }, error: null });
+
+    expect(await getCurrentWeather()).toBeNull();
   });
 });

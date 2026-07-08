@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import type { FiestaEvent, EventType, Aviso } from '../../types';
 import { FESTIVAL } from '../../constants';
 import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
-import { getCurrentTemperature } from '../../services/weatherService';
+import { getCurrentWeather, type Weather } from '../../services/weatherService';
 import { getAvisos } from '../../services/avisosService';
 import { openExternalLink } from '../../utils/openExternalLink';
+import WeatherIcon from '../../components/WeatherIcon';
 import styles from './InicioPage.module.css';
 
 const LIVE_STREAM_URL = 'https://www.intercomarcal.com/';
@@ -65,11 +66,11 @@ const news = [
 ];
 
 export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos, onEventClick }: InicioPageProps) {
-  const [temperature, setTemperature] = useState<number | null>(null);
+  const [weather, setWeather] = useState<Weather | null>(null);
   const [avisos, setAvisos] = useState<Aviso[]>([]);
 
   useEffect(() => {
-    getCurrentTemperature().then(setTemperature).catch(() => setTemperature(null));
+    getCurrentWeather().then(setWeather).catch(() => setWeather(null));
   }, []);
 
   useEffect(() => {
@@ -101,13 +102,11 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
 
         {/* Clima + Campana */}
         <div className={styles.headerRight}>
-          {/* Temperatura — solo se muestra si hay dato real (Open-Meteo) */}
-          {temperature !== null && (
+          {/* Temperatura — solo se muestra si hay dato real (AEMET) */}
+          {weather !== null && (
             <div className={styles.weather}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.7)" strokeWidth="2">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" />
-              </svg>
-              <span className={styles.weatherTemp}>{Math.round(temperature)}°C</span>
+              <WeatherIcon condition={weather.condition} />
+              <span className={styles.weatherTemp}>{Math.round(weather.temperature)}°C</span>
             </div>
           )}
           {/* Campana — el punto solo aparece si hay avisos reales marcados como nuevos */}

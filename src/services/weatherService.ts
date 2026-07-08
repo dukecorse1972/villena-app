@@ -1,24 +1,31 @@
-// Coordenadas del centro de Villena (mismas que el resto de POIs de la app)
-const VILLENA_LAT = 38.6338;
-const VILLENA_LNG = -0.8641;
+import { supabase } from './supabase';
 
-const FORECAST_URL =
-  `https://api.open-meteo.com/v1/forecast?latitude=${VILLENA_LAT}&longitude=${VILLENA_LNG}` +
-  `&current=temperature_2m&timezone=auto`;
+export type WeatherCondition =
+  | 'despejado' | 'poco-nuboso' | 'nuboso' | 'cubierto'
+  | 'lluvia' | 'chubascos' | 'tormenta' | 'nieve' | 'niebla';
+
+export interface Weather {
+  temperature: number;
+  condition:   WeatherCondition | null;
+}
 
 /**
- * Temperatura actual en Villena (°C), vía Open-Meteo (API gratuita, sin clave).
- * Devuelve null si la petición falla o la respuesta no trae el dato esperado —
- * la UI debe ocultar el widget en ese caso, nunca mostrar un valor inventado.
+ * Tiempo actual en Villena: temperatura y condición del cielo, vía la
+ * predicción horaria oficial de AEMET (Edge Function `get-weather`, que
+ * guarda la clave de AEMET fuera del cliente). Devuelve null si la
+ * petición falla — la UI debe ocultar el widget en ese caso, nunca
+ * mostrar un valor inventado.
  */
-export async function getCurrentTemperature(): Promise<number | null> {
+export async function getCurrentWeather(): Promise<Weather | null> {
   try {
-    const res = await fetch(FORECAST_URL);
-    if (!res.ok) return null;
+    const { data, error } = await supabase.functions.invoke<{ temperature: unknown; condition: unknown }>('get-weather');
+    if (error || !data) return null;
 
-    const data = await res.json();
-    const temp = data?.current?.temperature_2m;
-    return typeof temp === 'number' ? temp : null;
+    const temperature = data.temperature;
+    if (typeof temperature !== 'number') return null;
+
+    const condition = typeof data.condition === 'string' ? (data.condition as WeatherCondition) : null;
+    return { temperature, condition };
   } catch {
     return null;
   }
