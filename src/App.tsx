@@ -10,6 +10,7 @@ import AdminPage     from './features/admin/AdminPage';
 import EventModal    from './features/agenda/EventModal';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useAndroidBackButton } from './hooks/useAndroidBackButton';
+import { usePushNotifications } from './hooks/usePushNotifications';
 import { toggleFavorite } from './services/eventsService';
 import { ROUTES, STORAGE_KEYS } from './constants';
 import type { FiestaEvent, Favorites } from './types';
@@ -18,6 +19,7 @@ export default function App() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   useAndroidBackButton();
+  usePushNotifications();
 
   const [homeEvent, setHomeEvent] = useState<FiestaEvent | null>(null);
   const [favorites, setFavorites] = useLocalStorage<Favorites>(STORAGE_KEYS.FAVORITES, {});

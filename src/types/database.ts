@@ -152,6 +152,21 @@ export interface Database {
         };
         Update: Partial<Database['public']['Tables']['cargos']['Insert']>;
       };
+
+      push_tokens: {
+        Row: {
+          token:      string;
+          user_id:    string | null;
+          platform:   'android' | 'ios';
+          created_at: string;
+        };
+        Insert: {
+          token:     string;
+          user_id?:  string | null;
+          platform:  'android' | 'ios';
+        };
+        Update: Partial<Database['public']['Tables']['push_tokens']['Insert']>;
+      };
     };
   };
 }

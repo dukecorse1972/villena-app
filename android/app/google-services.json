@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "434852487773",
+    "project_id": "villena-fiestas",
+    "storage_bucket": "villena-fiestas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:434852487773:android:9714f96bace2c0e76263b4",
+        "android_client_info": {
+          "package_name": "es.villena.fiestas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqKfoniwJZ95v2224bQXS1E4p7WLQ7BFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
