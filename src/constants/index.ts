@@ -14,9 +14,10 @@ export const STORAGE_KEYS = {
 
 // ── Configuración general del festival ───────────────────────────────────────
 export const FESTIVAL = {
-  CITY:      'Villena',
-  YEAR:      2026,
-  MONTH:     'Septiembre',
-  START_DAY: 4,
-  END_DAY:   9,
+  CITY:        'Villena',
+  YEAR:        2026,
+  MONTH:       'Septiembre',
+  MONTH_INDEX: 9, // 1-12, para construir fechas ISO (YYYY-MM-DD)
+  START_DAY:   4,
+  END_DAY:     9,
 } as const;
