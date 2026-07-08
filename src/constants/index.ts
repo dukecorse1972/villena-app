@@ -1,0 +1,22 @@
+// ── Rutas de la aplicación ────────────────────────────────────────────────────
+export const ROUTES = {
+  INICIO:    '/',
+  AGENDA:    '/agenda',
+  COMPARSAS: '/comparsas',
+  MUSICA:    '/musica',
+  INFO:      '/info',
+} as const;
+
+// ── Claves de localStorage ────────────────────────────────────────────────────
+export const STORAGE_KEYS = {
+  FAVORITES: 'villena_favorites',
+} as const;
+
+// ── Configuración general del festival ───────────────────────────────────────
+export const FESTIVAL = {
+  CITY:      'Villena',
+  YEAR:      2025,
+  MONTH:     'Septiembre',
+  START_DAY: 4,
+  END_DAY:   9,
+} as const;

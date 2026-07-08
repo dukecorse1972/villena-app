@@ -1,0 +1,316 @@
+.page {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg-app);
+  z-index: 50;
+  overflow-y: auto;
+  padding-bottom: 0;
+}
+
+/* ── Sticky header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  position: sticky;
+  top: 0;
+  background: var(--color-bg-app);
+  z-index: 10;
+  border-bottom: 1px solid var(--border-oro-15);
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.backLabel {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-oro);
+}
+
+.favIconBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+/* ── Hero ── */
+.hero {
+  width: 100%;
+  height: 160px;
+  background: var(--color-bg-card);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroLabel {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(196, 151, 42, 0.4);
+  letter-spacing: 1px;
+}
+
+.shieldWrap {
+  position: absolute;
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.shield {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--color-oro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.shieldImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.shieldInitials {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ── Name & tags ── */
+.nameArea {
+  padding: 52px 20px 20px;
+  text-align: center;
+}
+
+.comparsaTitle {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.tagBando {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-oro);
+  background: rgba(196, 151, 42, 0.1);
+  border: 1px solid rgba(196, 151, 42, 0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.tagMuted {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  background: rgba(122, 144, 112, 0.08);
+  border: 1px solid rgba(122, 144, 112, 0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+/* ── Cargos ── */
+.section {
+  padding: 0 0 20px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  padding: 0 20px;
+  margin: 0 0 14px;
+  letter-spacing: 1px;
+}
+
+.cargosScroll {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 20px 4px;
+  scrollbar-width: none;
+}
+
+.cargoItem {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 80px;
+}
+
+.cargoAvatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--color-bg-card);
+  border: 2px solid rgba(196, 151, 42, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cargoName {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.cargoRole {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-oro);
+  text-align: center;
+}
+
+/* ── Indumentaria ── */
+.sectionPadded {
+  padding: 0 20px 20px;
+}
+
+.sectionTitleNoLeft {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 14px;
+  letter-spacing: 1px;
+}
+
+.indu2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.induCard {
+  background: var(--color-bg-card);
+  border-radius: 14px;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid rgba(196, 151, 42, 0.1);
+}
+
+.induLabel {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: rgba(196, 151, 42, 0.5);
+  letter-spacing: 1px;
+}
+
+/* ── Historia ── */
+.historyText {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-mid);
+  line-height: 1.75;
+  text-align: justify;
+  margin: 0;
+}
+
+/* ── Rating ── */
+.ratingSection {
+  padding: 0 20px 32px;
+}
+
+.ratingTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+  letter-spacing: 1px;
+}
+
+.ratingCard {
+  background: var(--color-bg-card);
+  border-radius: 16px;
+  padding: 22px 20px;
+  border: 1px solid rgba(196, 151, 42, 0.2);
+  text-align: center;
+}
+
+.ratingPrompt {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0 0 16px;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.starBtn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  background: rgba(196, 151, 42, 0.1);
+  color: var(--color-text-muted);
+  border: none;
+  transition: all 0.2s;
+}
+
+.submitBtn.ready {
+  background: var(--color-oro);
+  color: #0b1a0b;
+}
+
+.thanks {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-oro);
+  padding: 10px 0;
+}

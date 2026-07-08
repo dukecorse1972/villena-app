@@ -1,0 +1,238 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 10px;
+}
+
+.panel {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: var(--color-bg-card-dark);
+  border: 1px solid var(--border-oro-40);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUpFade 0.4s cubic-bezier(0.22, 0.9, 0.32, 1) both;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+/* ── Photo header ── */
+.photoWrap {
+  flex-shrink: 0;
+  height: 210px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px 18px 0 0;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photoGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(196, 151, 42, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleArea {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 14px 14px;
+}
+
+.eventTitle {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-oro);
+  margin: 0 0 10px;
+  line-height: 1.2;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 1), 0 2px 4px rgba(0, 0, 0, 1), 0 0 40px rgba(196, 151, 42, 0.4);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(196, 151, 42, 0.45);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.chipText {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.chipTextSub {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* ── Map placeholder ── */
+.mapBlock {
+  flex-shrink: 0;
+  height: 220px;
+  background: var(--color-bg-app-alt);
+  border-top: 1px solid var(--border-oro-15);
+  border-bottom: 1px solid var(--border-oro-15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mapGrid {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(196, 151, 42, 0.04) 30px, rgba(196, 151, 42, 0.04) 31px),
+    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(196, 151, 42, 0.04) 30px, rgba(196, 151, 42, 0.04) 31px);
+}
+
+.mapLabel {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(196, 151, 42, 0.4);
+  letter-spacing: 4px;
+}
+
+.mapCoords {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: rgba(196, 151, 42, 0.3);
+}
+
+/* ── Body ── */
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+}
+
+.dividerLineLeft {
+  background: linear-gradient(to right, transparent, rgba(196, 151, 42, 0.35));
+}
+
+.dividerLineRight {
+  background: linear-gradient(to left, transparent, rgba(196, 151, 42, 0.35));
+}
+
+.desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #9aae92;
+  line-height: 1.75;
+  margin: 0;
+  text-align: justify;
+  flex: 1;
+}
+
+/* ── Buttons ── */
+.btnRow {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btnFav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(196, 151, 42, 0.08);
+  border: 1px solid rgba(196, 151, 42, 0.35);
+  color: var(--color-oro);
+}
+
+.btnFav.saved {
+  background: rgba(196, 151, 42, 0.18);
+}
+
+.btnFavLabel {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.btnNav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px;
+  border-radius: 10px;
+  background: var(--color-oro);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btnNavLabel {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: #0b1a0b;
+  letter-spacing: 0.5px;
+}

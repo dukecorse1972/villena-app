@@ -1,0 +1,151 @@
+import { useState } from 'react';
+import type { Comparsa, Bando } from '../../types';
+import styles from './ComparsaDetail.module.css';
+
+interface ComparsaDetailProps {
+  comparsa: Comparsa | null;
+  bando: Bando;
+  onBack: () => void;
+}
+
+const CARGOS_LABELS = ['Capitán', 'Sargento', 'Abanderado', 'Alférez', 'Teniente', 'Maestre', 'Porta-estandarte'];
+
+const PersonIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.4)" strokeWidth="1.5">
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+  </svg>
+);
+
+export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDetailProps) {
+  const [voteStars, setVoteStars]       = useState(0);
+  const [voteSubmitted, setVoteSubmitted] = useState(false);
+
+  if (!comparsa) return null;
+
+  return (
+    <div className={styles.page}>
+
+      {/* ── Cabecera sticky ── */}
+      <div className={styles.header}>
+        <div className={styles.backBtn} onClick={onBack}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span className={styles.backLabel}>Volver</span>
+        </div>
+        <div className={styles.favIconBtn}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(240,228,200,.7)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* ── Hero con imagen de desfile ── */}
+      <div className={styles.hero}>
+        <span className={styles.heroLabel}>IMAGEN DE DESFILE</span>
+        {/* Escudo superpuesto */}
+        <div className={styles.shieldWrap}>
+          <div
+            className={styles.shield}
+            style={{
+              background: comparsa.img ? '#0b1a0b' : (comparsa.color || '#1a1a1a'),
+              padding: comparsa.img ? '6px' : '0',
+            }}
+          >
+            {comparsa.img ? (
+              <img src={comparsa.img} className={styles.shieldImg} alt={comparsa.name} />
+            ) : (
+              <span className={styles.shieldInitials}>
+                {comparsa.name.slice(0, 2).toUpperCase()}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Nombre y tags ── */}
+      <div className={styles.nameArea}>
+        <h1 className={styles.comparsaTitle}>{comparsa.name}</h1>
+        <div className={styles.tags}>
+          <span className={styles.tagBando}>
+            {bando === 'Moro' ? 'Bando Moro' : 'Bando Cristiano'}
+          </span>
+          <span className={styles.tagMuted}>Fundación: —</span>
+          <span className={styles.tagMuted}>Nº socios: —</span>
+        </div>
+      </div>
+
+      {/* ── Cargos del año ── */}
+      <div className={styles.section}>
+        <h2 className={styles.sectionTitle}>Cargos del Año</h2>
+        <div className={styles.cargosScroll}>
+          {CARGOS_LABELS.map(cargo => (
+            <div key={cargo} className={styles.cargoItem}>
+              <div className={styles.cargoAvatar}>
+                <PersonIcon />
+              </div>
+              <span className={styles.cargoName}>—</span>
+              <span className={styles.cargoRole}>{cargo}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Indumentaria ── */}
+      <div className={styles.sectionPadded}>
+        <h2 className={styles.sectionTitleNoLeft}>Indumentaria y Símbolos</h2>
+        <div className={styles.indu2col}>
+          {['TRAJE DE GALA', 'ESTANDARTE'].map(label => (
+            <div key={label} className={styles.induCard}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.35)" strokeWidth="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <span className={styles.induLabel}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Historia ── */}
+      <div className={styles.sectionPadded}>
+        <h2 className={styles.sectionTitleNoLeft}>Nuestra Historia</h2>
+        <p className={styles.historyText}>
+          La historia de esta comparsa forma parte del rico patrimonio festero de Villena. Próximamente encontrarás aquí toda la información sobre sus orígenes, tradiciones y evolución a lo largo de los años.
+        </p>
+      </div>
+
+      {/* ── Valoración ── */}
+      <div className={styles.ratingSection}>
+        <h2 className={styles.ratingTitle}>Valoración</h2>
+        <div className={styles.ratingCard}>
+          <p className={styles.ratingPrompt}>¿Qué te parece esta comparsa?</p>
+          <div className={styles.stars}>
+            {[1, 2, 3, 4, 5].map(i => (
+              <button
+                key={i}
+                onClick={() => setVoteStars(i)}
+                className={styles.starBtn}
+                style={{ color: i <= voteStars ? '#c4972a' : 'rgba(196,151,42,.2)' }}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+          {voteSubmitted ? (
+            <div className={styles.thanks}>¡Gracias por tu valoración! ⭐</div>
+          ) : (
+            <button
+              onClick={() => setVoteSubmitted(true)}
+              className={`${styles.submitBtn}${voteStars > 0 ? ` ${styles.ready}` : ''}`}
+            >
+              Enviar valoración
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

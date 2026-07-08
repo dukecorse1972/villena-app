@@ -1,0 +1,503 @@
+.page {
+  padding-bottom: 20px;
+}
+
+/* ── Title ── */
+.titleBar {
+  padding: 12px 20px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleBar h1 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* ── Botón Acceder / Avatar ── */
+.authBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.authLabel {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-oro);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(196,151,42,0.4);
+  background: rgba(196,151,42,0.07);
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+.authBtn:hover .authLabel {
+  background: rgba(196,151,42,0.14);
+  border-color: var(--color-oro);
+}
+
+.authAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-oro);
+}
+
+.authInitial {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-oro);
+  color: #0b1a0b;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Main toggle ── */
+.mainToggle {
+  display: flex;
+  gap: 6px;
+  margin: 0 16px 20px;
+  background: var(--color-bg-card);
+  border-radius: 14px;
+  padding: 4px;
+}
+
+.mainTabBtn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: none;
+}
+
+.mainTabBtn.active {
+  font-weight: 700;
+  background: var(--color-oro);
+  color: #0b1a0b;
+}
+
+/* ══════ SERVICIOS ══════ */
+.serviciosLabel {
+  padding: 0 20px 14px;
+}
+
+.serviciosLabel span {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.serviciosGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 0 20px;
+  margin-bottom: 28px;
+}
+
+.servicioItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.servicioIcon {
+  width: 58px;
+  height: 58px;
+  border-radius: 29px;
+  background: var(--color-oro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.servicioLabel {
+  font-size: 10px;
+  color: var(--color-text-warm);
+  font-family: var(--font-body);
+  text-align: center;
+}
+
+/* ── Language selector ── */
+.langSectionLabel {
+  padding: 0 20px 10px;
+}
+
+.langSectionLabel span {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.langList {
+  padding: 0 16px 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.langItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1.5px solid rgba(196, 151, 42, 0.35);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.langItem.active {
+  border: 2px solid var(--color-oro);
+  background: rgba(196, 151, 42, 0.15);
+  font-weight: 700;
+  color: var(--color-oro);
+}
+
+.langFlag {
+  height: 15px;
+  min-width: 20px;
+  border-radius: 2px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Points of interest ── */
+.poiLabel {
+  padding: 20px 20px 10px;
+}
+
+.poiLabel span {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.poiList {
+  margin: 0 16px;
+  background: var(--color-bg-card);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-oro-15);
+}
+
+.poiItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.poiItemBorder {
+  border-bottom: 1px solid rgba(196, 151, 42, 0.1);
+}
+
+.poiIconWrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(196, 151, 42, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.poiInfo {
+  flex: 1;
+}
+
+.poiTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.poiSub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-oro);
+}
+
+/* ══════ MULTIMEDIA ══════ */
+.subtabs {
+  display: flex;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border-oro-15);
+  margin-bottom: 16px;
+}
+
+.subtab {
+  flex: 1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: none;
+  cursor: pointer;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.subtab.active {
+  border-bottom: 2px solid var(--color-oro);
+  color: var(--color-oro);
+  font-weight: 600;
+}
+
+/* ── Avisos ── */
+.avisosList {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avisosItem {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.avisosItem.isNew {
+  background: rgba(196, 151, 42, 0.08);
+  border: 1px solid rgba(196, 151, 42, 0.2);
+}
+
+.avisosInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.avisosDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(196, 151, 42, 0.2);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.avisosDot.isNew {
+  background: var(--color-oro);
+}
+
+.avisosContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.avisosText {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.avisosText.isNew {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.avisosTime {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+/* ── Galería ── */
+.galeria {
+  display: flex;
+  gap: 5px;
+  padding: 0 16px;
+  align-items: stretch;
+}
+
+.galeriaCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.galeriaImg {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.lightboxImg {
+  max-width: 92%;
+  max-height: 85vh;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  object-fit: contain;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* ── Revistas ── */
+.revistas {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 16px;
+}
+
+.revistaCard {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  height: 160px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.revistaImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.revistaOverlay {
+  position: absolute;
+  inset: 0;
+}
+
+.revistaContent {
+  position: absolute;
+  inset: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.revistaTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 2px;
+  line-height: 1.2;
+  max-width: 55%;
+}
+
+.revistaFooter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.revisataInfo {
+  /* container for period + author */
+}
+
+.revistaPeriod {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-oro);
+  letter-spacing: 1.5px;
+  margin-bottom: 2px;
+}
+
+.revistaAuthor {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.revistaBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-oro);
+  border-radius: 20px;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.revistaBtnLabel {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  color: #0b1a0b;
+}

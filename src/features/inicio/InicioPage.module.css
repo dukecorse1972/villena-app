@@ -1,0 +1,350 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 68px);
+  background: var(--color-bg-app);
+  color: var(--color-text-primary);
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.hamburger {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  padding-left: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.hamburgerLine {
+  width: 20px;
+  height: 2px;
+  background: rgba(240, 228, 200, 0.7);
+  border-radius: 2px;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weather {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.weatherTemp {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.bellWrap {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.bellDot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-oro);
+  border: 2px solid var(--color-bg-app);
+}
+
+/* ── Scrollable body ── */
+.body {
+  flex: 1;
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Live Banner ── */
+.liveBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(196, 151, 42, 0.1);
+  border: 1px solid rgba(196, 151, 42, 0.35);
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+.liveLabel {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-oro);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.liveText {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(240, 228, 200, 0.75);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.watchBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-oro);
+  border-radius: 20px;
+  padding: 5px 12px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.watchBtnLabel {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  color: #0b1a0b;
+}
+
+/* ── Section header ── */
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.seeAllBtn {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-oro);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Events carousel ── */
+.carousel {
+  display: flex;
+  gap: 12px;
+  margin: 0 -16px;
+  padding: 0 16px 4px;
+  overflow-x: auto;
+}
+
+.eventCard {
+  flex-shrink: 0;
+  width: 240px;
+  height: 168px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.eventCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.eventGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.18) 50%, transparent 100%);
+}
+
+.dateBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(11, 26, 11, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 5px 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 46px;
+}
+
+.dateBadgeMonth {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-oro);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dateBadgeDay {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.dateBadgeDow {
+  font-family: var(--font-body);
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+
+.eventInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 14px;
+}
+
+.eventInfoTitle {
+  font-family: var(--font-display);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 5px;
+}
+
+.eventInfoTime {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eventInfoTimeLabel {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── News list ── */
+.newsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.newsItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+  cursor: pointer;
+}
+
+.newsItemBorder {
+  border-bottom: 1px solid rgba(196, 151, 42, 0.15);
+}
+
+.newsThumb {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-bg-card);
+}
+
+.newsThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.newsText {
+  flex: 1;
+  min-width: 0;
+}
+
+.newsTitle {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.45;
+  margin: 0 0 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.newsDate {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin: 0;
+}

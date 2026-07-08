@@ -1,0 +1,44 @@
+.wrapper {
+  /* default: no special grid positioning */
+}
+
+.card {
+  background: var(--color-bg-card);
+  border-radius: 16px;
+  padding: 22px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.emblem {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  font-size: 22px;
+  overflow: hidden;
+}
+
+.emblemImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  text-align: center;
+  line-height: 1.3;
+}

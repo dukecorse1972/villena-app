@@ -1,0 +1,130 @@
+/* ═══════════════════════════════════════════════
+   TEMA VILLENA FIESTAS – variables extraídas del prototipo
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* ── Colores principales ── */
+  --color-oro:           #c4972a;
+  --color-oro-claro:     #d4aa44;
+  --color-oro-suave:     #c9af75;
+  --color-oro-pale:      #e8d5a0;
+  --color-baa:           #baa883;
+
+  /* ── Fondos ── */
+  --color-bg-body:       #060e06;
+  --color-bg-app:        #0b1a0b;
+  --color-bg-app-alt:    #040e06;
+  --color-bg-musica:     #02120a;
+  --color-bg-card:       #152515;
+  --color-bg-card-dark:  #071408;
+  --color-bg-dark2:      #0d1e12;
+
+  /* ── Texto ── */
+  --color-text-primary:  #f0e4c8;
+  --color-text-muted:    #7a9070;
+  --color-text-mid:      #c0b898;
+  --color-text-warm:     #c8bfa8;
+
+  /* ── Acentos / tipos de acto ── */
+  --color-moro:          #e05252;
+  --color-cristiano:     #5289e0;
+  --color-musica:        #50c878;
+  --color-cultural:      #5a9edc;
+  --color-religioso:     #b090e0;
+
+  /* ── Comparsas (color de fondo de emblema) ── */
+  --color-comp-dark:     #1a1a1a;
+  --color-comp-red:      #5a0a0a;
+  --color-comp-brown:    #3a2210;
+  --color-comp-brown2:   #3a2a10;
+  --color-comp-green:    #2a3a10;
+  --color-comp-teal:     #1a3a2e;
+  --color-comp-blue:     #1a1a3a;
+  --color-comp-dark-red: #1a0808;
+
+  /* ── Separadores / bordes ── */
+  --border-oro-15:  rgba(196,151,42,.15);
+  --border-oro-25:  rgba(196,151,42,.25);
+  --border-oro-30:  rgba(196,151,42,.30);
+  --border-oro-40:  rgba(196,151,42,.40);
+
+  /* ── Tipografía ── */
+  --font-display: 'Cinzel', serif;
+  --font-body:    'Lato', system-ui, sans-serif;
+
+  /* ── Espaciado / layout ── */
+  --app-width:    390px;
+  --tab-height:   68px;
+  --radius-card:  16px;
+  --radius-chip:  20px;
+}
+
+/* ═══════════════════════════════════════════════
+   KEYFRAMES – exactos del prototipo
+   ═══════════════════════════════════════════════ */
+
+@keyframes ring1 {
+  0%   { transform: scale(1);   opacity: .65; }
+  100% { transform: scale(1.9); opacity: 0;   }
+}
+@keyframes ring2 {
+  0%   { transform: scale(1);   opacity: .35; }
+  100% { transform: scale(2.7); opacity: 0;   }
+}
+
+@keyframes sway1 {
+  0%   { transform: rotate(15deg)   scale(0.8)  translateY(0px);   }
+  100% { transform: rotate(15deg)   scale(1.20) translateY(-10px); }
+}
+@keyframes sway2 {
+  0%   { transform: rotate(-45deg)  scale(0.8)  translateY(0px);  }
+  100% { transform: rotate(-45deg)  scale(1.28) translateY(8px);  }
+}
+@keyframes sway3 {
+  0%   { transform: rotate(60deg)   scale(0.8)  translateY(0px);   }
+  100% { transform: rotate(60deg)   scale(1.25) translateY(-12px); }
+}
+@keyframes sway4 {
+  0%   { transform: rotate(120deg)  scale(0.8)  translateY(0px); }
+  100% { transform: rotate(120deg)  scale(1.32) translateY(6px); }
+}
+@keyframes sway5 {
+  0%   { transform: rotate(-90deg)  scale(0.8)  translateY(0px);  }
+  100% { transform: rotate(-90deg)  scale(1.22) translateY(-8px); }
+}
+@keyframes sway6 {
+  0%   { transform: rotate(200deg)  scale(0.8)  translateY(0px); }
+  100% { transform: rotate(200deg)  scale(1.28) translateY(10px); }
+}
+
+@keyframes heartbeat {
+  0%,100% {
+    transform: scale(1);
+    box-shadow: 0 0 24px rgba(196,151,42,.3), 0 0 60px rgba(196,151,42,.1);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 40px rgba(196,151,42,.5), 0 0 80px rgba(196,151,42,.2);
+  }
+}
+
+@keyframes slideUpFade {
+  0%   { transform: translateY(70px) scale(.96); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: translateY(0)    scale(1);   opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1;   }
+  50%      { opacity: .15; }
+}
+
+@keyframes slideUp {
+  0%   { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0);    opacity: 1; }
+}

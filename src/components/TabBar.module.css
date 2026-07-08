@@ -1,0 +1,47 @@
+.bar {
+  flex-shrink: 0;
+  height: var(--tab-height);
+  background: var(--color-bg-app);
+  border-top: 1px solid var(--border-oro-15);
+  display: flex;
+  align-items: stretch;
+}
+
+.tab {
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  transition: color 0.2s;
+}
+
+.tabActive {
+  color: var(--color-oro);
+}
+
+.label {
+  font-size: 10px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-oro);
+  margin: 2px auto 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* El punto se muestra cuando el botón está activo */
+.tabActive .dot {
+  opacity: 1;
+}

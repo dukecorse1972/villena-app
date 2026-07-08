@@ -1,0 +1,77 @@
+import type { PointOfInterest } from '../types';
+
+// 9 puntos de interés con coordenadas GPS de Villena
+export const pois: PointOfInterest[] = [
+  {
+    id: 'poi1',
+    name: 'Plaza Mayor',
+    description: 'Centro neurálgico de las fiestas. Escenario de los conciertos de bandas y actos culturales.',
+    lat: 38.6325, lng: -0.8680,
+    category: 'Cultural',
+    icon: 'map',
+  },
+  {
+    id: 'poi2',
+    name: 'Plaza de Santiago',
+    description: 'Punto de inicio de las Dianas y concentración de comparsas. Rodeada de bares típicos festeros.',
+    lat: 38.6330, lng: -0.8685,
+    category: 'Festero',
+    icon: 'flag',
+  },
+  {
+    id: 'poi3',
+    name: 'Av. Constitución',
+    description: 'La avenida principal de los desfiles. Aquí pasan las entradas Cristiana y Mora.',
+    lat: 38.6315, lng: -0.8690,
+    category: 'Desfiles',
+    icon: 'route',
+  },
+  {
+    id: 'poi4',
+    name: 'Basílica de la Virgen',
+    description: 'Sede de las celebraciones religiosas. Alberga a la patrona de Villena, la Virgen de las Virtudes.',
+    lat: 38.6320, lng: -0.8675,
+    category: 'Religioso',
+    icon: 'church',
+  },
+  {
+    id: 'poi5',
+    name: 'Castillo de la Atalaya',
+    description: 'Castillo medieval que preside la ciudad. Escenario de las Embajadas y la Recreación Histórica de la Conquista.',
+    lat: 38.6380, lng: -0.8650,
+    category: 'Monumento',
+    icon: 'castle',
+  },
+  {
+    id: 'poi6',
+    name: 'Paseo Chapí',
+    description: 'Bulevar festero por excelencia. Sede de la Retreta de Comparsas y los fuegos artificiales finales.',
+    lat: 38.6310, lng: -0.8695,
+    category: 'Festero',
+    icon: 'star',
+  },
+  {
+    id: 'poi7',
+    name: 'Casco Antiguo',
+    description: 'El corazón histórico de Villena. Escenario del Contrabando y las Guerrillas Festeras.',
+    lat: 38.6335, lng: -0.8672,
+    category: 'Histórico',
+    icon: 'home',
+  },
+  {
+    id: 'poi8',
+    name: 'Centro Cultural',
+    description: 'Espacio para exposiciones, conferencias y el Festival Cultural Festero.',
+    lat: 38.6318, lng: -0.8678,
+    category: 'Cultural',
+    icon: 'info',
+  },
+  {
+    id: 'poi9',
+    name: 'Ayuntamiento de Villena',
+    description: 'Sede del Parlamento Festero y actos oficiales de las Fiestas de Moros y Cristianos.',
+    lat: 38.6322, lng: -0.8680,
+    category: 'Oficial',
+    icon: 'building',
+  },
+];
