@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getEvents, toggleFavorite } from '../../services/eventsService';
 import { syncFavoritesFromDB, addFavorite, removeFavorite } from '../../services/favoritosService';
 import { isSupabaseConfigured } from '../../services/supabase';
-import { STORAGE_KEYS } from '../../constants';
+import { STORAGE_KEYS, FESTIVAL } from '../../constants';
 import type { FiestaEvent, Favorites } from '../../types';
 
 const FILTER_OPTIONS = ['Todos', 'Desfiles', 'Religiosos', 'Música', 'Cultural'] as const;
@@ -27,7 +27,7 @@ export function useAgenda() {
     setIsLoading(true);
     setError(null);
 
-    getEvents(selectedDay, filter)
+    getEvents(FESTIVAL.YEAR, selectedDay, filter)
       .then((data) => { if (!cancelled) setFilteredEvents(data); })
       .catch((err: Error) => { if (!cancelled) setError(err.message); })
       .finally(() => { if (!cancelled) setIsLoading(false); });

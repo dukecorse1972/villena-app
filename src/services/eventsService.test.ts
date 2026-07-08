@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { Favorites } from '../types';
+import { FESTIVAL } from '../constants';
 
 // Forzar fallback a datos locales para que los tests sean deterministas
 // independientemente de si .env.local tiene claves de Supabase configuradas.
@@ -12,24 +13,24 @@ import { getEvents, toggleFavorite, getFavoriteEvents } from './eventsService';
 
 describe('getEvents', () => {
   it('devuelve solo los eventos del día solicitado', async () => {
-    const events = await getEvents(4, 'Todos');
+    const events = await getEvents(FESTIVAL.YEAR, 4, 'Todos');
     expect(events.length).toBeGreaterThan(0);
     expect(events.every((e) => e.day === 4)).toBe(true);
   });
 
   it('filtra por tipo de evento', async () => {
-    const events = await getEvents(4, 'Desfiles');
+    const events = await getEvents(FESTIVAL.YEAR, 4, 'Desfiles');
     expect(events.every((e) => e.type === 'Desfiles')).toBe(true);
   });
 
   it('devuelve array vacío para un día sin eventos', async () => {
-    const events = await getEvents(99, 'Todos');
+    const events = await getEvents(FESTIVAL.YEAR, 99, 'Todos');
     expect(events).toHaveLength(0);
   });
 
   it('con filtro Todos devuelve todos los tipos del día', async () => {
-    const todos   = await getEvents(8, 'Todos');
-    const desfiles = await getEvents(8, 'Desfiles');
+    const todos   = await getEvents(FESTIVAL.YEAR, 8, 'Todos');
+    const desfiles = await getEvents(FESTIVAL.YEAR, 8, 'Desfiles');
     expect(todos.length).toBeGreaterThanOrEqual(desfiles.length);
   });
 });
