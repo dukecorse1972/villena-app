@@ -1,7 +1,12 @@
-import type { FiestaEvent, EventType } from '../../types';
+import { useState, useEffect } from 'react';
+import type { FiestaEvent, EventType, Aviso } from '../../types';
 import { FESTIVAL } from '../../constants';
 import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
+import { getCurrentTemperature } from '../../services/weatherService';
+import { getAvisos } from '../../services/avisosService';
 import styles from './InicioPage.module.css';
+
+const LIVE_STREAM_URL = 'https://www.intercomarcal.com/';
 
 interface InicioPageProps {
   onGoToServicios: () => void;
@@ -59,6 +64,19 @@ const news = [
 ];
 
 export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos, onEventClick }: InicioPageProps) {
+  const [temperature, setTemperature] = useState<number | null>(null);
+  const [avisos, setAvisos] = useState<Aviso[]>([]);
+
+  useEffect(() => {
+    getCurrentTemperature().then(setTemperature).catch(() => setTemperature(null));
+  }, []);
+
+  useEffect(() => {
+    getAvisos().then(setAvisos).catch(() => setAvisos([]));
+  }, []);
+
+  const hasNewAvisos = avisos.some((a) => a.is_new);
+
   return (
     <div className={styles.page}>
 
@@ -82,20 +100,22 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
 
         {/* Clima + Campana */}
         <div className={styles.headerRight}>
-          {/* Temperatura */}
-          <div className={styles.weather}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.7)" strokeWidth="2">
-              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" />
-            </svg>
-            <span className={styles.weatherTemp}>26°C</span>
-          </div>
-          {/* Campana */}
+          {/* Temperatura — solo se muestra si hay dato real (Open-Meteo) */}
+          {temperature !== null && (
+            <div className={styles.weather}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.7)" strokeWidth="2">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" />
+              </svg>
+              <span className={styles.weatherTemp}>{Math.round(temperature)}°C</span>
+            </div>
+          )}
+          {/* Campana — el punto solo aparece si hay avisos reales marcados como nuevos */}
           <div className={styles.bellWrap} onClick={onGoToAvisos}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(240,228,200,.8)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
-            <div className={styles.bellDot} />
+            {hasNewAvisos && <div className={styles.bellDot} />}
           </div>
         </div>
       </div>
@@ -109,11 +129,11 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
             <div className={styles.liveDot} />
             <span className={styles.liveLabel}>En Directo</span>
           </div>
-          <p className={styles.liveText}>Entrada Cristiana — Canal Villena</p>
-          <button className={styles.watchBtn}>
+          <p className={styles.liveText}>Entrada Cristiana — Intercomarcal</p>
+          <a href={LIVE_STREAM_URL} target="_blank" rel="noopener noreferrer" className={styles.watchBtn}>
             <svg width="9" height="9" viewBox="0 0 9 9" fill="#0b1a0b"><polygon points="0,0 9,4.5 0,9" /></svg>
             <span className={styles.watchBtnLabel}>Ver</span>
-          </button>
+          </a>
         </div>
 
         {/* ── Próximos Eventos ── */}
