@@ -122,11 +122,18 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         message: {
           token,
-          notification: {
-            title: 'Aviso de la Junta Central de Fiestas',
-            body:  payload.record.text,
+          // Data-only: así el mensaje SIEMPRE pasa por nuestro
+          // MyFirebaseMessagingService en el dispositivo (también con la
+          // app en segundo plano), que es quien construye la notificación
+          // a mano con el logo real como avatar circular (largeIcon). Con
+          // un campo "notification" aquí, Android la auto-mostraría él
+          // solo sin darnos esa opción.
+          android: { priority: 'high' },
+          data: {
+            avisoId: payload.record.id,
+            title:   'Aviso de la Junta Central de Fiestas',
+            body:    payload.record.text,
           },
-          data: { avisoId: payload.record.id },
         },
       }),
     });
