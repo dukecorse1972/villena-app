@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { getAllEventos, createEvento, updateEvento, deleteEvento } from '../../services/eventsService';
+import { getRutas } from '../../services/rutasService';
 import { useAsyncList } from '../../hooks/useAsyncList';
 import { useAsyncAction } from '../../hooks/useAsyncAction';
-import type { FiestaEvent, EventType } from '../../types';
+import type { FiestaEvent, EventType, Ruta } from '../../types';
 import styles from './AdminEventosPanel.module.css';
 
 const EVENT_TYPES: EventType[] = ['Desfiles', 'Religiosos', 'Música', 'Cultural'];
+const FILTER_OPTIONS = ['Todos', ...EVENT_TYPES] as const;
+type FilterOption = (typeof FILTER_OPTIONS)[number];
 
 const EMPTY_FORM = {
   title: '',
@@ -15,14 +18,19 @@ const EMPTY_FORM = {
   date: '',
   description: '',
   img_url: '',
+  ruta_id: '',
 };
 
 export default function AdminEventosPanel() {
   const { data: eventos, isLoading, error, setError, reload } = useAsyncList<FiestaEvent>(getAllEventos);
+  const { data: rutas } = useAsyncList<Ruta>(getRutas);
   const { submitting, run } = useAsyncAction(setError);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [filter, setFilter] = useState<FilterOption>('Todos');
+
+  const visibleEventos = filter === 'Todos' ? eventos : eventos.filter((ev) => ev.type === filter);
 
   const resetForm = () => {
     setEditingId(null);
@@ -39,6 +47,7 @@ export default function AdminEventosPanel() {
       date: ev.date,
       description: ev.description ?? '',
       img_url: ev.img_url ?? '',
+      ruta_id: ev.ruta_id ?? '',
     });
   };
 
@@ -54,6 +63,7 @@ export default function AdminEventosPanel() {
       date: form.date,
       description: form.description.trim() || undefined,
       img_url: form.img_url.trim() || undefined,
+      ruta_id: form.type === 'Desfiles' ? (form.ruta_id || undefined) : undefined,
     };
 
     const ok = await run(async () => {
@@ -123,6 +133,19 @@ export default function AdminEventosPanel() {
           required
         />
 
+        {form.type === 'Desfiles' && (
+          <select
+            className={styles.select}
+            value={form.ruta_id}
+            onChange={(e) => setForm({ ...form, ruta_id: e.target.value })}
+          >
+            <option value="">Sin recorrido asignado</option>
+            {rutas.map((r) => (
+              <option key={r.id} value={r.id}>{r.name}</option>
+            ))}
+          </select>
+        )}
+
         <textarea
           className={styles.textarea}
           placeholder="Descripción (opcional)"
@@ -150,10 +173,23 @@ export default function AdminEventosPanel() {
         {error && <span className={styles.errorMsg}>{error}</span>}
       </form>
 
+      <div className={styles.filters}>
+        {FILTER_OPTIONS.map((f) => (
+          <button
+            key={f}
+            type="button"
+            onClick={() => setFilter(f)}
+            className={`${styles.filterChip}${filter === f ? ` ${styles.active}` : ''}`}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
       {isLoading && <p className={styles.itemMeta}>Cargando eventos…</p>}
 
       <div className={styles.list}>
-        {!isLoading && eventos.map((ev) => (
+        {!isLoading && visibleEventos.map((ev) => (
           <div key={ev.id} className={styles.item}>
             <div className={styles.itemInfo}>
               <p className={styles.itemTitle}>{ev.title}</p>
@@ -167,7 +203,11 @@ export default function AdminEventosPanel() {
             </div>
           </div>
         ))}
-        {!isLoading && eventos.length === 0 && <p className={styles.itemMeta}>No hay eventos todavía.</p>}
+        {!isLoading && visibleEventos.length === 0 && (
+          <p className={styles.itemMeta}>
+            {eventos.length === 0 ? 'No hay eventos todavía.' : 'Ningún evento coincide con este filtro.'}
+          </p>
+        )}
       </div>
     </div>
   );

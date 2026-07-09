@@ -16,6 +16,8 @@ export interface FiestaEvent {
   // Campos opcionales presentes en Supabase pero no en los datos locales
   img_url?: string;
   description?: string;
+  /** Solo relevante en actos de tipo Desfiles: recorrido asociado, si tiene. */
+  ruta_id?: string;
 }
 
 export interface Comparsa {
@@ -55,6 +57,14 @@ export interface Marcha {
   title: string;
   author: string;
   year: string;
+}
+
+/** Recorrido de un desfile — reutilizable entre varios actos que pasan por la misma calle. */
+export interface Ruta {
+  id: string;
+  name: string;
+  /** Array ordenado de coordenadas [lat, lng] que traza el recorrido. */
+  path: [number, number][];
 }
 
 export interface Cargo {

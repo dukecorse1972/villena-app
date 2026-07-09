@@ -76,19 +76,29 @@ export const typePhotos: Record<EventType, string> = {
   Cultural:   'https://images.unsplash.com/photo-1728329849278-e1e74d73425d?w=800&fit=crop&auto=format&q=90',
 };
 
-// Coordenadas de los lugares
+// Coordenadas reales de los lugares (buscadas en OpenStreetMap Nominatim).
+// Las claves coinciden con el texto exacto de `location` en los actos; los
+// sufijos entre paréntesis ("(salida)") se ignoran al buscar — ver
+// `baseLocationName` en EventModal.tsx.
 export const locCoords: Record<string, [number, number]> = {
-  'Plaza Mayor':         [38.6325, -0.8680],
-  'Plaza de Santiago':   [38.6330, -0.8685],
-  'Av. Constitución':    [38.6315, -0.8690],
-  'Basílica Virgen':     [38.6320, -0.8675],
-  'Castillo Atalaya':    [38.6380, -0.8650],
-  'Paseo Chapí':         [38.6310, -0.8695],
-  'Casco Antiguo':       [38.6335, -0.8672],
-  'Centro Cultural':     [38.6318, -0.8678],
-  'Ayuntamiento':        [38.6322, -0.8680],
-  'Iglesia de Santiago': [38.6328, -0.8683],
-  'Casco Histórico':     [38.6333, -0.8670],
+  'Plaza Mayor':                          [38.6325, -0.8680],
+  'Plaza de Santiago':                    [38.6313, -0.8636],
+  'Av. Constitución':                     [38.6432, -0.8690],
+  'Basílica Virgen':                      [38.6320, -0.8675],
+  'Castillo Atalaya':                     [38.6319, -0.8609],
+  'Castillo de la Atalaya':               [38.6319, -0.8609],
+  'Paseo Chapí':                          [38.6310, -0.8695],
+  'Teatro Chapí':                         [38.6305, -0.8664],
+  'Casco Antiguo':                        [38.6335, -0.8672],
+  'Centro Cultural':                      [38.6318, -0.8678],
+  'Ayuntamiento':                         [38.6314, -0.8630],
+  'Ayuntamiento de Villena':              [38.6314, -0.8630],
+  'Iglesia de Santiago':                  [38.6316, -0.8639],
+  'Casco Histórico':                      [38.6333, -0.8670],
+  'Santuario Ntra. Sra. de las Virtudes': [38.6252, -0.9334],
+  'Santuario':                            [38.6252, -0.9334],
+  'Calle Nueva':                          [38.6298, -0.8622],
+  'Plaza María Auxiliadora':              [38.6361, -0.8664],
 };
 
 // Días festivos y de desfiles (día del mes de fiestas, no fecha completa)

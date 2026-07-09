@@ -12,6 +12,25 @@ const LOCAL_POIS: PointOfInterest[] = [
   { id: 'poi7', name: 'Casa de Cultura',               description: 'Sede de exposiciones y actos culturales festeros',      lat: 38.6340, lng: -0.8647, category: 'Cultural',      icon: '🎨' },
   { id: 'poi8', name: 'Punto de Información Festera', description: 'Mapas, programas y atención al visitante',              lat: 38.6342, lng: -0.8640, category: 'Servicios',     icon: 'ℹ️' },
   { id: 'poi9', name: 'Zona de Primeros Auxilios',     description: 'Asistencia sanitaria durante las fiestas',             lat: 38.6344, lng: -0.8648, category: 'Servicios',     icon: '🏥' },
+
+  // Locales sociales de las comparsas (direcciones reales, ver migración
+  // 013_locales_comparsas_pois.sql) — el acto "Cena de confraternidad
+  // festera" ocurre en "Locales de las comparsas", uno por comparsa, no
+  // en un único punto.
+  { id: 'poi-local-estudiantes', name: 'Estudiantes',      description: 'Local social — Plaza Las Malvas, 5 (La Troyica)',              lat: 38.6334, lng: -0.8669, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-marinos',     name: 'Marinos Corsarios', description: 'Local social — La Tercia, 1',                                  lat: 38.6303, lng: -0.8603, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-andaluces',   name: 'Andaluces',         description: 'Local social — Maestro Moltó, 14',                             lat: 38.6325, lng: -0.8622, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-maseros',     name: 'Maseros',           description: 'Local social — Plaza de Santa María, 14',                      lat: 38.6304, lng: -0.8615, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-ballesteros', name: 'Ballesteros',       description: 'Local social — Maestro Moltó, 11',                             lat: 38.6330, lng: -0.8608, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-almogavares', name: 'Almogávares',       description: 'Local social — San Cristóbal, 33',                             lat: 38.6348, lng: -0.8674, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-cristianos',  name: 'Cristianos',        description: 'Local social — Plaza Mayor, 12',                               lat: 38.6302, lng: -0.8623, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-moros-viejos',name: 'Moros Viejos',      description: 'Local social — C/ Parrales, 10',                               lat: 38.6347, lng: -0.8663, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-moros-nuevos',name: 'Moros Nuevos',      description: 'Local social — C/ Teniente Hernández Menor, 16 (La Jaima)',    lat: 38.6307, lng: -0.8624, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-marruecos',   name: 'Marruecos',         description: 'Local social — C/ Ferriz, 8',                                  lat: 38.6291, lng: -0.8645, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-realistas',   name: 'Realistas',         description: 'Local social — C/ San Benito, 1',                              lat: 38.6294, lng: -0.8624, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-nazaries',    name: 'Nazaríes',          description: 'Local social — C/ La Tercia, 7',                               lat: 38.6305, lng: -0.8601, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-bereberes',   name: 'Bereberes',         description: 'Local social — C/ Congregación, 3',                            lat: 38.6332, lng: -0.8672, category: 'Local de comparsa', icon: '🏠' },
+  { id: 'poi-local-piratas',     name: 'Piratas',           description: 'Local social — C/ Ferriz, 6 (La Guarida)',                     lat: 38.6293, lng: -0.8643, category: 'Local de comparsa', icon: '🏠' },
 ];
 
 /**

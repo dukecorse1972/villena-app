@@ -107,42 +107,15 @@
   font-weight: 600;
 }
 
-/* ── Map placeholder ── */
+/* ── Mapa ── */
 .mapBlock {
   flex-shrink: 0;
   height: 220px;
   background: var(--color-bg-app-alt);
   border-top: 1px solid var(--border-oro-15);
   border-bottom: 1px solid var(--border-oro-15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   position: relative;
   overflow: hidden;
-}
-
-.mapGrid {
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(196, 151, 42, 0.04) 30px, rgba(196, 151, 42, 0.04) 31px),
-    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(196, 151, 42, 0.04) 30px, rgba(196, 151, 42, 0.04) 31px);
-}
-
-.mapLabel {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  color: rgba(196, 151, 42, 0.4);
-  letter-spacing: 4px;
-}
-
-.mapCoords {
-  font-family: var(--font-body);
-  font-size: 11px;
-  color: rgba(196, 151, 42, 0.3);
 }
 
 /* ── Body ── */

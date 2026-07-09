@@ -3,14 +3,16 @@ import AdminGuard from './AdminGuard';
 import AdminAvisosPanel from './AdminAvisosPanel';
 import AdminEventosPanel from './AdminEventosPanel';
 import AdminComparsasPanel from './AdminComparsasPanel';
+import AdminRutasPanel from './AdminRutasPanel';
 import styles from './AdminPage.module.css';
 
-type Section = 'avisos' | 'eventos' | 'comparsas';
+type Section = 'avisos' | 'eventos' | 'comparsas' | 'rutas';
 
 const SECTIONS: { id: Section; label: string }[] = [
   { id: 'avisos',    label: 'Avisos' },
   { id: 'eventos',   label: 'Eventos' },
   { id: 'comparsas', label: 'Comparsas' },
+  { id: 'rutas',     label: 'Rutas' },
 ];
 
 /**
@@ -41,6 +43,7 @@ export default function AdminPage() {
         {section === 'avisos' && <AdminAvisosPanel />}
         {section === 'eventos' && <AdminEventosPanel />}
         {section === 'comparsas' && <AdminComparsasPanel />}
+        {section === 'rutas' && <AdminRutasPanel />}
       </div>
     </AdminGuard>
   );

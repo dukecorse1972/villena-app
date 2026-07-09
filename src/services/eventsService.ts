@@ -17,6 +17,7 @@ function rowToEvent(row: EventoRow): FiestaEvent {
     type: row.type,
     img_url: row.img_url ?? undefined,
     description: row.description ?? undefined,
+    ruta_id: row.ruta_id ?? undefined,
   };
 }
 
@@ -79,6 +80,7 @@ export interface EventoInput {
   date:         string;
   img_url?:     string;
   description?: string;
+  ruta_id?:     string;
 }
 
 /**

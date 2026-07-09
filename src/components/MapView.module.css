@@ -1,0 +1,65 @@
+.wrap {
+  width: 100%;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-card);
+}
+
+.pin {
+  background: none;
+  border: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.userDot {
+  background: none;
+  border: none;
+}
+
+/* Tamaño fijo centrado en el punto medio del icono — funciona igual tanto
+   en la caja pequeña (18px, sin brújula) como en la grande (46px, con cono
+   de dirección), a diferencia de `inset`, que dependería del tamaño de la
+   caja contenedora. */
+.userDotCore {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #5289e0;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.userDotRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(82, 137, 224, 0.35);
+  animation: ring2 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .userDotRing {
+    animation: none;
+    opacity: 0.35;
+  }
+}
+
+/* Cono de dirección (brújula) — el vértice coincide con el centro del
+   icono (mismo punto que .userDotCore), apunta al norte por defecto y se
+   rota por rumbo con un `transform: rotate()` en línea. */
+.userDotCone {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  clip-path: polygon(50% 50%, 35% 4%, 65% 4%);
+  background: linear-gradient(to top, rgba(82, 137, 224, 0.55), rgba(82, 137, 224, 0));
+}

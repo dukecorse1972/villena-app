@@ -159,6 +159,7 @@ export type Database = {
           id: string
           img_url: string | null
           location: string
+          ruta_id: string | null
           time: string
           title: string
           type: Database["public"]["Enums"]["evento_type"]
@@ -171,6 +172,7 @@ export type Database = {
           id: string
           img_url?: string | null
           location: string
+          ruta_id?: string | null
           time: string
           title: string
           type: Database["public"]["Enums"]["evento_type"]
@@ -183,12 +185,21 @@ export type Database = {
           id?: string
           img_url?: string | null
           location?: string
+          ruta_id?: string | null
           time?: string
           title?: string
           type?: Database["public"]["Enums"]["evento_type"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "eventos_ruta_id_fkey"
+            columns: ["ruta_id"]
+            isOneToOne: false
+            referencedRelation: "rutas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       favoritos: {
         Row: {
@@ -267,6 +278,30 @@ export type Database = {
           platform?: string
           token?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      rutas: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          path: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name: string
+          path: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          path?: Json
+          updated_at?: string
         }
         Relationships: []
       }
