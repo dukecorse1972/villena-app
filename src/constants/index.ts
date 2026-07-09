@@ -11,6 +11,7 @@ export const ROUTES = {
 // ── Claves de localStorage ────────────────────────────────────────────────────
 export const STORAGE_KEYS = {
   FAVORITES: 'villena_favorites',
+  LANGUAGE:  'villena_language',
 } as const;
 
 // ── Auth ──────────────────────────────────────────────────────────────────────

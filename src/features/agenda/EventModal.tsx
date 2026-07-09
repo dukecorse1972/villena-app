@@ -1,7 +1,20 @@
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { typePhotos, typeDescs, locCoords } from '../../data/events';
-import type { FiestaEvent } from '../../types';
+import { getRutas } from '../../services/rutasService';
+import { getPois } from '../../services/poisService';
+import type { FiestaEvent, PointOfInterest } from '../../types';
 import { openExternalLink } from '../../utils/openExternalLink';
 import styles from './EventModal.module.css';
+
+// "Locales de las comparsas" no es un único sitio: cada comparsa tiene el
+// suyo. Para ese acto en concreto se muestran todos los locales (POIs de
+// categoría "Local de comparsa") en vez de un pin inventado.
+const COMPARSA_LOCALES_LOCATION = 'Locales de las comparsas';
+
+// Leaflet pesa ~200KB gzip: se carga solo cuando se abre un evento, no en
+// el arranque de la app.
+const MapView = lazy(() => import('../../components/MapView'));
 
 interface EventModalProps {
   event: FiestaEvent | null;
@@ -11,12 +24,48 @@ interface EventModalProps {
 }
 
 export default function EventModal({ event, isFavorite, onClose, onToggleFavorite }: EventModalProps) {
+  const { t } = useTranslation();
+  const [routePath, setRoutePath] = useState<[number, number][] | undefined>(undefined);
+  const [comparsaLocales, setComparsaLocales] = useState<PointOfInterest[]>([]);
+
+  useEffect(() => {
+    // Responde a un cambio de evento (otro acto sin ruta), no a un valor
+    // derivable en render — mismo patrón ya usado en useAuth/useAgenda.
+    if (!event?.ruta_id) { setRoutePath(undefined); return; } // eslint-disable-line react-hooks/set-state-in-effect
+    let cancelled = false;
+    getRutas().then((rutas) => {
+      if (!cancelled) setRoutePath(rutas.find((r) => r.id === event.ruta_id)?.path);
+    }).catch(() => { if (!cancelled) setRoutePath(undefined); });
+    return () => { cancelled = true; };
+  }, [event?.ruta_id]);
+
+  useEffect(() => {
+    if (event?.location !== COMPARSA_LOCALES_LOCATION) { setComparsaLocales([]); return; } // eslint-disable-line react-hooks/set-state-in-effect
+    let cancelled = false;
+    getPois().then((pois) => {
+      if (!cancelled) setComparsaLocales(pois.filter((p) => p.category === 'Local de comparsa'));
+    }).catch(() => { if (!cancelled) setComparsaLocales([]); });
+    return () => { cancelled = true; };
+  }, [event?.location]);
+
   if (!event) return null;
 
   const photo   = typePhotos[event.type]    ?? typePhotos['Cultural'];
   const desc    = typeDescs[event.type]     ?? '';
-  const coords  = locCoords[event.location] ?? ([38.6322, -0.8677] as [number, number]);
+  // "Plaza de Santiago (salida)" debe encontrar las coordenadas de "Plaza
+  // de Santiago" — se busca primero el texto completo y, si no hay
+  // coincidencia, sin el sufijo entre paréntesis.
+  const baseLocation = event.location.replace(/\s*\([^)]*\)\s*$/, '');
+  const coords = locCoords[event.location] ?? locCoords[baseLocation] ?? ([38.6322, -0.8677] as [number, number]);
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location + ' Villena')}`;
+
+  // Un único pin ad-hoc con la ubicación del acto — no viene de la tabla de
+  // POIs, así que se construye aquí en vez de pedir un PointOfInterest real.
+  // Excepción: "Locales de las comparsas" muestra los 14 locales reales.
+  const locationPin: PointOfInterest[] = routePath ? [] : comparsaLocales.length > 0 ? comparsaLocales : [{
+    id: event.id, name: event.location, description: '',
+    lat: coords[0], lng: coords[1], category: event.type, icon: '',
+  }];
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -53,12 +102,11 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
           </div>
         </div>
 
-        {/* ── Mapa placeholder ── */}
+        {/* ── Mapa ── */}
         <div className={styles.mapBlock}>
-          <div className={styles.mapGrid} />
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.4)" strokeWidth="1.5" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span className={styles.mapLabel}>MAPA</span>
-          <span className={styles.mapCoords}>{coords[0].toFixed(4)}, {coords[1].toFixed(4)}</span>
+          <Suspense fallback={null}>
+            <MapView pois={locationPin} route={routePath} height="100%" rounded={false} />
+          </Suspense>
         </div>
 
         {/* ── Descripción + botones ── */}
@@ -83,7 +131,7 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
               <span className={styles.btnFavLabel}>
-                {isFavorite ? 'Guardado' : 'Guardar'}
+                {isFavorite ? t('eventModal.saved') : t('eventModal.save')}
               </span>
             </button>
 
@@ -95,7 +143,7 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
               onClick={(e) => { e.preventDefault(); openExternalLink(mapsUrl); }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-              <span className={styles.btnNavLabel}>CÓMO LLEGAR</span>
+              <span className={styles.btnNavLabel}>{t('eventModal.howToArrive')}</span>
             </a>
           </div>
         </div>

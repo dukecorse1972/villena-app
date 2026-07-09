@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useAgenda } from './useAgenda';
 import EventCard from './EventCard';
 import EventModal from './EventModal';
@@ -7,9 +8,18 @@ import { daysInMonth, firstWeekdayOffset } from '../../utils/dates';
 import { onActivateKey } from '../../utils/a11y';
 import styles from './AgendaPage.module.css';
 
-const DAYS_OF_WEEK = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
+// Claves de traducción de agenda.filters — deben coincidir con los valores
+// literales que espera eventsService.getEvents() (columna `type` en BD).
+const FILTER_KEYS: Record<string, string> = {
+  Todos: 'todos',
+  Desfiles: 'desfiles',
+  Religiosos: 'religiosos',
+  Música: 'musica',
+  Cultural: 'cultural',
+};
 
 export default function AgendaPage() {
+  const { t } = useTranslation();
   const {
     selectedDay, setSelectedDay,
     filter, setFilter,
@@ -34,7 +44,7 @@ export default function AgendaPage() {
     <div className={styles.page}>
       {/* ── Título ── */}
       <div className={styles.titleBar}>
-        <h1>Agenda</h1>
+        <h1>{t('agenda.title')}</h1>
       </div>
 
       {/* ── Calendario ── */}
@@ -45,18 +55,18 @@ export default function AgendaPage() {
           <div className={styles.calLegend}>
             <span className={styles.legendItem}>
               <span className={styles.dotMoro} />
-              Moros
+              {t('agenda.legendMoros')}
             </span>
             <span className={styles.legendItem}>
               <span className={styles.dotCristiano} />
-              Crist.
+              {t('agenda.legendCristianos')}
             </span>
           </div>
         </div>
 
         {/* Cabecera días */}
         <div className={styles.calDowRow}>
-          {DAYS_OF_WEEK.map(d => (
+          {(t('agenda.calendarWeekdays', { returnObjects: true }) as string[]).map(d => (
             <div key={d} className={styles.calDow}>{d}</div>
           ))}
         </div>
@@ -78,7 +88,7 @@ export default function AgendaPage() {
                 role="button"
                 tabIndex={0}
                 aria-pressed={isSel}
-                aria-label={`Día ${day}`}
+                aria-label={t('agenda.diaLabel', { day })}
                 className={cellClass}
               >
                 <span>{day}</span>
@@ -102,7 +112,7 @@ export default function AgendaPage() {
               onClick={() => setFilter(f)}
               className={`${styles.chip}${active ? ` ${styles.active}` : ''}`}
             >
-              {f}
+              {t(`agenda.filters.${FILTER_KEYS[f]}`)}
             </button>
           );
         })}
@@ -111,14 +121,14 @@ export default function AgendaPage() {
       {/* ── Lista de eventos ── */}
       <div className={styles.eventList}>
         {isLoading && (
-          <div className={styles.loading}>Cargando eventos…</div>
+          <div className={styles.loading}>{t('agenda.loading')}</div>
         )}
         {error && !isLoading && (
-          <div className={styles.error}>No se pudieron cargar los eventos</div>
+          <div className={styles.error}>{t('agenda.error')}</div>
         )}
         {!isLoading && !error && filteredEvents.length === 0 && (
           <div className={styles.emptyMsg}>
-            No hay eventos para este día y filtro
+            {t('agenda.empty')}
           </div>
         )}
         {!isLoading && filteredEvents.map(ev => (

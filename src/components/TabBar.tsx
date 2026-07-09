@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../constants';
 import type { TabId } from '../types';
 import styles from './TabBar.module.css';
@@ -12,10 +13,10 @@ const TAB_ROUTES: Record<TabId, string> = {
   info:      ROUTES.INFO,
 };
 
-const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
+const TABS: { id: TabId; labelKey: string; icon: React.ReactNode }[] = [
   {
     id: 'inicio',
-    label: 'Inicio',
+    labelKey: 'tabBar.inicio',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -25,7 +26,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   },
   {
     id: 'agenda',
-    label: 'Agenda',
+    labelKey: 'tabBar.agenda',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -37,7 +38,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   },
   {
     id: 'comparsas',
-    label: 'Comparsas',
+    labelKey: 'tabBar.comparsas',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -46,7 +47,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   },
   {
     id: 'musica',
-    label: 'Música',
+    labelKey: 'tabBar.musica',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <path d="M9 18V5l12-2v13"/>
@@ -57,7 +58,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   },
   {
     id: 'info',
-    label: 'Info',
+    labelKey: 'tabBar.info',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <rect x="3"  y="3"  width="7" height="7"/>
@@ -72,6 +73,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
 export default function TabBar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { t } = useTranslation();
 
   // Determinar tab activo comparando pathname con las rutas registradas
   const activeTab = (Object.entries(TAB_ROUTES) as [TabId, string][])
@@ -89,7 +91,7 @@ export default function TabBar() {
             className={`${styles.tab}${isActive ? ` ${styles.tabActive}` : ''}`}
           >
             {tab.icon}
-            <span className={styles.label}>{tab.label}</span>
+            <span className={styles.label}>{t(tab.labelKey)}</span>
             <div className={styles.dot} />
           </button>
         );

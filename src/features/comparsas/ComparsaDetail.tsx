@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Comparsa, Bando, Cargo } from '../../types';
 import { getCargosByComparsa } from '../../services/cargosService';
 import { onActivateKey } from '../../utils/a11y';
@@ -10,9 +11,6 @@ interface ComparsaDetailProps {
   onBack: () => void;
 }
 
-const DEFAULT_HISTORY_TEXT =
-  'La historia de esta comparsa forma parte del rico patrimonio festero de Villena. Próximamente encontrarás aquí toda la información sobre sus orígenes, tradiciones y evolución a lo largo de los años.';
-
 const PersonIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.4)" strokeWidth="1.5">
     <circle cx="12" cy="8" r="4"/>
@@ -21,6 +19,7 @@ const PersonIcon = () => (
 );
 
 export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDetailProps) {
+  const { t } = useTranslation();
   const [voteStars, setVoteStars]       = useState(0);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
   const [cargos, setCargos] = useState<Cargo[]>([]);
@@ -47,7 +46,7 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"/>
           </svg>
-          <span className={styles.backLabel}>Volver</span>
+          <span className={styles.backLabel}>{t('comparsaDetail.back')}</span>
         </div>
         <div className={styles.favIconBtn}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(240,228,200,.7)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -87,16 +86,16 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
         <h1 className={styles.comparsaTitle}>{comparsa.name}</h1>
         <div className={styles.tags}>
           <span className={styles.tagBando}>
-            {bando === 'Moro' ? 'Bando Moro' : 'Bando Cristiano'}
+            {bando === 'Moro' ? t('comparsaDetail.bandoMoro') : t('comparsaDetail.bandoCristiano')}
           </span>
-          <span className={styles.tagMuted}>Fundación: {comparsa.founded_year ?? '—'}</span>
-          <span className={styles.tagMuted}>Nº socios: {comparsa.num_socios ?? '—'}</span>
+          <span className={styles.tagMuted}>{t('comparsaDetail.fundacion', { year: comparsa.founded_year ?? '—' })}</span>
+          <span className={styles.tagMuted}>{t('comparsaDetail.numSocios', { count: comparsa.num_socios ?? '—' })}</span>
         </div>
       </div>
 
       {/* ── Cargos del año ── */}
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Cargos del Año</h2>
+        <h2 className={styles.sectionTitle}>{t('comparsaDetail.cargosDelAnio')}</h2>
         {cargos.length > 0 ? (
           <div className={styles.cargosScroll}>
             {cargos.map(cargo => (
@@ -112,17 +111,17 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
             ))}
           </div>
         ) : (
-          <p className={styles.historyText}>Todavía no se han publicado los cargos de este año.</p>
+          <p className={styles.historyText}>{t('comparsaDetail.sinCargos')}</p>
         )}
       </div>
 
       {/* ── Indumentaria ── */}
       <div className={styles.sectionPadded}>
-        <h2 className={styles.sectionTitleNoLeft}>Indumentaria y Símbolos</h2>
+        <h2 className={styles.sectionTitleNoLeft}>{t('comparsaDetail.indumentaria')}</h2>
         <div className={styles.indu2col}>
           {[
-            { label: 'TRAJE DE GALA', img: comparsa.traje_gala_img },
-            { label: 'ESTANDARTE', img: comparsa.estandarte_img },
+            { label: t('comparsaDetail.trajeGala'), img: comparsa.traje_gala_img },
+            { label: t('comparsaDetail.estandarte'), img: comparsa.estandarte_img },
           ].map(({ label, img }) => (
             <div key={label} className={styles.induCard}>
               {img ? (
@@ -144,17 +143,17 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
 
       {/* ── Historia ── */}
       <div className={styles.sectionPadded}>
-        <h2 className={styles.sectionTitleNoLeft}>Nuestra Historia</h2>
+        <h2 className={styles.sectionTitleNoLeft}>{t('comparsaDetail.nuestraHistoria')}</h2>
         <p className={styles.historyText}>
-          {comparsa.description || DEFAULT_HISTORY_TEXT}
+          {comparsa.description || t('comparsaDetail.defaultHistoryText')}
         </p>
       </div>
 
       {/* ── Valoración ── */}
       <div className={styles.ratingSection}>
-        <h2 className={styles.ratingTitle}>Valoración</h2>
+        <h2 className={styles.ratingTitle}>{t('comparsaDetail.valoracion')}</h2>
         <div className={styles.ratingCard}>
-          <p className={styles.ratingPrompt}>¿Qué te parece esta comparsa?</p>
+          <p className={styles.ratingPrompt}>{t('comparsaDetail.ratingPrompt')}</p>
           <div className={styles.stars}>
             {[1, 2, 3, 4, 5].map(i => (
               <button
@@ -168,13 +167,13 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
             ))}
           </div>
           {voteSubmitted ? (
-            <div className={styles.thanks}>¡Gracias por tu valoración! ⭐</div>
+            <div className={styles.thanks}>{t('comparsaDetail.thanks')}</div>
           ) : (
             <button
               onClick={() => setVoteSubmitted(true)}
               className={`${styles.submitBtn}${voteStars > 0 ? ` ${styles.ready}` : ''}`}
             >
-              Enviar valoración
+              {t('comparsaDetail.submitVote')}
             </button>
           )}
         </div>

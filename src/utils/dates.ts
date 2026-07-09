@@ -1,6 +1,5 @@
 import { FESTIVAL } from '../constants';
-
-const WEEKDAY_SHORT_ES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+import i18n from '../i18n';
 
 /**
  * Convierte un día del mes de fiestas (p.ej. 4) en su fecha ISO completa
@@ -15,10 +14,11 @@ export function dayOfMonth(isoDate: string): number {
   return Number(isoDate.slice(8, 10));
 }
 
-/** Devuelve la abreviatura del día de la semana en español (Lun, Mar...) de una fecha ISO. */
+/** Devuelve la abreviatura del día de la semana (Lun, Mar...) de una fecha ISO, en el idioma activo. */
 export function weekdayShortLabel(isoDate: string): string {
   const [y, m, d] = isoDate.split('-').map(Number);
-  return WEEKDAY_SHORT_ES[new Date(y, m - 1, d).getDay()];
+  const weekdaysShort = i18n.t('dates.weekdaysShort', { returnObjects: true }) as string[];
+  return weekdaysShort[new Date(y, m - 1, d).getDay()];
 }
 
 /** Número de días que tiene un mes concreto (1-12) de un año dado. */

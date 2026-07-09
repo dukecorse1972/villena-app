@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FiestaEvent, EventType, Aviso } from '../../types';
 import { FESTIVAL } from '../../constants';
 import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
@@ -67,6 +68,7 @@ const news = [
 ];
 
 export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos, onEventClick }: InicioPageProps) {
+  const { t } = useTranslation();
   const [weather, setWeather] = useState<Weather | null>(null);
   const [avisos, setAvisos] = useState<Aviso[]>([]);
 
@@ -93,7 +95,7 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
           onKeyDown={onActivateKey(onGoToServicios)}
           role="button"
           tabIndex={0}
-          aria-label="Abrir menú de servicios"
+          aria-label={t('inicio.openServicesAria')}
         >
           <div className={styles.hamburgerLine} />
           <div className={styles.hamburgerLine} />
@@ -124,7 +126,7 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
             onKeyDown={onActivateKey(onGoToAvisos)}
             role="button"
             tabIndex={0}
-            aria-label="Ver avisos"
+            aria-label={t('inicio.viewAvisosAria')}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(240,228,200,.8)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -142,7 +144,7 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
         <div className={styles.liveBanner}>
           <div className={styles.liveIndicator}>
             <div className={styles.liveDot} />
-            <span className={styles.liveLabel}>En Directo</span>
+            <span className={styles.liveLabel}>{t('inicio.live')}</span>
           </div>
           <p className={styles.liveText}>Entrada Cristiana — Intercomarcal</p>
           <a
@@ -152,16 +154,16 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
             onClick={(e) => { e.preventDefault(); openExternalLink(LIVE_STREAM_URL); }}
           >
             <svg width="9" height="9" viewBox="0 0 9 9" fill="#0b1a0b"><polygon points="0,0 9,4.5 0,9" /></svg>
-            <span className={styles.watchBtnLabel}>Ver</span>
+            <span className={styles.watchBtnLabel}>{t('inicio.watch')}</span>
           </a>
         </div>
 
         {/* ── Próximos Eventos ── */}
         <div>
           <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>Próximos Eventos</h2>
+            <h2 className={styles.sectionTitle}>{t('inicio.proximosEventos')}</h2>
             <button className={styles.seeAllBtn} onClick={onGoToAgenda}>
-              Ver agenda
+              {t('inicio.verAgenda')}
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
@@ -205,9 +207,9 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
         {/* ── Últimas Noticias ── */}
         <div>
           <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>Últimas Noticias</h2>
+            <h2 className={styles.sectionTitle}>{t('inicio.ultimasNoticias')}</h2>
             <button className={styles.seeAllBtn}>
-              Ver todas
+              {t('inicio.verTodas')}
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round">
                 <polyline points="9 18 15 12 9 6" />
               </svg>

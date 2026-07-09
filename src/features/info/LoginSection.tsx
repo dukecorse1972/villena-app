@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import Modal from '../../components/Modal';
 import UserAvatar from '../../components/UserAvatar';
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function LoginSection({ open, onClose }: Props) {
+  const { t } = useTranslation();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut } = useAuth();
 
   const [mode,     setMode]     = useState<'login' | 'register'>('login');
@@ -31,12 +33,12 @@ export default function LoginSection({ open, onClose }: Props) {
         onClose();
       } else {
         await signUpWithEmail(email, password);
-        setSuccess('Revisa tu correo para confirmar el registro.');
+        setSuccess(t('loginSection.checkEmail'));
         setEmail('');
         setPassword('');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      setError(err instanceof Error ? err.message : t('loginSection.unknownError'));
     } finally {
       setBusy(false);
     }
@@ -48,7 +50,7 @@ export default function LoginSection({ open, onClose }: Props) {
     try {
       await signInWithGoogle();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error con Google');
+      setError(err instanceof Error ? err.message : t('loginSection.googleError'));
       setBusy(false);
     }
   };
@@ -65,7 +67,7 @@ export default function LoginSection({ open, onClose }: Props) {
         {/* Cabecera */}
         <div className={styles.header}>
           <span className={styles.title}>
-            {user ? 'Mi Cuenta' : mode === 'login' ? 'Acceder' : 'Crear cuenta'}
+            {user ? t('loginSection.myAccount') : mode === 'login' ? t('loginSection.login') : t('loginSection.createAccount')}
           </span>
           <button className={styles.closeBtn} onClick={onClose}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -85,10 +87,10 @@ export default function LoginSection({ open, onClose }: Props) {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Favoritos sincronizados
+              {t('loginSection.favoritesSynced')}
             </div>
             <button className={styles.signOutBtn} onClick={handleSignOut}>
-              Cerrar sesión
+              {t('loginSection.signOut')}
             </button>
           </div>
         ) : (
@@ -99,13 +101,13 @@ export default function LoginSection({ open, onClose }: Props) {
                 className={`${styles.modeBtn}${mode === 'login' ? ` ${styles.active}` : ''}`}
                 onClick={() => { setMode('login'); clearMessages(); }}
               >
-                Entrar
+                {t('loginSection.enter')}
               </button>
               <button
                 className={`${styles.modeBtn}${mode === 'register' ? ` ${styles.active}` : ''}`}
                 onClick={() => { setMode('register'); clearMessages(); }}
               >
-                Crear cuenta
+                {t('loginSection.createAccount')}
               </button>
             </div>
 
@@ -117,16 +119,16 @@ export default function LoginSection({ open, onClose }: Props) {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Entrar con Google
+              {t('loginSection.enterWithGoogle')}
             </button>
 
-            <div className={styles.divider}><span>o</span></div>
+            <div className={styles.divider}><span>{t('loginSection.or')}</span></div>
 
             {/* Formulario email */}
             <form onSubmit={handleSubmit} className={styles.form}>
               <input
                 type="email"
-                placeholder="Correo electrónico"
+                placeholder={t('loginSection.email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
@@ -135,7 +137,7 @@ export default function LoginSection({ open, onClose }: Props) {
               />
               <input
                 type="password"
-                placeholder="Contraseña"
+                placeholder={t('loginSection.password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
@@ -146,14 +148,12 @@ export default function LoginSection({ open, onClose }: Props) {
               {error   && <div className={styles.errorMsg}>{error}</div>}
               {success && <div className={styles.successMsg}>{success}</div>}
               <button type="submit" className={styles.submitBtn} disabled={busy}>
-                {busy ? 'Un momento…' : mode === 'login' ? 'Entrar' : 'Crear cuenta'}
+                {busy ? t('loginSection.oneMoment') : mode === 'login' ? t('loginSection.enter') : t('loginSection.createAccount')}
               </button>
             </form>
 
             <p className={styles.hint}>
-              {mode === 'login'
-                ? 'Inicia sesión para sincronizar tus favoritos en todos tus dispositivos.'
-                : 'Cuenta gratuita. Tus favoritos quedarán guardados en la nube.'}
+              {mode === 'login' ? t('loginSection.hintLogin') : t('loginSection.hintRegister')}
             </p>
           </>
         )}

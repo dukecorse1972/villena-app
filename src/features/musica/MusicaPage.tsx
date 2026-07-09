@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Marcha } from '../../types';
 import styles from './MusicaPage.module.css';
 
@@ -18,6 +19,7 @@ function formatTime(secs: number) {
 }
 
 export default function MusicaPage() {
+  const { t } = useTranslation();
   const [isRecording, setIsRecording]     = useState(false);
   const [result, setResult]               = useState<Marcha | null>(null);
   const [audioPlaying, setAudioPlaying]   = useState(false);
@@ -154,8 +156,8 @@ export default function MusicaPage() {
 
       {/* ── Título ── */}
       <div className={styles.titleWrap}>
-        <h1 className={styles.title}>VILLENA SUENA</h1>
-        <p className={styles.subtitle}>El detector de marchas festeras de Villena</p>
+        <h1 className={styles.title}>{t('musica.title')}</h1>
+        <p className={styles.subtitle}>{t('musica.subtitle')}</p>
       </div>
 
       {/* ── Área botón + filamentos ── */}
@@ -174,7 +176,7 @@ export default function MusicaPage() {
         )}
 
         {/* Botón moneda */}
-        <button onClick={startRecording} className={styles.recordButton} aria-label="Identificar marcha">
+        <button onClick={startRecording} className={styles.recordButton} aria-label={t('musica.identifyAria')}>
           {/* Fallback si no hay imagen */}
           <img
             src="/assets/circulo-boton.png"
@@ -200,7 +202,7 @@ export default function MusicaPage() {
       {/* ── Estado texto ── */}
       <div className={styles.statusText}>
         <span className={`${styles.statusLabel}${isRecording ? ` ${styles.statusLabelBlinking}` : ''}`}>
-          {isRecording ? 'ESCUCHANDO...' : result ? '' : 'Pulsa para identificar'}
+          {isRecording ? t('musica.listening') : result ? '' : t('musica.pressToIdentify')}
         </span>
       </div>
 
@@ -217,9 +219,9 @@ export default function MusicaPage() {
               <div className={styles.headerRow}>
                 <div className={styles.headerDotWrap}>
                   <div className={styles.headerDot} />
-                  <span className={styles.headerLabel}>IDENTIFICADO</span>
+                  <span className={styles.headerLabel}>{t('musica.identified')}</span>
                 </div>
-                <button onClick={closeResult} className={styles.closeBtn} aria-label="Cerrar resultado">
+                <button onClick={closeResult} className={styles.closeBtn} aria-label={t('musica.closeResultAria')}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a9070" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="18" y1="6"  x2="6"  y2="18"/>
                     <line x1="6"  y1="6"  x2="18" y2="18"/>
@@ -249,7 +251,7 @@ export default function MusicaPage() {
                   onClick={seekFromClick}
                   role="slider"
                   tabIndex={0}
-                  aria-label="Progreso de reproducción"
+                  aria-label={t('musica.progressAria')}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={Math.round(audioProgress)}
@@ -265,12 +267,12 @@ export default function MusicaPage() {
 
               {/* Controles */}
               <div className={styles.controls}>
-                <button className={styles.skipBtn} aria-label="Marcha anterior" disabled>
+                <button className={styles.skipBtn} aria-label={t('musica.previousAria')} disabled>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9af75" strokeWidth="1.8" strokeLinecap="round">
                     <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
                   </svg>
                 </button>
-                <button onClick={playAudio} className={styles.playBtn} aria-label={audioPlaying ? 'Pausar' : 'Reproducir'}>
+                <button onClick={playAudio} className={styles.playBtn} aria-label={audioPlaying ? t('musica.pauseAria') : t('musica.playAria')}>
                   {audioPlaying ? (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(60,35,0,.9)">
                       <rect x="6" y="4" width="4" height="16" rx="1"/>
@@ -282,7 +284,7 @@ export default function MusicaPage() {
                     </svg>
                   )}
                 </button>
-                <button className={styles.skipBtn} aria-label="Marcha siguiente" disabled>
+                <button className={styles.skipBtn} aria-label={t('musica.nextAria')} disabled>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9af75" strokeWidth="1.8" strokeLinecap="round">
                     <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
                   </svg>

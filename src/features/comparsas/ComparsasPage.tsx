@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getComparsas } from '../../services/comparsasService';
 import type { Comparsa, Bando } from '../../types';
 import ComparsaCard from './ComparsaCard';
@@ -6,6 +7,7 @@ import ComparsaDetail from './ComparsaDetail';
 import styles from './ComparsasPage.module.css';
 
 export default function ComparsasPage() {
+  const { t } = useTranslation();
   const [side, setSide]                         = useState<'Cristianas' | 'Moras'>('Cristianas');
   const [activeTab, setActiveTab]               = useState<'comparsas' | 'historia'>('comparsas');
   const [selectedComparsa, setSelectedComparsa] = useState<Comparsa | null>(null);
@@ -30,8 +32,8 @@ export default function ComparsasPage() {
     <div className={styles.page}>
       {/* ── Título ── */}
       <div className={styles.titleBar}>
-        <h1>Comparsas</h1>
-        <p className={styles.subtitle}>Descubre las Comparsas que participan en la fiesta.</p>
+        <h1>{t('comparsas.title')}</h1>
+        <p className={styles.subtitle}>{t('comparsas.subtitle')}</p>
       </div>
 
       {/* ── Sub-tabs ── */}
@@ -40,13 +42,13 @@ export default function ComparsasPage() {
           className={`${styles.subtab}${activeTab === 'comparsas' ? ` ${styles.active}` : ''}`}
           onClick={() => setActiveTab('comparsas')}
         >
-          Comparsas
+          {t('comparsas.tabComparsas')}
         </button>
         <button
           className={`${styles.subtab}${activeTab === 'historia' ? ` ${styles.active}` : ''}`}
           onClick={() => setActiveTab('historia')}
         >
-          Historia
+          {t('comparsas.tabHistoria')}
         </button>
       </div>
 
@@ -59,13 +61,13 @@ export default function ComparsasPage() {
               className={`${styles.toggleBtn}${side === 'Cristianas' ? ` ${styles.active}` : ''}`}
               onClick={() => setSide('Cristianas')}
             >
-              Cristianas
+              {t('comparsas.cristianas')}
             </button>
             <button
               className={`${styles.toggleBtn}${side === 'Moras' ? ` ${styles.active}` : ''}`}
               onClick={() => setSide('Moras')}
             >
-              Moras
+              {t('comparsas.moras')}
             </button>
           </div>
 
@@ -90,20 +92,14 @@ export default function ComparsasPage() {
       {activeTab === 'historia' && (
         <div className={styles.historia}>
           <h2 className={styles.historiaTitle}>
-            Historia de los Moros y Cristianos de Villena
+            {t('comparsas.historiaTitle')}
           </h2>
           <div className={styles.historiaImg}>
             <span style={{ color: 'rgba(201,160,48,.5)', fontSize: '40px' }}>🏰</span>
           </div>
-          <p className={styles.historiaP}>
-            Las Fiestas de Moros y Cristianos de Villena son declaradas de Interés Turístico Nacional. Se celebran en honor a la Virgen de las Virtudes, patrona de la ciudad, durante la primera quincena de septiembre.
-          </p>
-          <p className={styles.historiaP}>
-            La festividad rememora la reconquista del Castillo de la Atalaya por el rey Alfonso X el Sabio en el siglo XIII. Dieciséis comparsas, ocho cristianas y ocho moras, protagonizan desfiles, embajadas y la solemne procesión.
-          </p>
-          <p className={styles.historiaP}>
-            Con más de 150 años de historia, las fiestas villeneras son un referente en la Comunidad Valenciana, combinando tradición, música, pólvora y el colorido de sus trajes artesanales.
-          </p>
+          <p className={styles.historiaP}>{t('comparsas.historiaP1')}</p>
+          <p className={styles.historiaP}>{t('comparsas.historiaP2')}</p>
+          <p className={styles.historiaP}>{t('comparsas.historiaP3')}</p>
         </div>
       )}
 

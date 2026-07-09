@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getAvisos, timeAgo } from '../../services/avisosService';
 import { useAuth } from '../../hooks/useAuth';
 import UserAvatar from '../../components/UserAvatar';
 import LoginSection from './LoginSection';
 import { onActivateKey } from '../../utils/a11y';
+import { SUPPORTED_LANGUAGES } from '../../i18n/languages';
 import type { InfoView, Aviso } from '../../types';
+import MapPage from './MapPage';
 import styles from './InfoPage.module.css';
-
-const LANGS = [
-  { code: 'ES', name: 'Español',   img: 'https://flagcdn.com/es.svg',  imgW: 'auto' },
-  { code: 'VA', name: 'Valencià',  img: 'https://openmoji.org/data/color/svg/1F3F4-E0065-E0073-E0076-E0063-E007F.svg', imgW: '26px' },
-  { code: 'GB', name: 'English',   img: 'https://flagcdn.com/gb.svg',  imgW: 'auto' },
-  { code: 'FR', name: 'Français',  img: 'https://flagcdn.com/fr.svg',  imgW: 'auto' },
-  { code: 'DE', name: 'Deutsch',   img: 'https://flagcdn.com/de.svg',  imgW: 'auto' },
-  { code: 'CN', name: '中文',       img: 'https://flagcdn.com/cn.svg',  imgW: 'auto' },
-];
 
 
 const GALLERY_PHOTOS = [
@@ -34,14 +28,14 @@ const GALLERY_PHOTOS = [
 ];
 
 const SERVICIOS = [
-  { label: 'Aparcar',     icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg> },
-  { label: 'Dormir',      icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="12" y2="9"/></svg> },
-  { label: 'Comer',       icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><line x1="7" y1="2" x2="7" y2="11"/><path d="M21 15V2a5 5 0 00-5 5v6h3l-1 11h3l-1-11h1z"/></svg> },
-  { label: 'Transporte',  icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 19v2M8 19v2M2 9h20"/><circle cx="7" cy="15" r="1"/><circle cx="17" cy="15" r="1"/></svg> },
-  { label: 'Que visitar', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> },
-  { label: 'Parajes',     icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polyline points="22,2 2,22"/><polyline points="12,2 2,12"/><polyline points="22,12 12,22"/></svg> },
-  { label: 'Comercio',    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> },
-  { label: 'Mapa',        icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> },
+  { key: 'servicioAparcar',     icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg> },
+  { key: 'servicioDormir',      icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="12" y2="9"/></svg> },
+  { key: 'servicioComer',       icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><line x1="7" y1="2" x2="7" y2="11"/><path d="M21 15V2a5 5 0 00-5 5v6h3l-1 11h3l-1-11h1z"/></svg> },
+  { key: 'servicioTransporte',  icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 19v2M8 19v2M2 9h20"/><circle cx="7" cy="15" r="1"/><circle cx="17" cy="15" r="1"/></svg> },
+  { key: 'servicioQueVisitar',  icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> },
+  { key: 'servicioParajes',     icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polyline points="22,2 2,22"/><polyline points="12,2 2,12"/><polyline points="22,12 12,22"/></svg> },
+  { key: 'servicioComercio',    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> },
+  { key: 'servicioMapa',        icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> },
 ];
 
 const REVISTAS = [
@@ -59,6 +53,7 @@ interface GalleryPhoto {
 }
 
 export default function InfoPage() {
+  const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();
   const initialView = searchParams.get('view') as InfoView;
   // La pestaña inicial depende de ?view=... en la URL, ya disponible en el
@@ -67,12 +62,12 @@ export default function InfoPage() {
   const [multiTab,   setMultiTab]   = useState('avisos');
   const [avisos,     setAvisos]     = useState<Aviso[]>([]);
   const [loginOpen,  setLoginOpen]  = useState(false);
+  const [showMap,    setShowMap]    = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
     getAvisos().then(setAvisos).catch(() => setAvisos([]));
   }, []);
-  const [selectedLang, setSelectedLang] = useState('ES');
   const [focusedPhoto, setFocusedPhoto] = useState<string | null>(null);
 
   // Preparar columnas de galería
@@ -90,12 +85,12 @@ export default function InfoPage() {
     <div className={styles.page}>
       {/* ── Título ── */}
       <div className={styles.titleBar}>
-        <h1>Info Práctica</h1>
+        <h1>{t('info.title')}</h1>
         <button className={styles.authBtn} onClick={() => setLoginOpen(true)}>
           {user ? (
             <UserAvatar user={user} imgClassName={styles.authAvatar} fallbackClassName={styles.authInitial} />
           ) : (
-            <span className={styles.authLabel}>Acceder</span>
+            <span className={styles.authLabel}>{t('info.accessLabel')}</span>
           )}
         </button>
       </div>
@@ -108,13 +103,13 @@ export default function InfoPage() {
           className={`${styles.mainTabBtn}${mainTab === 'servicios' ? ` ${styles.active}` : ''}`}
           onClick={() => setMainTab('servicios')}
         >
-          Servicios
+          {t('info.servicios')}
         </button>
         <button
           className={`${styles.mainTabBtn}${mainTab === 'multimedia' ? ` ${styles.active}` : ''}`}
           onClick={() => setMainTab('multimedia')}
         >
-          Multimedia
+          {t('info.multimedia')}
         </button>
       </div>
 
@@ -122,31 +117,45 @@ export default function InfoPage() {
       {mainTab === 'servicios' && (
         <div>
           <div className={styles.serviciosLabel}>
-            <span>Información de Interés</span>
+            <span>{t('info.infoInteres')}</span>
           </div>
 
           {/* Grid iconos servicios */}
           <div className={styles.serviciosGrid}>
-            {SERVICIOS.map(s => (
-              <div key={s.label} className={styles.servicioItem}>
-                <div className={styles.servicioIcon}>{s.icon}</div>
-                <span className={styles.servicioLabel}>{s.label}</span>
-              </div>
-            ))}
+            {SERVICIOS.map(s => {
+              const isMap = s.key === 'servicioMapa';
+              return (
+                <div
+                  key={s.key}
+                  className={styles.servicioItem}
+                  {...(isMap
+                    ? {
+                        onClick: () => setShowMap(true),
+                        onKeyDown: onActivateKey(() => setShowMap(true)),
+                        role: 'button',
+                        tabIndex: 0,
+                      }
+                    : {})}
+                >
+                  <div className={styles.servicioIcon}>{s.icon}</div>
+                  <span className={styles.servicioLabel}>{t(`info.${s.key}`)}</span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Selector de idioma */}
           <div className={styles.langSectionLabel}>
-            <span>Idioma de la App</span>
+            <span>{t('info.languageSection')}</span>
           </div>
           <div className={styles.langList}>
-            {LANGS.map(l => {
-              const active = selectedLang === l.code;
+            {SUPPORTED_LANGUAGES.map(l => {
+              const active = i18n.language === l.code;
               return (
                 <div
                   key={l.code}
-                  onClick={() => setSelectedLang(l.code)}
-                  onKeyDown={onActivateKey(() => setSelectedLang(l.code))}
+                  onClick={() => i18n.changeLanguage(l.code)}
+                  onKeyDown={onActivateKey(() => i18n.changeLanguage(l.code))}
                   role="button"
                   tabIndex={0}
                   aria-pressed={active}
@@ -166,13 +175,13 @@ export default function InfoPage() {
 
           {/* Puntos clave y contacto */}
           <div className={styles.poiLabel}>
-            <span>Puntos Clave y Contacto</span>
+            <span>{t('info.poiSection')}</span>
           </div>
           <div className={styles.poiList}>
             {[
-              { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="1.8" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>, title: 'Teléfonos de Interés', sub: 'Emergencias 112 / Policía 092', border: true },
-              { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="1.8" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>, title: 'Caseta de Información', sub: 'Punto Festero Central y Mapas', border: true },
-              { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="1.8" strokeLinecap="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>, title: 'Asistencia Sanitaria', sub: 'Zonas de Primeros Auxilios', border: false },
+              { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="1.8" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>, title: t('info.telefonosTitle'), sub: t('info.telefonosSub'), border: true },
+              { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="1.8" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>, title: t('info.casetaTitle'), sub: t('info.casetaSub'), border: true },
+              { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="1.8" strokeLinecap="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>, title: t('info.sanidadTitle'), sub: t('info.sanidadSub'), border: false },
             ].map((item, i) => (
               <div
                 key={i}
@@ -198,19 +207,19 @@ export default function InfoPage() {
               className={`${styles.subtab}${multiTab === 'avisos' ? ` ${styles.active}` : ''}`}
               onClick={() => setMultiTab('avisos')}
             >
-              Avisos
+              {t('info.subtabAvisos')}
             </button>
             <button
               className={`${styles.subtab}${multiTab === 'galeria' ? ` ${styles.active}` : ''}`}
               onClick={() => setMultiTab('galeria')}
             >
-              Galería
+              {t('info.subtabGaleria')}
             </button>
             <button
               className={`${styles.subtab}${multiTab === 'revistas' ? ` ${styles.active}` : ''}`}
               onClick={() => setMultiTab('revistas')}
             >
-              Revistas
+              {t('info.subtabRevistas')}
             </button>
           </div>
 
@@ -255,7 +264,7 @@ export default function InfoPage() {
                         flex: photo.isLast ? '1' : undefined,
                         minHeight: photo.isLast ? '80px' : undefined,
                       }}
-                      alt="Ver foto ampliada"
+                      alt={t('info.verFotoAmpliada')}
                     />
                   ))}
                 </div>
@@ -274,7 +283,7 @@ export default function InfoPage() {
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label="Cerrar imagen"
+                  aria-label={t('info.cerrarImagen')}
                 >
                   <img src={focusedPhoto} className={styles.lightboxImg} alt="" />
                   <div className={styles.lightboxClose}>
@@ -304,7 +313,7 @@ export default function InfoPage() {
                       </div>
                       <button className={styles.revistaBtn}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2.5" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                        <span className={styles.revistaBtnLabel}>LEER PDF</span>
+                        <span className={styles.revistaBtnLabel}>{t('info.leerPdf')}</span>
                       </button>
                     </div>
                   </div>
@@ -314,6 +323,8 @@ export default function InfoPage() {
           )}
         </div>
       )}
+
+      {showMap && <MapPage onBack={() => setShowMap(false)} />}
     </div>
   );
 }

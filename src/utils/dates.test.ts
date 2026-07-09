@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { festivalISODate, dayOfMonth, weekdayShortLabel, daysInMonth, firstWeekdayOffset, festivalTodayDay } from './dates';
 import { FESTIVAL } from '../constants';
+import i18n from '../i18n';
 
 describe('festivalISODate', () => {
   it('construye la fecha ISO con el año y mes del festival', () => {
@@ -19,6 +20,13 @@ describe('dayOfMonth', () => {
 });
 
 describe('weekdayShortLabel', () => {
+  // weekdayShortLabel depende del idioma activo (i18next); se fija a
+  // español para que el test sea determinista independientemente del
+  // idioma detectado por defecto en el entorno de test.
+  beforeAll(async () => {
+    await i18n.changeLanguage('es');
+  });
+
   it('el 1 de septiembre de 2026 es martes', () => {
     expect(weekdayShortLabel('2026-09-01')).toBe('Mar');
   });
