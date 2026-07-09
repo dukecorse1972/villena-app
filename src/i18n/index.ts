@@ -5,6 +5,9 @@ import { STORAGE_KEYS } from '../constants';
 import es from './locales/es';
 import en from './locales/en';
 import va from './locales/va';
+import fr from './locales/fr';
+import de from './locales/de';
+import zh from './locales/zh';
 
 i18n
   .use(LanguageDetector)
@@ -14,9 +17,12 @@ i18n
       es: { translation: es },
       en: { translation: en },
       va: { translation: va },
+      fr: { translation: fr },
+      de: { translation: de },
+      zh: { translation: zh },
     },
     fallbackLng: 'es',
-    supportedLngs: ['es', 'en', 'va'],
+    supportedLngs: ['es', 'en', 'va', 'fr', 'de', 'zh'],
     detection: {
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: STORAGE_KEYS.LANGUAGE,

@@ -5,9 +5,6 @@ export interface SupportedLanguage {
   imgW: string;
 }
 
-// Fase 1: ES/EN/VA. Francés, alemán y chino se añadirán en una tanda
-// posterior: crear locales/xx.ts, registrarlo en i18n/index.ts y añadir
-// aquí su entrada — sin tocar el resto de la arquitectura.
 export const SUPPORTED_LANGUAGES: SupportedLanguage[] = [
   { code: 'es', name: 'Español', img: 'https://flagcdn.com/es.svg', imgW: 'auto' },
   {
@@ -17,4 +14,7 @@ export const SUPPORTED_LANGUAGES: SupportedLanguage[] = [
     imgW: '26px',
   },
   { code: 'en', name: 'English', img: 'https://flagcdn.com/gb.svg', imgW: 'auto' },
+  { code: 'fr', name: 'Français', img: 'https://flagcdn.com/fr.svg', imgW: 'auto' },
+  { code: 'de', name: 'Deutsch', img: 'https://flagcdn.com/de.svg', imgW: 'auto' },
+  { code: 'zh', name: '中文', img: 'https://flagcdn.com/cn.svg', imgW: 'auto' },
 ];

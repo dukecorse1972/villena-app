@@ -20,7 +20,7 @@ describe('i18n', () => {
     expect(document.documentElement.lang).toBe('va');
   });
 
-  it('traduce una clave existente en los tres idiomas soportados', async () => {
+  it('traduce una clave existente en los seis idiomas soportados', async () => {
     await i18n.changeLanguage('es');
     expect(i18n.t('tabBar.inicio')).toBe('Inicio');
 
@@ -29,5 +29,14 @@ describe('i18n', () => {
 
     await i18n.changeLanguage('va');
     expect(i18n.t('tabBar.inicio')).toBe('Inici');
+
+    await i18n.changeLanguage('fr');
+    expect(i18n.t('tabBar.inicio')).toBe('Accueil');
+
+    await i18n.changeLanguage('de');
+    expect(i18n.t('tabBar.inicio')).toBe('Start');
+
+    await i18n.changeLanguage('zh');
+    expect(i18n.t('tabBar.inicio')).toBe('首页');
   });
 });
