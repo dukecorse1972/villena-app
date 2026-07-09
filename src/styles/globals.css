@@ -38,6 +38,14 @@ a {
   text-decoration: none;
 }
 
+/* Solo visible en navegación por teclado (:focus-visible no se activa con
+   click/touch) — no cambia nada del aspecto normal de la app. */
+:focus-visible {
+  outline: 2px solid var(--color-oro);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 img {
   display: block;
 }

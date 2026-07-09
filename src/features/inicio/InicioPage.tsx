@@ -5,6 +5,7 @@ import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/date
 import { getCurrentWeather, type Weather } from '../../services/weatherService';
 import { getAvisos } from '../../services/avisosService';
 import { openExternalLink } from '../../utils/openExternalLink';
+import { onActivateKey } from '../../utils/a11y';
 import WeatherIcon from '../../components/WeatherIcon';
 import styles from './InicioPage.module.css';
 
@@ -86,7 +87,14 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
       <div className={styles.header}>
 
         {/* Hamburger */}
-        <div className={styles.hamburger} onClick={onGoToServicios}>
+        <div
+          className={styles.hamburger}
+          onClick={onGoToServicios}
+          onKeyDown={onActivateKey(onGoToServicios)}
+          role="button"
+          tabIndex={0}
+          aria-label="Abrir menú de servicios"
+        >
           <div className={styles.hamburgerLine} />
           <div className={styles.hamburgerLine} />
           <div className={styles.hamburgerLine} />
@@ -110,7 +118,14 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
             </div>
           )}
           {/* Campana — el punto solo aparece si hay avisos reales marcados como nuevos */}
-          <div className={styles.bellWrap} onClick={onGoToAvisos}>
+          <div
+            className={styles.bellWrap}
+            onClick={onGoToAvisos}
+            onKeyDown={onActivateKey(onGoToAvisos)}
+            role="button"
+            tabIndex={0}
+            aria-label="Ver avisos"
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(240,228,200,.8)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
@@ -160,6 +175,9 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
                 key={i}
                 className={styles.eventCard}
                 onClick={() => onEventClick && onEventClick(card)}
+                onKeyDown={onActivateKey(() => onEventClick && onEventClick(card))}
+                role="button"
+                tabIndex={0}
               >
                 <img src={card.img} className={styles.eventCardImg} alt={card.title} />
                 <div className={styles.eventGradient} />

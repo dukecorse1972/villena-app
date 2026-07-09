@@ -4,6 +4,7 @@ import EventModal from './EventModal';
 import { festiveDays, moroDays, ctianDays } from '../../data/events';
 import { FESTIVAL } from '../../constants';
 import { daysInMonth, firstWeekdayOffset } from '../../utils/dates';
+import { onActivateKey } from '../../utils/a11y';
 import styles from './AgendaPage.module.css';
 
 const DAYS_OF_WEEK = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
@@ -73,6 +74,11 @@ export default function AgendaPage() {
               <div
                 key={day}
                 onClick={() => setSelectedDay(day)}
+                onKeyDown={onActivateKey(() => setSelectedDay(day))}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSel}
+                aria-label={`Día ${day}`}
                 className={cellClass}
               >
                 <span>{day}</span>

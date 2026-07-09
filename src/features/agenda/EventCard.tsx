@@ -1,4 +1,5 @@
 import type { FiestaEvent } from '../../types';
+import { onActivateKey } from '../../utils/a11y';
 import styles from './EventCard.module.css';
 
 interface EventCardProps {
@@ -10,7 +11,7 @@ interface EventCardProps {
 
 export default function EventCard({ event, isFavorite, onOpen, onToggleFavorite }: EventCardProps) {
   return (
-    <div className={styles.card} onClick={onOpen}>
+    <div className={styles.card} onClick={onOpen} onKeyDown={onActivateKey(onOpen)} role="button" tabIndex={0}>
       {/* Hora */}
       <div className={styles.timeBlock}>
         <div className={styles.timeValue}>{event.time}</div>
@@ -32,6 +33,7 @@ export default function EventCard({ event, isFavorite, onOpen, onToggleFavorite 
       <button
         onClick={(e) => { e.stopPropagation(); onToggleFavorite(event.id); }}
         className={`${styles.favBtn}${isFavorite ? ` ${styles.active}` : ''}`}
+        aria-label={isFavorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
       >
         {isFavorite ? '♥' : '♡'}
       </button>

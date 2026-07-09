@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Comparsa, Bando, Cargo } from '../../types';
 import { getCargosByComparsa } from '../../services/cargosService';
+import { onActivateKey } from '../../utils/a11y';
 import styles from './ComparsaDetail.module.css';
 
 interface ComparsaDetailProps {
@@ -36,7 +37,13 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
 
       {/* ── Cabecera sticky ── */}
       <div className={styles.header}>
-        <div className={styles.backBtn} onClick={onBack}>
+        <div
+          className={styles.backBtn}
+          onClick={onBack}
+          onKeyDown={onActivateKey(onBack)}
+          role="button"
+          tabIndex={0}
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"/>
           </svg>

@@ -4,6 +4,7 @@ import { getAvisos, timeAgo } from '../../services/avisosService';
 import { useAuth } from '../../hooks/useAuth';
 import UserAvatar from '../../components/UserAvatar';
 import LoginSection from './LoginSection';
+import { onActivateKey } from '../../utils/a11y';
 import type { InfoView, Aviso } from '../../types';
 import styles from './InfoPage.module.css';
 
@@ -145,6 +146,10 @@ export default function InfoPage() {
                 <div
                   key={l.code}
                   onClick={() => setSelectedLang(l.code)}
+                  onKeyDown={onActivateKey(() => setSelectedLang(l.code))}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={active}
                   className={`${styles.langItem}${active ? ` ${styles.active}` : ''}`}
                 >
                   <img
@@ -241,13 +246,16 @@ export default function InfoPage() {
                       key={pi}
                       src={photo.thumb}
                       onClick={() => setFocusedPhoto(photo.full ?? null)}
+                      onKeyDown={onActivateKey(() => setFocusedPhoto(photo.full ?? null))}
+                      role="button"
+                      tabIndex={0}
                       className={styles.galeriaImg}
                       style={{
                         aspectRatio: photo.isLast ? undefined : photo.ratio,
                         flex: photo.isLast ? '1' : undefined,
                         minHeight: photo.isLast ? '80px' : undefined,
                       }}
-                      alt=""
+                      alt="Ver foto ampliada"
                     />
                   ))}
                 </div>
@@ -255,7 +263,19 @@ export default function InfoPage() {
 
               {/* Lightbox */}
               {focusedPhoto && (
-                <div className={styles.lightbox} onClick={() => setFocusedPhoto(null)}>
+                <div
+                  className={styles.lightbox}
+                  onClick={() => setFocusedPhoto(null)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+                      e.preventDefault();
+                      setFocusedPhoto(null);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Cerrar imagen"
+                >
                   <img src={focusedPhoto} className={styles.lightboxImg} alt="" />
                   <div className={styles.lightboxClose}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

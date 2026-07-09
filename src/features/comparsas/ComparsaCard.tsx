@@ -1,4 +1,5 @@
 import type { Comparsa } from '../../types';
+import { onActivateKey } from '../../utils/a11y';
 import styles from './ComparsaCard.module.css';
 
 interface ComparsaCardProps {
@@ -12,6 +13,9 @@ export default function ComparsaCard({ comparsa, isLast, onClick }: ComparsaCard
     <div style={isLast ? { gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' } : {}}>
       <div
         onClick={() => onClick(comparsa)}
+        onKeyDown={onActivateKey(() => onClick(comparsa))}
+        role="button"
+        tabIndex={0}
         className={styles.card}
         style={isLast ? { width: 'calc(50% - 6px)' } : {}}
       >
