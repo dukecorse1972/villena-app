@@ -20,7 +20,7 @@ export async function registerPushToken(
 
   const { error: insertError } = await supabase
     .from('push_tokens')
-    .insert({ token, platform, user_id: userId } as never);
+    .insert({ token, platform, user_id: userId });
 
   if (!insertError) return;
 
@@ -29,7 +29,7 @@ export async function registerPushToken(
 
   const { error: updateError } = await supabase
     .from('push_tokens')
-    .update({ platform, user_id: userId } as never)
+    .update({ platform, user_id: userId })
     .eq('token', token);
 
   if (updateError) throw new Error((updateError as { message: string }).message);

@@ -1,6 +1,9 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { comparsasCristianas, comparsasMoras, allComparsas } from '../data/comparsas';
+import type { Database } from '../types/database';
 import type { Comparsa } from '../types';
+
+type ComparsaUpdate = Database['public']['Tables']['comparsas']['Update'];
 
 /**
  * Mapea una fila de la tabla `comparsas` al tipo de dominio Comparsa.
@@ -84,12 +87,12 @@ export async function updateComparsa(
   if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
 
   const { img, desfile_img, traje_gala_img, estandarte_img, ...rest } = changes;
-  const dbChanges: Record<string, unknown> = { ...rest };
+  const dbChanges: ComparsaUpdate = { ...rest };
   if (img !== undefined) dbChanges.img_url = img;
   if (desfile_img !== undefined) dbChanges.desfile_img_url = desfile_img;
   if (traje_gala_img !== undefined) dbChanges.traje_gala_img_url = traje_gala_img;
   if (estandarte_img !== undefined) dbChanges.estandarte_img_url = estandarte_img;
 
-  const { error } = await supabase.from('comparsas').update(dbChanges as never).eq('id', id);
+  const { error } = await supabase.from('comparsas').update(dbChanges).eq('id', id);
   if (error) throw new Error(error.message);
 }

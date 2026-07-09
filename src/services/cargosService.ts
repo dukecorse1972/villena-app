@@ -43,12 +43,12 @@ export async function createCargo(input: CargoInput): Promise<Cargo> {
 
   const { data, error } = await supabase
     .from('cargos')
-    .insert(input as never)
+    .insert(input)
     .select()
     .single();
 
   if (error) throw new Error(error.message);
-  return rowToCargo(data as Record<string, unknown>);
+  return rowToCargo(data);
 }
 
 export async function updateCargo(
@@ -57,7 +57,7 @@ export async function updateCargo(
 ): Promise<void> {
   if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
 
-  const { error } = await supabase.from('cargos').update(changes as never).eq('id', id);
+  const { error } = await supabase.from('cargos').update(changes).eq('id', id);
   if (error) throw new Error(error.message);
 }
 

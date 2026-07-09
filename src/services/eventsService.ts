@@ -1,7 +1,24 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { allEvents } from '../data/events';
 import { festivalISODate } from '../utils/dates';
+import type { Database } from '../types/database';
 import type { FiestaEvent, EventType, Favorites } from '../types';
+
+type EventoRow = Database['public']['Tables']['eventos']['Row'];
+
+/** Convierte una fila de Supabase al modelo de dominio, normalizando `null` a `undefined`. */
+function rowToEvent(row: EventoRow): FiestaEvent {
+  return {
+    id: row.id,
+    date: row.date,
+    time: row.time,
+    title: row.title,
+    location: row.location,
+    type: row.type,
+    img_url: row.img_url ?? undefined,
+    description: row.description ?? undefined,
+  };
+}
 
 /**
  * Obtiene eventos filtrados por fecha y tipo.
@@ -11,7 +28,7 @@ import type { FiestaEvent, EventType, Favorites } from '../types';
  * cada fila de `eventos` tiene su propia fecha real, así que distintas
  * ediciones del festival nunca pueden mezclarse en la misma consulta.
  */
-export async function getEvents(date: string, filter: string): Promise<FiestaEvent[]> {
+export async function getEvents(date: string, filter: 'Todos' | EventType): Promise<FiestaEvent[]> {
   if (isSupabaseConfigured) {
     let query = supabase
       .from('eventos')
@@ -25,7 +42,7 @@ export async function getEvents(date: string, filter: string): Promise<FiestaEve
 
     const { data, error } = await query;
     if (error) throw new Error(error.message);
-    return (data ?? []) as FiestaEvent[];
+    return (data ?? []).map(rowToEvent);
   }
 
   return allEvents.filter((ev) => {
@@ -79,7 +96,7 @@ export async function getAllEventos(): Promise<FiestaEvent[]> {
     .order('time');
 
   if (error) throw new Error(error.message);
-  return (data ?? []) as FiestaEvent[];
+  return (data ?? []).map(rowToEvent);
 }
 
 export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
@@ -87,18 +104,18 @@ export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
 
   const { data, error } = await supabase
     .from('eventos')
-    .insert(input as never)
+    .insert(input)
     .select()
     .single();
 
   if (error) throw new Error(error.message);
-  return data;
+  return rowToEvent(data);
 }
 
 export async function updateEvento(id: string, changes: Partial<Omit<EventoInput, 'id'>>): Promise<void> {
   if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
 
-  const { error } = await supabase.from('eventos').update(changes as never).eq('id', id);
+  const { error } = await supabase.from('eventos').update(changes).eq('id', id);
   if (error) throw new Error(error.message);
 }
 

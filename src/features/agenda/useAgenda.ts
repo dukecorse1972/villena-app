@@ -9,6 +9,7 @@ import { festivalISODate, festivalTodayDay } from '../../utils/dates';
 import type { FiestaEvent, Favorites } from '../../types';
 
 const FILTER_OPTIONS = ['Todos', 'Desfiles', 'Religiosos', 'Música', 'Cultural'] as const;
+type FilterOption = (typeof FILTER_OPTIONS)[number];
 
 export function useAgenda() {
   const { user } = useAuth();
@@ -16,7 +17,7 @@ export function useAgenda() {
   // Arranca en el día real de hoy si hoy cae dentro de las fiestas;
   // si no, en el primer día del programa (ver festivalTodayDay).
   const [selectedDay, setSelectedDay]     = useState<number>(() => festivalTodayDay());
-  const [filter, setFilter]               = useState('Todos');
+  const [filter, setFilter]               = useState<FilterOption>('Todos');
   const [selectedEvent, setSelectedEvent] = useState<FiestaEvent | null>(null);
   const [favorites, setFavorites]         = useLocalStorage<Favorites>(STORAGE_KEYS.FAVORITES, {});
 
