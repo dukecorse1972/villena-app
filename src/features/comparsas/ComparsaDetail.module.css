@@ -1,10 +1,18 @@
 .page {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: var(--color-bg-app);
   z-index: 50;
   overflow-y: auto;
-  padding-bottom: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: calc(var(--tab-height) + var(--safe-bottom));
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.page::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── Sticky header ── */
