@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getAllEventos, createEvento, updateEvento, deleteEvento } from '../../services/eventsService';
+import { useAsyncList } from '../../hooks/useAsyncList';
+import { useAsyncAction } from '../../hooks/useAsyncAction';
 import type { FiestaEvent, EventType } from '../../types';
 import styles from './AdminEventosPanel.module.css';
 
@@ -16,25 +18,11 @@ const EMPTY_FORM = {
 };
 
 export default function AdminEventosPanel() {
-  const [eventos, setEventos] = useState<FiestaEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const { data: eventos, isLoading, error, setError, reload } = useAsyncList<FiestaEvent>(getAllEventos);
+  const { submitting, run } = useAsyncAction(setError);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
-
-  const reload = () => {
-    setIsLoading(true);
-    setError(null);
-    getAllEventos()
-      .then(setEventos)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setIsLoading(false));
-  };
-
-  // Mismo patrón de fetching-en-efecto ya documentado en useAgenda.
-  useEffect(reload, []); // eslint-disable-line react-hooks/set-state-in-effect
 
   const resetForm = () => {
     setEditingId(null);
@@ -58,41 +46,35 @@ export default function AdminEventosPanel() {
     e.preventDefault();
     if (!form.title.trim() || !form.time || !form.location.trim() || !form.date) return;
 
-    setSubmitting(true);
-    setError(null);
-    try {
-      const payload = {
-        title: form.title.trim(),
-        time: form.time,
-        location: form.location.trim(),
-        type: form.type,
-        date: form.date,
-        description: form.description.trim() || undefined,
-        img_url: form.img_url.trim() || undefined,
-      };
+    const payload = {
+      title: form.title.trim(),
+      time: form.time,
+      location: form.location.trim(),
+      type: form.type,
+      date: form.date,
+      description: form.description.trim() || undefined,
+      img_url: form.img_url.trim() || undefined,
+    };
 
+    const ok = await run(async () => {
       if (editingId) {
         await updateEvento(editingId, payload);
       } else {
         await createEvento({ id: crypto.randomUUID(), ...payload });
       }
+    }, 'Error al guardar el evento');
 
+    if (ok) {
       resetForm();
       reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al guardar el evento');
-    } finally {
-      setSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteEvento(id);
+    const ok = await run(() => deleteEvento(id), 'Error al borrar el evento');
+    if (ok) {
       if (editingId === id) resetForm();
       reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al borrar el evento');
     }
   };
 

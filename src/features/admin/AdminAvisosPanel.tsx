@@ -1,57 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getAvisos, createAviso, updateAviso, deleteAviso, timeAgo } from '../../services/avisosService';
+import { useAsyncList } from '../../hooks/useAsyncList';
+import { useAsyncAction } from '../../hooks/useAsyncAction';
 import type { Aviso } from '../../types';
 import styles from './AdminAvisosPanel.module.css';
 
 export default function AdminAvisosPanel() {
-  const [avisos, setAvisos] = useState<Aviso[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: avisos, isLoading, error, setError, reload } = useAsyncList<Aviso>(getAvisos);
+  const { submitting, run } = useAsyncAction(setError);
 
   const [text, setText] = useState('');
   const [markAsNew, setMarkAsNew] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
-
-  const reload = () => {
-    setIsLoading(true);
-    setError(null);
-    getAvisos()
-      .then(setAvisos)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setIsLoading(false));
-  };
-
-  // Mismo patrón de fetching-en-efecto ya documentado en useAgenda.
-  useEffect(reload, []); // eslint-disable-line react-hooks/set-state-in-effect
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
 
-    setSubmitting(true);
-    setError(null);
-    try {
-      await createAviso(text.trim(), markAsNew);
+    const ok = await run(() => createAviso(text.trim(), markAsNew), 'Error al crear el aviso');
+    if (ok) {
       setText('');
       setMarkAsNew(true);
       reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al crear el aviso');
-    } finally {
-      setSubmitting(false);
     }
   };
 
   const handleToggleNew = async (aviso: Aviso) => {
-    try {
-      await updateAviso(aviso.id, { is_new: !aviso.is_new });
-      reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al actualizar el aviso');
-    }
+    const ok = await run(() => updateAviso(aviso.id, { is_new: !aviso.is_new }), 'Error al actualizar el aviso');
+    if (ok) reload();
   };
 
   const startEditing = (aviso: Aviso) => {
@@ -66,22 +44,16 @@ export default function AdminAvisosPanel() {
 
   const saveEditing = async (id: string) => {
     if (!editingText.trim()) return;
-    try {
-      await updateAviso(id, { text: editingText.trim() });
+    const ok = await run(() => updateAviso(id, { text: editingText.trim() }), 'Error al actualizar el aviso');
+    if (ok) {
       cancelEditing();
       reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al actualizar el aviso');
     }
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteAviso(id);
-      reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al borrar el aviso');
-    }
+    const ok = await run(() => deleteAviso(id), 'Error al borrar el aviso');
+    if (ok) reload();
   };
 
   return (

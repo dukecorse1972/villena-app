@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { getAllComparsasAdmin, updateComparsa } from '../../services/comparsasService';
 import { getCargosByComparsa, createCargo, updateCargo, deleteCargo } from '../../services/cargosService';
 import { uploadComparsaImage } from '../../services/storage';
+import { useAsyncList } from '../../hooks/useAsyncList';
+import { useAsyncAction } from '../../hooks/useAsyncAction';
 import ImageDropzone from '../../components/ImageDropzone';
 import type { Comparsa, Cargo } from '../../types';
 import styles from './AdminComparsasPanel.module.css';
@@ -9,29 +11,24 @@ import styles from './AdminComparsasPanel.module.css';
 const CARGO_SUGERENCIAS = ['Capitán', 'Sargento', 'Abanderado', 'Alférez', 'Teniente', 'Maestre', 'Porta-estandarte'];
 
 export default function AdminComparsasPanel() {
-  const [comparsas, setComparsas] = useState<Comparsa[]>([]);
+  const { data: comparsas, setData: setComparsas, error: comparsasError } = useAsyncList<Comparsa>(getAllComparsasAdmin);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const [description, setDescription] = useState('');
   const [foundedYear, setFoundedYear] = useState('');
   const [numSocios, setNumSocios] = useState('');
-  const [savingComparsa, setSavingComparsa] = useState(false);
   const [comparsaError, setComparsaError] = useState<string | null>(null);
   const [comparsaSaved, setComparsaSaved] = useState(false);
+  const { submitting: savingComparsa, run: runComparsa } = useAsyncAction(setComparsaError);
 
-  const [cargos, setCargos] = useState<Cargo[]>([]);
-  const [cargosLoading, setCargosLoading] = useState(false);
   const [cargoRole, setCargoRole] = useState('');
   const [cargoName, setCargoName] = useState('');
   const [editingCargoId, setEditingCargoId] = useState<string | null>(null);
-  const [cargoError, setCargoError] = useState<string | null>(null);
 
+  // Selecciona la primera comparsa en cuanto llega la lista.
   useEffect(() => {
-    getAllComparsasAdmin().then((list) => {
-      setComparsas(list);
-      if (list.length > 0) setSelectedId(list[0].id);
-    });
-  }, []);
+    if (comparsas.length > 0 && selectedId === null) setSelectedId(comparsas[0].id); // eslint-disable-line react-hooks/set-state-in-effect
+  }, [comparsas, selectedId]);
 
   const selected = comparsas.find((c) => c.id === selectedId) ?? null;
 
@@ -47,40 +44,34 @@ export default function AdminComparsasPanel() {
     setComparsaError(null);
   }, [selected]);
 
-  const reloadCargos = (comparsaId: string) => {
-    setCargosLoading(true);
-    getCargosByComparsa(comparsaId)
-      .then(setCargos)
-      .catch(() => setCargos([]))
-      .finally(() => setCargosLoading(false));
-  };
-
-  // Mismo patrón de fetching-en-efecto ya documentado en useAgenda.
-  useEffect(() => {
-    if (selectedId) reloadCargos(selectedId); // eslint-disable-line react-hooks/set-state-in-effect
-  }, [selectedId]);
+  const {
+    data: cargos,
+    setData: setCargos,
+    isLoading: cargosLoading,
+    error: cargoError,
+    setError: setCargoError,
+    reload: reloadCargos,
+  } = useAsyncList<Cargo>(() => (selectedId ? getCargosByComparsa(selectedId) : Promise.resolve([])), [selectedId]);
+  const { run: runCargo } = useAsyncAction(setCargoError);
 
   const handleSaveComparsa = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedId) return;
 
-    setSavingComparsa(true);
-    setComparsaError(null);
     setComparsaSaved(false);
-    try {
-      await updateComparsa(selectedId, {
-        description: description.trim() || undefined,
-        founded_year: foundedYear ? Number(foundedYear) : undefined,
-        num_socios: numSocios ? Number(numSocios) : undefined,
-      });
+    const founded = foundedYear ? Number(foundedYear) : undefined;
+    const socios  = numSocios ? Number(numSocios) : undefined;
+
+    const ok = await runComparsa(
+      () => updateComparsa(selectedId, { description: description.trim() || undefined, founded_year: founded, num_socios: socios }),
+      'Error al guardar la comparsa',
+    );
+
+    if (ok) {
       setComparsas((prev) => prev.map((c) => c.id === selectedId
-        ? { ...c, description, founded_year: foundedYear ? Number(foundedYear) : undefined, num_socios: numSocios ? Number(numSocios) : undefined }
+        ? { ...c, description, founded_year: founded, num_socios: socios }
         : c));
       setComparsaSaved(true);
-    } catch (err) {
-      setComparsaError(err instanceof Error ? err.message : 'Error al guardar la comparsa');
-    } finally {
-      setSavingComparsa(false);
     }
   };
 
@@ -100,8 +91,7 @@ export default function AdminComparsasPanel() {
     e.preventDefault();
     if (!selectedId || !cargoRole.trim() || !cargoName.trim()) return;
 
-    setCargoError(null);
-    try {
+    const ok = await runCargo(async () => {
       if (editingCargoId) {
         await updateCargo(editingCargoId, { role: cargoRole.trim(), person_name: cargoName.trim() });
       } else {
@@ -112,21 +102,18 @@ export default function AdminComparsasPanel() {
           sort_order: cargos.length,
         });
       }
+    }, 'Error al guardar el cargo');
+
+    if (ok) {
       cancelEditingCargo();
-      reloadCargos(selectedId);
-    } catch (err) {
-      setCargoError(err instanceof Error ? err.message : 'Error al guardar el cargo');
+      reloadCargos();
     }
   };
 
   const handleDeleteCargo = async (id: string) => {
     if (!selectedId) return;
-    try {
-      await deleteCargo(id);
-      reloadCargos(selectedId);
-    } catch (err) {
-      setCargoError(err instanceof Error ? err.message : 'Error al borrar el cargo');
-    }
+    const ok = await runCargo(() => deleteCargo(id), 'Error al borrar el cargo');
+    if (ok) reloadCargos();
   };
 
   const handleLogoUpload = async (file: File) => {
@@ -166,6 +153,7 @@ export default function AdminComparsasPanel() {
           </button>
         ))}
       </div>
+      {comparsasError && <span className={styles.errorMsg}>{comparsasError}</span>}
 
       {selected && (
         <div className={styles.detail}>
