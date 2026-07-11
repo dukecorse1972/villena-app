@@ -12,20 +12,26 @@ import MapPage from './MapPage';
 import styles from './InfoPage.module.css';
 
 
-const GALLERY_PHOTOS = [
-  { url: 'photo-1677055290576-ecbf1babede7', ratio: '3/4' },
-  { url: 'photo-1718563300857-d2f084703fe9', ratio: '4/3' },
-  { url: 'photo-1533551268962-824e232f7ee1', ratio: '1/1' },
-  { url: 'photo-1728329849278-e1e74d73425d', ratio: '4/3' },
-  { url: 'photo-1755781988015-d1e9c6256e1d', ratio: '3/4' },
-  { url: 'photo-1677055380601-393348dc342c', ratio: '1/1' },
-  { url: 'photo-1677055290576-ecbf1babede7', ratio: '4/3' },
-  { url: 'photo-1718563300857-d2f084703fe9', ratio: '3/4' },
-  { url: 'photo-1533551268962-824e232f7ee1', ratio: '4/3' },
-  { url: 'photo-1728329849278-e1e74d73425d', ratio: '1/1' },
-  { url: 'photo-1755781988015-d1e9c6256e1d', ratio: '4/3' },
-  { url: 'photo-1677055380601-393348dc342c', ratio: '3/4' },
-];
+// Fotos reales de las fiestas 2025, tomadas de
+// https://www.morosycristianosvillena.com/fotos-moros-y-cristianos/
+// A propósito, fotos fijas de una edición pasada — no hay que auto-actualizar
+// esto ni añadir ningún componente que las traiga dinámicamente.
+const GALLERY_PHOTOS_BASE_URL =
+  'https://www.morosycristianosvillena.com/wp-content/uploads/2025/09/fotos-fiestas-moros-cristianos-villena-2025-escuadras-moors-christians-spain-';
+
+const GALLERY_PHOTO_NUMBERS = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13];
+
+// Proporciones alternadas para el efecto Masonry (cajas de distinta altura
+// por columna) — object-fit: cover recorta cada foto real a esta forma,
+// no depende de las dimensiones nativas de la imagen. Más altas que un
+// grid típico a propósito, para que la galería llene la pantalla.
+const GALLERY_RATIOS = ['2/3', '3/4', '4/5', '3/4', '2/3', '4/5', '3/4', '2/3', '3/4', '4/5', '3/4', '2/3'];
+
+const GALLERY_PHOTOS = GALLERY_PHOTO_NUMBERS.map((n, i) => ({
+  full:  `${GALLERY_PHOTOS_BASE_URL}${n}.webp`,
+  thumb: `${GALLERY_PHOTOS_BASE_URL}${n}-400x225.webp`,
+  ratio: GALLERY_RATIOS[i],
+}));
 
 const SERVICIOS = [
   { key: 'servicioAparcar',     icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg> },
@@ -45,10 +51,9 @@ const REVISTAS = [
 ];
 
 interface GalleryPhoto {
-  url: string;
+  full: string;
+  thumb: string;
   ratio: string;
-  full?: string;
-  thumb?: string;
   isLast?: boolean;
 }
 
@@ -78,8 +83,6 @@ export default function InfoPage() {
   GALLERY_PHOTOS.forEach((d, i) => cols[i % 3].push(d));
   const makeCol = (items: GalleryPhoto[]) => items.map((d, i) => ({
     ...d,
-    full:  `https://images.unsplash.com/${d.url}?w=600&fit=crop&auto=format`,
-    thumb: `https://images.unsplash.com/${d.url}?w=300&fit=crop&auto=format`,
     isLast: i === items.length - 1,
   }));
   const [col1, col2, col3] = cols.map(makeCol);
