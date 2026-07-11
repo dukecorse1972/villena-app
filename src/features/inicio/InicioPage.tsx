@@ -5,6 +5,7 @@ import { FESTIVAL } from '../../constants';
 import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
 import { getCurrentWeather, type Weather } from '../../services/weatherService';
 import { getAvisos } from '../../services/avisosService';
+import { getLatestNews, formatNewsDate, NEWS_CATEGORY_URL, type NewsItem } from '../../services/newsService';
 import { openExternalLink } from '../../utils/openExternalLink';
 import { onActivateKey } from '../../utils/a11y';
 import WeatherIcon from '../../components/WeatherIcon';
@@ -44,33 +45,11 @@ const featuredCards: FeaturedCard[] = rawFeaturedCards.map(({ day, ...rest }) =>
   date: festivalISODate(day),
 }));
 
-const news = [
-  {
-    img: 'https://images.unsplash.com/photo-1677055290576-ecbf1babede7?w=130&h=130&fit=crop&auto=format',
-    title: 'El Capitán Moro 2025 presenta su espectacular indumentaria en un acto multitudinario',
-    date: 'Lunes, 1 septiembre 2025',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1755781988015-d1e9c6256e1d?w=130&h=130&fit=crop&auto=format',
-    title: 'Récord histórico de participantes: más de 3.000 festeros en las comparsas villenenses',
-    date: 'Domingo, 31 agosto 2025',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1718563300857-d2f084703fe9?w=130&h=130&fit=crop&auto=format',
-    title: 'La JCF aprueba el programa oficial de actos festeros para Septiembre 2025',
-    date: 'Sábado, 30 agosto 2025',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1728329849278-e1e74d73425d?w=130&h=130&fit=crop&auto=format',
-    title: 'La restauración del Castillo de la Atalaya concluye a tiempo para las fiestas',
-    date: 'Viernes, 29 agosto 2025',
-  },
-];
-
 export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos, onEventClick }: InicioPageProps) {
   const { t } = useTranslation();
   const [weather, setWeather] = useState<Weather | null>(null);
   const [avisos, setAvisos] = useState<Aviso[]>([]);
+  const [news, setNews] = useState<NewsItem[]>([]);
 
   useEffect(() => {
     getCurrentWeather().then(setWeather).catch(() => setWeather(null));
@@ -78,6 +57,10 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
 
   useEffect(() => {
     getAvisos().then(setAvisos).catch(() => setAvisos([]));
+  }, []);
+
+  useEffect(() => {
+    getLatestNews().then(setNews).catch(() => setNews([]));
   }, []);
 
   const hasNewAvisos = avisos.some((a) => a.is_new);
@@ -205,34 +188,48 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
         </div>
 
         {/* ── Últimas Noticias ── */}
-        <div>
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>{t('inicio.ultimasNoticias')}</h2>
-            <button className={styles.seeAllBtn}>
-              {t('inicio.verTodas')}
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </div>
-
-          <div className={styles.newsList}>
-            {news.map((item, i) => (
-              <div
-                key={i}
-                className={`${styles.newsItem}${i < news.length - 1 ? ` ${styles.newsItemBorder}` : ''}`}
+        {news.length > 0 && (
+          <div>
+            <div className={styles.sectionHead}>
+              <h2 className={styles.sectionTitle}>{t('inicio.ultimasNoticias')}</h2>
+              <button
+                className={styles.seeAllBtn}
+                onClick={() => openExternalLink(NEWS_CATEGORY_URL)}
               >
-                <div className={styles.newsThumb}>
-                  <img src={item.img} className={styles.newsThumbImg} alt="" />
+                {t('inicio.verTodas')}
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2.5" strokeLinecap="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+
+            <div className={styles.newsList}>
+              {news.map((item, i) => (
+                <div
+                  key={item.id}
+                  className={`${styles.newsItem}${i < news.length - 1 ? ` ${styles.newsItemBorder}` : ''}`}
+                  onClick={() => openExternalLink(item.url)}
+                  onKeyDown={onActivateKey(() => openExternalLink(item.url))}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div className={styles.newsThumb}>
+                    <img
+                      src={item.img ?? '/logos/escudo-villena.png'}
+                      className={styles.newsThumbImg}
+                      onError={(e) => { e.currentTarget.src = '/logos/escudo-villena.png'; }}
+                      alt=""
+                    />
+                  </div>
+                  <div className={styles.newsText}>
+                    <p className={styles.newsTitle}>{item.title}</p>
+                    <p className={styles.newsDate}>{formatNewsDate(item.date)}</p>
+                  </div>
                 </div>
-                <div className={styles.newsText}>
-                  <p className={styles.newsTitle}>{item.title}</p>
-                  <p className={styles.newsDate}>{item.date}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>
