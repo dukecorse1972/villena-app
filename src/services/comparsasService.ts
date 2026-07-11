@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { assertConfigured, assertNoError, unwrapList } from './serviceHelpers';
 import { comparsasCristianas, comparsasMoras, allComparsas } from '../data/comparsas';
 import type { Database } from '../types/database';
 import type { Comparsa } from '../types';
@@ -39,18 +40,10 @@ export async function getComparsas(side: 'Cristianas' | 'Moras'): Promise<Compar
       .eq('bando', bando)
       .order('name');
 
-    if (error) throw new Error(error.message);
-    return (data ?? []).map(rowToComparsa);
+    return unwrapList({ data, error }).map(rowToComparsa);
   }
 
   return side === 'Moras' ? comparsasMoras : comparsasCristianas;
-}
-
-/**
- * Devuelve una comparsa por su ID (siempre usa datos locales como caché rápida).
- */
-export function getComparsaById(id: string): Comparsa | undefined {
-  return allComparsas.find((c) => c.id === id);
 }
 
 // ── Backoffice ────────────────────────────────────────────────────────────────
@@ -68,8 +61,7 @@ export async function getAllComparsasAdmin(): Promise<Comparsa[]> {
     .order('bando')
     .order('name');
 
-  if (error) throw new Error(error.message);
-  return (data ?? []).map(rowToComparsa);
+  return unwrapList({ data, error }).map(rowToComparsa);
 }
 
 export async function updateComparsa(
@@ -84,7 +76,7 @@ export async function updateComparsa(
     estandarte_img?: string;
   },
 ): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { img, desfile_img, traje_gala_img, estandarte_img, ...rest } = changes;
   const dbChanges: ComparsaUpdate = { ...rest };
@@ -94,5 +86,5 @@ export async function updateComparsa(
   if (estandarte_img !== undefined) dbChanges.estandarte_img_url = estandarte_img;
 
   const { error } = await supabase.from('comparsas').update(dbChanges).eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }

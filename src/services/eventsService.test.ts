@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { Favorites } from '../types';
 import { festivalISODate } from '../utils/dates';
 
 // Forzar fallback a datos locales para que los tests sean deterministas
@@ -9,7 +8,7 @@ vi.mock('./supabase', () => ({
   supabase: {} as never,
 }));
 
-import { getEvents, toggleFavorite, getFavoriteEvents } from './eventsService';
+import { getEvents, toggleFavorite } from './eventsService';
 
 describe('getEvents', () => {
   it('devuelve solo los eventos del día solicitado', async () => {
@@ -55,24 +54,5 @@ describe('toggleFavorite', () => {
     const original = { e1: true };
     const result = toggleFavorite('e2', original);
     expect(result).not.toBe(original);
-  });
-});
-
-describe('getFavoriteEvents', () => {
-  it('devuelve los favoritos del día indicado', () => {
-    const favs: Favorites = { e1: true, e2: true };
-    const results = getFavoriteEvents(favs, 4);
-    expect(results.every((e) => e.date === festivalISODate(4))).toBe(true);
-    expect(results.every((e) => !!favs[e.id])).toBe(true);
-  });
-
-  it('devuelve array vacío si no hay favoritos', () => {
-    expect(getFavoriteEvents({}, 4)).toHaveLength(0);
-  });
-
-  it('no devuelve favoritos de otro día', () => {
-    const favs = { e1: true }; // e1 es día 4
-    const results = getFavoriteEvents(favs, 7);
-    expect(results.every((e) => e.date === festivalISODate(7))).toBe(true);
   });
 });

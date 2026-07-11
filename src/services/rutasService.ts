@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
 import type { Ruta } from '../types';
 
 /**
@@ -20,8 +21,7 @@ function rowToRuta(row: { id: string; name: string; path: unknown }): Ruta {
 export async function getRutas(): Promise<Ruta[]> {
   if (isSupabaseConfigured) {
     const { data, error } = await supabase.from('rutas').select('*').order('name');
-    if (error) throw new Error(error.message);
-    return (data ?? []).map(rowToRuta);
+    return unwrapList({ data, error }).map(rowToRuta);
   }
 
   return LOCAL_RUTAS;
@@ -36,23 +36,22 @@ export interface RutaInput {
 }
 
 export async function createRuta(input: RutaInput): Promise<Ruta> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { data, error } = await supabase.from('rutas').insert(input).select().single();
-  if (error) throw new Error(error.message);
-  return rowToRuta(data);
+  return rowToRuta(unwrapRow({ data, error }));
 }
 
 export async function updateRuta(id: string, changes: Partial<Omit<RutaInput, 'id'>>): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('rutas').update(changes).eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }
 
 export async function deleteRuta(id: string): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('rutas').delete().eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }

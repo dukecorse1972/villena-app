@@ -48,14 +48,6 @@ export const allEvents: FiestaEvent[] = rawEvents.map(({ day, ...rest }) => ({
   date: festivalISODate(day),
 }));
 
-// Colores por tipo de evento
-export const typeColors: Record<EventType, { bg: string; border: string; text: string }> = {
-  Desfiles:   { bg: 'rgba(196,151,42,.15)',  border: 'rgba(196,151,42,.4)',  text: '#c4972a' },
-  Religiosos: { bg: 'rgba(160,120,220,.15)', border: 'rgba(160,120,220,.4)', text: '#b090e0' },
-  Música:     { bg: 'rgba(60,180,100,.15)',  border: 'rgba(60,180,100,.4)',  text: '#50c878' },
-  Cultural:   { bg: 'rgba(60,140,220,.15)',  border: 'rgba(60,140,220,.4)',  text: '#5a9edc' },
-};
-
 // Descripciones por tipo
 export const typeDescs: Record<EventType, string> = {
   Desfiles:

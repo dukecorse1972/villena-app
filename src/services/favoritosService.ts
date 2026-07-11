@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { assertConfigured, assertNoError, unwrapList } from './serviceHelpers';
 import type { Favorites } from '../types';
 
 /**
@@ -6,14 +7,14 @@ import type { Favorites } from '../types';
  * un objeto { eventoId: true } compatible con el tipo Favorites local.
  */
 export async function syncFavoritesFromDB(userId: string): Promise<Favorites> {
+  assertConfigured();
+
   const { data, error } = await supabase
     .from('favoritos')
     .select('*')
     .eq('user_id', userId);
 
-  if (error) throw new Error(error.message);
-
-  return Object.fromEntries((data ?? []).map((row) => [row.evento_id, true]));
+  return Object.fromEntries(unwrapList({ data, error }).map((row) => [row.evento_id, true]));
 }
 
 /**
@@ -21,22 +22,26 @@ export async function syncFavoritesFromDB(userId: string): Promise<Favorites> {
  * Usa upsert para ser idempotente.
  */
 export async function addFavorite(userId: string, eventoId: string): Promise<void> {
+  assertConfigured();
+
   const { error } = await supabase
     .from('favoritos')
     .upsert({ user_id: userId, evento_id: eventoId });
 
-  if (error) throw new Error((error as { message: string }).message);
+  assertNoError(error);
 }
 
 /**
  * Elimina un favorito de Supabase.
  */
 export async function removeFavorite(userId: string, eventoId: string): Promise<void> {
+  assertConfigured();
+
   const { error } = await supabase
     .from('favoritos')
     .delete()
     .eq('user_id', userId)
     .eq('evento_id', eventoId);
 
-  if (error) throw new Error((error as { message: string }).message);
+  assertNoError(error);
 }

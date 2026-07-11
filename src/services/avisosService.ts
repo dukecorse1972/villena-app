@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
 import type { Aviso } from '../types';
 
 /** Avisos hardcodeados como fallback cuando Supabase no está disponible */
@@ -62,8 +63,7 @@ export async function getAvisos(): Promise<Aviso[]> {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw new Error(error.message);
-    return data ?? [];
+    return unwrapList({ data, error });
   }
 
   return LOCAL_AVISOS;
@@ -74,7 +74,7 @@ export async function getAvisos(): Promise<Aviso[]> {
 // base de datos real, protegido por RLS (solo admins pueden escribir).
 
 export async function createAviso(text: string, isNew = true): Promise<Aviso> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { data, error } = await supabase
     .from('avisos')
@@ -82,20 +82,19 @@ export async function createAviso(text: string, isNew = true): Promise<Aviso> {
     .select()
     .single();
 
-  if (error) throw new Error(error.message);
-  return data;
+  return unwrapRow({ data, error });
 }
 
 export async function updateAviso(id: string, changes: { text?: string; is_new?: boolean }): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('avisos').update(changes).eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }
 
 export async function deleteAviso(id: string): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('avisos').delete().eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }

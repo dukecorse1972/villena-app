@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
 import type { Cargo } from '../types';
 
 function rowToCargo(row: Record<string, unknown>): Cargo {
@@ -34,12 +35,11 @@ export async function getCargosByComparsa(comparsaId: string): Promise<Cargo[]> 
     .eq('comparsa_id', comparsaId)
     .order('sort_order');
 
-  if (error) throw new Error(error.message);
-  return (data ?? []).map(rowToCargo);
+  return unwrapList({ data, error }).map(rowToCargo);
 }
 
 export async function createCargo(input: CargoInput): Promise<Cargo> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { data, error } = await supabase
     .from('cargos')
@@ -47,23 +47,22 @@ export async function createCargo(input: CargoInput): Promise<Cargo> {
     .select()
     .single();
 
-  if (error) throw new Error(error.message);
-  return rowToCargo(data);
+  return rowToCargo(unwrapRow({ data, error }));
 }
 
 export async function updateCargo(
   id: string,
   changes: { role?: string; person_name?: string; photo_url?: string; sort_order?: number },
 ): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('cargos').update(changes).eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }
 
 export async function deleteCargo(id: string): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('cargos').delete().eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }

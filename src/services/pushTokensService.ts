@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { assertNoError } from './serviceHelpers';
 
 /**
  * Registra (o refresca) el token push del dispositivo. userId es opcional:
@@ -25,14 +26,14 @@ export async function registerPushToken(
   if (!insertError) return;
 
   const isDuplicate = (insertError as { code?: string }).code === '23505';
-  if (!isDuplicate) throw new Error((insertError as { message: string }).message);
+  if (!isDuplicate) throw new Error(insertError.message);
 
   const { error: updateError } = await supabase
     .from('push_tokens')
     .update({ platform, user_id: userId })
     .eq('token', token);
 
-  if (updateError) throw new Error((updateError as { message: string }).message);
+  assertNoError(updateError);
 }
 
 /**
@@ -46,5 +47,5 @@ export async function unregisterPushToken(token: string): Promise<void> {
     .delete()
     .eq('token', token);
 
-  if (error) throw new Error((error as { message: string }).message);
+  assertNoError(error);
 }

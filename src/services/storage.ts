@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { assertNoError } from './serviceHelpers';
 
 const BUCKET = 'comparsas';
 
@@ -21,7 +22,7 @@ export async function uploadComparsaImage(path: string, file: File): Promise<str
     upsert: true,
     cacheControl: '3600',
   });
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(fullPath);
   // Cache-bust: la ruta es estable entre subidas, así que sin esto el

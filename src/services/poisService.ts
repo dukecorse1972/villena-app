@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { unwrapList } from './serviceHelpers';
 import type { PointOfInterest } from '../types';
 
 /** POIs hardcodeados como fallback cuando Supabase no está disponible */
@@ -44,8 +45,7 @@ export async function getPois(): Promise<PointOfInterest[]> {
       .select('*')
       .order('name');
 
-    if (error) throw new Error(error.message);
-    return (data ?? []) as PointOfInterest[];
+    return unwrapList({ data, error }) as PointOfInterest[];
   }
 
   return LOCAL_POIS;

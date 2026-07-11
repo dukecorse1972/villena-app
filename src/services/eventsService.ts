@@ -1,6 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
 import { allEvents } from '../data/events';
-import { festivalISODate } from '../utils/dates';
 import type { Database } from '../types/database';
 import type { FiestaEvent, EventType, Favorites } from '../types';
 
@@ -42,8 +42,7 @@ export async function getEvents(date: string, filter: 'Todos' | EventType): Prom
     }
 
     const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return (data ?? []).map(rowToEvent);
+    return unwrapList({ data, error }).map(rowToEvent);
   }
 
   return allEvents.filter((ev) => {
@@ -58,15 +57,6 @@ export async function getEvents(date: string, filter: 'Todos' | EventType): Prom
  */
 export function toggleFavorite(eventId: string, favorites: Favorites): Favorites {
   return { ...favorites, [eventId]: !favorites[eventId] };
-}
-
-/**
- * Devuelve los eventos favoritos para un día del mes de fiestas.
- * Siempre usa datos locales como referencia base (los ids son los mismos).
- */
-export function getFavoriteEvents(favorites: Favorites, day: number): FiestaEvent[] {
-  const date = festivalISODate(day);
-  return allEvents.filter((ev) => ev.date === date && favorites[ev.id]);
 }
 
 // ── Backoffice ────────────────────────────────────────────────────────────────
@@ -97,12 +87,11 @@ export async function getAllEventos(): Promise<FiestaEvent[]> {
     .order('date')
     .order('time');
 
-  if (error) throw new Error(error.message);
-  return (data ?? []).map(rowToEvent);
+  return unwrapList({ data, error }).map(rowToEvent);
 }
 
 export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { data, error } = await supabase
     .from('eventos')
@@ -110,20 +99,19 @@ export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
     .select()
     .single();
 
-  if (error) throw new Error(error.message);
-  return rowToEvent(data);
+  return rowToEvent(unwrapRow({ data, error }));
 }
 
 export async function updateEvento(id: string, changes: Partial<Omit<EventoInput, 'id'>>): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('eventos').update(changes).eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }
 
 export async function deleteEvento(id: string): Promise<void> {
-  if (!isSupabaseConfigured) throw new Error('Supabase no está configurado');
+  assertConfigured();
 
   const { error } = await supabase.from('eventos').delete().eq('id', id);
-  if (error) throw new Error(error.message);
+  assertNoError(error);
 }
