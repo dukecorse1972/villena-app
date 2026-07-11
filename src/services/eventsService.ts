@@ -59,6 +59,26 @@ export function toggleFavorite(eventId: string, favorites: Favorites): Favorites
   return { ...favorites, [eventId]: !favorites[eventId] };
 }
 
+function eventDateTime(ev: FiestaEvent): number {
+  return new Date(`${ev.date}T${ev.time}`).getTime();
+}
+
+/**
+ * Devuelve los `count` próximos eventos a partir del instante dado (por
+ * defecto, ahora mismo), ordenados cronológicamente. Se recalcula cada vez
+ * que se llama, así que siempre refleja la hora real: si son las 13:00 del
+ * día 6, un acto de las 11:00 de ese mismo día ya no cuenta como "próximo".
+ * Si al festival le quedan menos de `count` actos por delante (p.ej.
+ * después de que termine), devuelve los últimos `count` en su lugar, para
+ * no dejar el carrusel con menos tarjetas de las esperadas.
+ */
+export function getUpcomingEvents(events: FiestaEvent[], count = 5, now: Date = new Date()): FiestaEvent[] {
+  const sorted = [...events].sort((a, b) => eventDateTime(a) - eventDateTime(b));
+  const nowMs = now.getTime();
+  const upcoming = sorted.filter((ev) => eventDateTime(ev) >= nowMs);
+  return upcoming.length >= count ? upcoming.slice(0, count) : sorted.slice(-count);
+}
+
 // ── Backoffice ────────────────────────────────────────────────────────────────
 
 export interface EventoInput {

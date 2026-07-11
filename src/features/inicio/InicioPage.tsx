@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { FiestaEvent, EventType, Aviso } from '../../types';
-import { FESTIVAL } from '../../constants';
-import { festivalISODate, dayOfMonth, weekdayShortLabel } from '../../utils/dates';
+import type { FiestaEvent, Aviso } from '../../types';
+import { FESTIVAL, STORAGE_KEYS } from '../../constants';
+import { dayOfMonth, weekdayShortLabel, festivalISODate } from '../../utils/dates';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { getCurrentWeather, type Weather } from '../../services/weatherService';
 import { getAvisos } from '../../services/avisosService';
+import { getAllEventos, getUpcomingEvents } from '../../services/eventsService';
 import { getLatestNews, formatNewsDate, NEWS_CATEGORY_URL, type NewsItem } from '../../services/newsService';
+import { typePhotos } from '../../data/events';
 import { openExternalLink } from '../../utils/openExternalLink';
 import { onActivateKey } from '../../utils/a11y';
 import WeatherIcon from '../../components/WeatherIcon';
@@ -20,48 +23,43 @@ interface InicioPageProps {
   onEventClick: (event: FiestaEvent) => void;
 }
 
-interface FeaturedCard {
-  id: string; img: string; title: string;
-  time: string; location: string; type: EventType; date: string;
-}
-
-interface RawFeaturedCard {
-  id: string; img: string; title: string;
-  time: string; location: string; type: EventType; day: number;
-}
-
-const rawFeaturedCards: RawFeaturedCard[] = [
-  { id: 'e1', img: 'https://images.unsplash.com/photo-1755781988015-d1e9c6256e1d?w=480&h=336&fit=crop&auto=format', title: 'Diana General',      time: '08:00', location: 'Plaza de Santiago', type: 'Desfiles', day: 4 },
-  { id: 'e2', img: 'https://images.unsplash.com/photo-1677055290576-ecbf1babede7?w=480&h=336&fit=crop&auto=format', title: 'Alarde de Infantería', time: '12:00', location: 'Av. Constitución',    type: 'Desfiles', day: 4 },
-  { id: 'e4', img: 'https://images.unsplash.com/photo-1718563300857-d2f084703fe9?w=480&h=336&fit=crop&auto=format', title: 'Entrada Cristiana',    time: '23:00', location: 'Av. Constitución',    type: 'Desfiles', day: 5 },
-  { id: 'e5', img: 'https://images.unsplash.com/photo-1533551268962-824e232f7ee1?w=480&h=336&fit=crop&auto=format', title: 'Contrabando',          time: '11:00', location: 'Casco Antiguo',       type: 'Desfiles', day: 6 },
-  { id: 'e7', img: 'https://images.unsplash.com/photo-1677055380601-393348dc342c?w=480&h=336&fit=crop&auto=format', title: 'Entrada Mora',         time: '23:00', location: 'Av. Constitución',    type: 'Desfiles', day: 7 },
-];
-
-// dow ('Vie', 'Sáb'...) se calcula a partir de la fecha real en vez de
-// escribirse a mano — antes había que recalcularlo cada año sin avisar.
-const featuredCards: FeaturedCard[] = rawFeaturedCards.map(({ day, ...rest }) => ({
-  ...rest,
-  date: festivalISODate(day),
-}));
-
 export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos, onEventClick }: InicioPageProps) {
   const { t } = useTranslation();
   const [weather, setWeather] = useState<Weather | null>(null);
   const [avisos, setAvisos] = useState<Aviso[]>([]);
-  const [news, setNews] = useState<NewsItem[]>([]);
+  // Se inicializan con la última copia conocida (localStorage) para que
+  // aparezcan al instante al abrir la app; la petición de red en el efecto
+  // de abajo las refresca por encima en cuanto responde.
+  const [news, setNews] = useLocalStorage<NewsItem[]>(STORAGE_KEYS.NEWS_CACHE, []);
+  const [featuredEvents, setFeaturedEvents] = useLocalStorage<FiestaEvent[]>(STORAGE_KEYS.FEATURED_EVENTS_CACHE, []);
 
   useEffect(() => {
     getCurrentWeather().then(setWeather).catch(() => setWeather(null));
   }, []);
 
   useEffect(() => {
+    // El carrusel de Inicio es un escaparate del programa oficial (los días
+    // FESTIVAL.START_DAY-END_DAY de FESTIVAL.MONTH_INDEX/YEAR) — se acota
+    // aquí para no mezclar actos de otras fechas que puedan existir en la
+    // tabla (p.ej. actos previos de la Novena en agosto).
+    const startDate = festivalISODate(FESTIVAL.START_DAY);
+    const endDate = festivalISODate(FESTIVAL.END_DAY);
+
+    getAllEventos()
+      .then((events) => {
+        const officialProgram = events.filter((ev) => ev.date >= startDate && ev.date <= endDate);
+        setFeaturedEvents(getUpcomingEvents(officialProgram));
+      })
+      .catch(() => {}); // si falla, se queda la última copia cacheada
+  }, [setFeaturedEvents]);
+
+  useEffect(() => {
     getAvisos().then(setAvisos).catch(() => setAvisos([]));
   }, []);
 
   useEffect(() => {
-    getLatestNews().then(setNews).catch(() => setNews([]));
-  }, []);
+    getLatestNews().then(setNews).catch(() => {}); // si falla, se queda la última copia cacheada
+  }, [setNews]);
 
   const hasNewAvisos = avisos.some((a) => a.is_new);
 
@@ -155,31 +153,35 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
 
           {/* Carrusel — márgenes negativos para que llegue a los bordes */}
           <div className={styles.carousel}>
-            {featuredCards.map((card, i) => (
+            {featuredEvents.map((ev) => (
               <div
-                key={i}
+                key={ev.id}
                 className={styles.eventCard}
-                onClick={() => onEventClick && onEventClick(card)}
-                onKeyDown={onActivateKey(() => onEventClick && onEventClick(card))}
+                onClick={() => onEventClick && onEventClick(ev)}
+                onKeyDown={onActivateKey(() => onEventClick && onEventClick(ev))}
                 role="button"
                 tabIndex={0}
               >
-                <img src={card.img} className={styles.eventCardImg} alt={card.title} />
+                <img
+                  src={ev.img_url ?? typePhotos[ev.type] ?? typePhotos['Cultural']}
+                  className={styles.eventCardImg}
+                  alt={ev.title}
+                />
                 <div className={styles.eventGradient} />
                 {/* Badge fecha */}
                 <div className={styles.dateBadge}>
                   <span className={styles.dateBadgeMonth}>{FESTIVAL.MONTH.slice(0, 3)}</span>
-                  <span className={styles.dateBadgeDay}>{dayOfMonth(card.date)}</span>
-                  <span className={styles.dateBadgeDow}>{weekdayShortLabel(card.date)}</span>
+                  <span className={styles.dateBadgeDay}>{dayOfMonth(ev.date)}</span>
+                  <span className={styles.dateBadgeDow}>{weekdayShortLabel(ev.date)}</span>
                 </div>
                 {/* Título + hora */}
                 <div className={styles.eventInfo}>
-                  <p className={styles.eventInfoTitle}>{card.title}</p>
+                  <p className={styles.eventInfoTitle}>{ev.title}</p>
                   <div className={styles.eventInfoTime}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c4972a" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                     </svg>
-                    <span className={styles.eventInfoTimeLabel}>{card.time}h</span>
+                    <span className={styles.eventInfoTimeLabel}>{ev.time}h</span>
                   </div>
                 </div>
               </div>

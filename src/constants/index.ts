@@ -10,8 +10,13 @@ export const ROUTES = {
 
 // ── Claves de localStorage ────────────────────────────────────────────────────
 export const STORAGE_KEYS = {
-  FAVORITES: 'villena_favorites',
-  LANGUAGE:  'villena_language',
+  FAVORITES:       'villena_favorites',
+  LANGUAGE:        'villena_language',
+  // Última copia conocida de contenido de Inicio que depende de red (noticias,
+  // próximos eventos) — se muestra al instante al abrir la app mientras se
+  // refresca en segundo plano, en vez de dejar la sección vacía unos segundos.
+  NEWS_CACHE:      'villena_news_cache',
+  FEATURED_EVENTS_CACHE: 'villena_featured_events_cache',
 } as const;
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
