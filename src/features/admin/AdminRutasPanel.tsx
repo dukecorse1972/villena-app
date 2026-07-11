@@ -45,7 +45,9 @@ export default function AdminRutasPanel() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
+    if (!window.confirm(`¿Borrar la ruta "${name}"? Esta acción no se puede deshacer.`)) return;
+
     const ok = await run(() => deleteRuta(id), 'Error al borrar la ruta');
     if (ok) {
       if (editingId === id) resetForm();
@@ -119,7 +121,7 @@ export default function AdminRutasPanel() {
             </div>
             <div className={styles.itemActions}>
               <button className={styles.actionBtn} onClick={() => startEditing(ruta)}>Editar</button>
-              <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDelete(ruta.id)}>
+              <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDelete(ruta.id, ruta.name)}>
                 Borrar
               </button>
             </div>

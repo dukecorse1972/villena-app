@@ -80,7 +80,9 @@ export default function AdminEventosPanel() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, title: string) => {
+    if (!window.confirm(`¿Borrar el acto "${title}"? Esta acción no se puede deshacer.`)) return;
+
     const ok = await run(() => deleteEvento(id), 'Error al borrar el evento');
     if (ok) {
       if (editingId === id) resetForm();
@@ -197,7 +199,7 @@ export default function AdminEventosPanel() {
             </div>
             <div className={styles.itemActions}>
               <button className={styles.actionBtn} onClick={() => startEditing(ev)}>Editar</button>
-              <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDelete(ev.id)}>
+              <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDelete(ev.id, ev.title)}>
                 Borrar
               </button>
             </div>

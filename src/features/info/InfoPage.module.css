@@ -196,6 +196,23 @@
   flex-shrink: 0;
 }
 
+.langFlagFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15px;
+  min-width: 20px;
+  padding: 0 3px;
+  border-radius: 2px;
+  background: rgba(196, 151, 42, 0.2);
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--color-oro);
+}
+
 /* ── Points of interest ── */
 .poiLabel {
   padding: 20px 20px 10px;

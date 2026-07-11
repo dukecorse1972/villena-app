@@ -63,6 +63,9 @@ export default function InfoPage() {
   const [avisos,     setAvisos]     = useState<Aviso[]>([]);
   const [loginOpen,  setLoginOpen]  = useState(false);
   const [showMap,    setShowMap]    = useState(false);
+  // Códigos de idioma cuya bandera (servida desde flagcdn.com/openmoji.org)
+  // no ha cargado — se muestra el código en texto en su lugar.
+  const [brokenFlags, setBrokenFlags] = useState<Set<string>>(new Set());
   const { user } = useAuth();
 
   useEffect(() => {
@@ -161,12 +164,17 @@ export default function InfoPage() {
                   aria-pressed={active}
                   className={`${styles.langItem}${active ? ` ${styles.active}` : ''}`}
                 >
-                  <img
-                    src={l.img}
-                    className={styles.langFlag}
-                    style={{ width: l.imgW }}
-                    alt={l.name}
-                  />
+                  {brokenFlags.has(l.code) ? (
+                    <span className={styles.langFlagFallback}>{l.code.toUpperCase()}</span>
+                  ) : (
+                    <img
+                      src={l.img}
+                      className={styles.langFlag}
+                      style={{ width: l.imgW }}
+                      alt={l.name}
+                      onError={() => setBrokenFlags(prev => new Set(prev).add(l.code))}
+                    />
+                  )}
                   <span>{l.name}</span>
                 </div>
               );

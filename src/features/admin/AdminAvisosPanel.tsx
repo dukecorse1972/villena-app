@@ -51,7 +51,10 @@ export default function AdminAvisosPanel() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, text: string) => {
+    const preview = text.length > 60 ? `${text.slice(0, 60)}…` : text;
+    if (!window.confirm(`¿Borrar el aviso "${preview}"? Esta acción no se puede deshacer.`)) return;
+
     const ok = await run(() => deleteAviso(id), 'Error al borrar el aviso');
     if (ok) reload();
   };
@@ -107,7 +110,7 @@ export default function AdminAvisosPanel() {
                     {aviso.is_new ? 'Quitar "nuevo"' : 'Marcar como nuevo'}
                   </button>
                   <button className={styles.actionBtn} onClick={() => startEditing(aviso)}>Editar</button>
-                  <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDelete(aviso.id)}>
+                  <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDelete(aviso.id, aviso.text)}>
                     Borrar
                   </button>
                 </div>

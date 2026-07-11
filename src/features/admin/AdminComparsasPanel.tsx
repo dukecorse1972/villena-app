@@ -110,8 +110,10 @@ export default function AdminComparsasPanel() {
     }
   };
 
-  const handleDeleteCargo = async (id: string) => {
+  const handleDeleteCargo = async (id: string, roleLabel: string, personName: string) => {
     if (!selectedId) return;
+    if (!window.confirm(`¿Borrar el cargo "${roleLabel} — ${personName}"? Esta acción no se puede deshacer.`)) return;
+
     const ok = await runCargo(() => deleteCargo(id), 'Error al borrar el cargo');
     if (ok) reloadCargos();
   };
@@ -272,7 +274,7 @@ export default function AdminComparsasPanel() {
                 </span>
                 <div className={styles.itemActions}>
                   <button className={styles.actionBtn} onClick={() => startEditingCargo(cargo)}>Editar</button>
-                  <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDeleteCargo(cargo.id)}>
+                  <button className={`${styles.actionBtn} ${styles.danger}`} onClick={() => handleDeleteCargo(cargo.id, cargo.role, cargo.person_name)}>
                     Borrar
                   </button>
                 </div>
