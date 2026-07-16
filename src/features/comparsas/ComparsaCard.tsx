@@ -25,7 +25,7 @@ export default function ComparsaCard({ comparsa, isLast, onClick }: ComparsaCard
           style={{ background: comparsa.img ? 'transparent' : comparsa.color }}
         >
           {comparsa.img ? (
-            <img src={comparsa.img} className={styles.emblemImg} alt={comparsa.name} />
+            <img src={comparsa.img} className={styles.emblemImg} loading="lazy" decoding="async" alt={comparsa.name} />
           ) : (
             <span>{comparsa.name.slice(0, 2).toUpperCase()}</span>
           )}

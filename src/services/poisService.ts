@@ -34,19 +34,31 @@ const LOCAL_POIS: PointOfInterest[] = [
   { id: 'poi-local-piratas',     name: 'Piratas',           description: 'Local social — C/ Ferriz, 6 (La Guarida)',                     lat: 38.6293, lng: -0.8643, category: 'Local de comparsa', icon: '🏠' },
 ];
 
+// Los POIs no tienen panel de administración (se gestionan solo por
+// migración), así que no hace falta invalidar por escritura — un TTL más
+// largo basta. Mismo patrón que weatherService/eventsService.
+const CACHE_TTL_MS = 10 * 60 * 1000;
+let poisCache: { pois: PointOfInterest[]; fetchedAt: number } | null = null;
+
 /**
  * Devuelve todos los puntos de interés.
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
  */
 export async function getPois(): Promise<PointOfInterest[]> {
+  if (poisCache && Date.now() - poisCache.fetchedAt < CACHE_TTL_MS) return poisCache.pois;
+
+  let pois: PointOfInterest[];
   if (isSupabaseConfigured) {
     const { data, error } = await supabase
       .from('pois')
       .select('*')
       .order('name');
 
-    return unwrapList({ data, error }) as PointOfInterest[];
+    pois = unwrapList({ data, error }) as PointOfInterest[];
+  } else {
+    pois = LOCAL_POIS;
   }
 
-  return LOCAL_POIS;
+  poisCache = { pois, fetchedAt: Date.now() };
+  return pois;
 }

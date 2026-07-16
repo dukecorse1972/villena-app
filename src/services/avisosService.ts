@@ -2,6 +2,14 @@ import { supabase, isSupabaseConfigured } from './supabase';
 import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
 import type { Aviso } from '../types';
 
+// Mismo patrón de caché con TTL que weatherService/eventsService.
+const CACHE_TTL_MS = 3 * 60 * 1000;
+let avisosCache: { avisos: Aviso[]; fetchedAt: number } | null = null;
+
+function invalidateAvisosCache(): void {
+  avisosCache = null;
+}
+
 /** Avisos hardcodeados como fallback cuando Supabase no está disponible */
 const LOCAL_AVISOS: Aviso[] = [
   {
@@ -57,16 +65,22 @@ export function timeAgo(dateStr: string): string {
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
  */
 export async function getAvisos(): Promise<Aviso[]> {
+  if (avisosCache && Date.now() - avisosCache.fetchedAt < CACHE_TTL_MS) return avisosCache.avisos;
+
+  let avisos: Aviso[];
   if (isSupabaseConfigured) {
     const { data, error } = await supabase
       .from('avisos')
       .select('*')
       .order('created_at', { ascending: false });
 
-    return unwrapList({ data, error });
+    avisos = unwrapList({ data, error });
+  } else {
+    avisos = LOCAL_AVISOS;
   }
 
-  return LOCAL_AVISOS;
+  avisosCache = { avisos, fetchedAt: Date.now() };
+  return avisos;
 }
 
 // ── Escritura (backoffice) ───────────────────────────────────────────────────
@@ -82,7 +96,9 @@ export async function createAviso(text: string, isNew = true): Promise<Aviso> {
     .select()
     .single();
 
-  return unwrapRow({ data, error });
+  const aviso = unwrapRow<Aviso>({ data, error });
+  invalidateAvisosCache();
+  return aviso;
 }
 
 export async function updateAviso(id: string, changes: { text?: string; is_new?: boolean }): Promise<void> {
@@ -90,6 +106,7 @@ export async function updateAviso(id: string, changes: { text?: string; is_new?:
 
   const { error } = await supabase.from('avisos').update(changes).eq('id', id);
   assertNoError(error);
+  invalidateAvisosCache();
 }
 
 export async function deleteAviso(id: string): Promise<void> {
@@ -97,4 +114,5 @@ export async function deleteAviso(id: string): Promise<void> {
 
   const { error } = await supabase.from('avisos').delete().eq('id', id);
   assertNoError(error);
+  invalidateAvisosCache();
 }

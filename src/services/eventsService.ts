@@ -6,6 +6,19 @@ import type { FiestaEvent, EventType, Favorites } from '../types';
 
 type EventoRow = Database['public']['Tables']['eventos']['Row'];
 
+// Caché en memoria con TTL corto (mismo patrón que weatherService/newsService):
+// evita repetir la misma consulta a Supabase al volver a Agenda o al abrir
+// varios eventos seguidos en EventModal. Se invalida al crear/editar/borrar
+// para que el backoffice nunca vea datos viejos tras guardar.
+const CACHE_TTL_MS = 3 * 60 * 1000;
+const eventsCache = new Map<string, { events: FiestaEvent[]; fetchedAt: number }>();
+let allEventosCache: { events: FiestaEvent[]; fetchedAt: number } | null = null;
+
+function invalidateEventsCache(): void {
+  eventsCache.clear();
+  allEventosCache = null;
+}
+
 /** Convierte una fila de Supabase al modelo de dominio, normalizando `null` a `undefined`. */
 function rowToEvent(row: EventoRow): FiestaEvent {
   return {
@@ -30,6 +43,11 @@ function rowToEvent(row: EventoRow): FiestaEvent {
  * ediciones del festival nunca pueden mezclarse en la misma consulta.
  */
 export async function getEvents(date: string, filter: 'Todos' | EventType): Promise<FiestaEvent[]> {
+  const cacheKey = `${date}|${filter}`;
+  const cached = eventsCache.get(cacheKey);
+  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.events;
+
+  let events: FiestaEvent[];
   if (isSupabaseConfigured) {
     let query = supabase
       .from('eventos')
@@ -42,14 +60,17 @@ export async function getEvents(date: string, filter: 'Todos' | EventType): Prom
     }
 
     const { data, error } = await query;
-    return unwrapList({ data, error }).map(rowToEvent);
+    events = unwrapList({ data, error }).map(rowToEvent);
+  } else {
+    events = allEvents.filter((ev) => {
+      const matchDate = ev.date === date;
+      const matchType = filter === 'Todos' || ev.type === filter;
+      return matchDate && matchType;
+    });
   }
 
-  return allEvents.filter((ev) => {
-    const matchDate = ev.date === date;
-    const matchType = filter === 'Todos' || ev.type === filter;
-    return matchDate && matchType;
-  });
+  eventsCache.set(cacheKey, { events, fetchedAt: Date.now() });
+  return events;
 }
 
 /**
@@ -99,6 +120,8 @@ export interface EventoInput {
  * Sin Supabase configurado, devuelve los datos locales tal cual.
  */
 export async function getAllEventos(): Promise<FiestaEvent[]> {
+  if (allEventosCache && Date.now() - allEventosCache.fetchedAt < CACHE_TTL_MS) return allEventosCache.events;
+
   if (!isSupabaseConfigured) return allEvents;
 
   const { data, error } = await supabase
@@ -107,7 +130,9 @@ export async function getAllEventos(): Promise<FiestaEvent[]> {
     .order('date')
     .order('time');
 
-  return unwrapList({ data, error }).map(rowToEvent);
+  const events = unwrapList({ data, error }).map(rowToEvent);
+  allEventosCache = { events, fetchedAt: Date.now() };
+  return events;
 }
 
 export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
@@ -119,7 +144,9 @@ export async function createEvento(input: EventoInput): Promise<FiestaEvent> {
     .select()
     .single();
 
-  return rowToEvent(unwrapRow({ data, error }));
+  const evento = rowToEvent(unwrapRow({ data, error }));
+  invalidateEventsCache();
+  return evento;
 }
 
 export async function updateEvento(id: string, changes: Partial<Omit<EventoInput, 'id'>>): Promise<void> {
@@ -127,6 +154,7 @@ export async function updateEvento(id: string, changes: Partial<Omit<EventoInput
 
   const { error } = await supabase.from('eventos').update(changes).eq('id', id);
   assertNoError(error);
+  invalidateEventsCache();
 }
 
 export async function deleteEvento(id: string): Promise<void> {
@@ -134,4 +162,5 @@ export async function deleteEvento(id: string): Promise<void> {
 
   const { error } = await supabase.from('eventos').delete().eq('id', id);
   assertNoError(error);
+  invalidateEventsCache();
 }

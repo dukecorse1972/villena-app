@@ -2,6 +2,15 @@ import { supabase, isSupabaseConfigured } from './supabase';
 import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
 import type { Cargo } from '../types';
 
+// Mismo patrón de caché con TTL que el resto de servicios de lectura.
+// ComparsaDetail vuelve a pedir los cargos cada vez que se abre una comparsa.
+const CACHE_TTL_MS = 3 * 60 * 1000;
+const cargosCache = new Map<string, { cargos: Cargo[]; fetchedAt: number }>();
+
+function invalidateCargosCache(comparsaId: string): void {
+  cargosCache.delete(comparsaId);
+}
+
 function rowToCargo(row: Record<string, unknown>): Cargo {
   return {
     id:          row.id as string,
@@ -27,6 +36,9 @@ export interface CargoInput {
  * (es contenido nuevo, no existe en los datos locales de ejemplo).
  */
 export async function getCargosByComparsa(comparsaId: string): Promise<Cargo[]> {
+  const cached = cargosCache.get(comparsaId);
+  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.cargos;
+
   if (!isSupabaseConfigured) return [];
 
   const { data, error } = await supabase
@@ -35,7 +47,9 @@ export async function getCargosByComparsa(comparsaId: string): Promise<Cargo[]> 
     .eq('comparsa_id', comparsaId)
     .order('sort_order');
 
-  return unwrapList({ data, error }).map(rowToCargo);
+  const cargos = unwrapList({ data, error }).map(rowToCargo);
+  cargosCache.set(comparsaId, { cargos, fetchedAt: Date.now() });
+  return cargos;
 }
 
 export async function createCargo(input: CargoInput): Promise<Cargo> {
@@ -47,7 +61,9 @@ export async function createCargo(input: CargoInput): Promise<Cargo> {
     .select()
     .single();
 
-  return rowToCargo(unwrapRow({ data, error }));
+  const cargo = rowToCargo(unwrapRow({ data, error }));
+  invalidateCargosCache(input.comparsa_id);
+  return cargo;
 }
 
 export async function updateCargo(
@@ -58,6 +74,9 @@ export async function updateCargo(
 
   const { error } = await supabase.from('cargos').update(changes).eq('id', id);
   assertNoError(error);
+  // No tenemos comparsa_id aquí (solo el id del cargo): limpiar toda la
+  // caché es más simple y barato que buscarlo antes de invalidar.
+  cargosCache.clear();
 }
 
 export async function deleteCargo(id: string): Promise<void> {
@@ -65,4 +84,5 @@ export async function deleteCargo(id: string): Promise<void> {
 
   const { error } = await supabase.from('cargos').delete().eq('id', id);
   assertNoError(error);
+  cargosCache.clear();
 }

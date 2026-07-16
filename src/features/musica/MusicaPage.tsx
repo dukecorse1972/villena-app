@@ -143,6 +143,8 @@ export default function MusicaPage() {
         src="/assets/castillo.png"
         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         className={styles.castilloWatermark}
+        loading="lazy"
+        decoding="async"
         alt=""
       />
 
@@ -151,6 +153,8 @@ export default function MusicaPage() {
         src="/assets/patron-hojas.png"
         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         className={styles.patronHojas}
+        loading="lazy"
+        decoding="async"
         alt=""
       />
 
@@ -180,6 +184,8 @@ export default function MusicaPage() {
           {/* Fallback si no hay imagen */}
           <img
             src="/assets/circulo-boton.png"
+            loading="lazy"
+            decoding="async"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.style.display = 'none';

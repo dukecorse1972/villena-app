@@ -165,6 +165,8 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
                 <img
                   src={ev.img_url ?? typePhotos[ev.type] ?? typePhotos['Cultural']}
                   className={styles.eventCardImg}
+                  loading="lazy"
+                  decoding="async"
                   alt={ev.title}
                 />
                 <div className={styles.eventGradient} />
@@ -219,6 +221,8 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
                     <img
                       src={item.img ?? '/logos/escudo-villena.png'}
                       className={styles.newsThumbImg}
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => { e.currentTarget.src = '/logos/escudo-villena.png'; }}
                       alt=""
                     />

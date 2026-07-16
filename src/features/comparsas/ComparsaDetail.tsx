@@ -71,7 +71,7 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
             }}
           >
             {comparsa.img ? (
-              <img src={comparsa.img} className={styles.shieldImg} alt={comparsa.name} />
+              <img src={comparsa.img} className={styles.shieldImg} loading="lazy" decoding="async" alt={comparsa.name} />
             ) : (
               <span className={styles.shieldInitials}>
                 {comparsa.name.slice(0, 2).toUpperCase()}
@@ -102,7 +102,7 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
               <div key={cargo.id} className={styles.cargoItem}>
                 <div className={styles.cargoAvatar}>
                   {cargo.photo_url
-                    ? <img src={cargo.photo_url} alt={cargo.person_name} className={styles.cargoAvatarImg} />
+                    ? <img src={cargo.photo_url} alt={cargo.person_name} className={styles.cargoAvatarImg} loading="lazy" decoding="async" />
                     : <PersonIcon />}
                 </div>
                 <span className={styles.cargoName}>{cargo.person_name}</span>
@@ -125,7 +125,7 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
           ].map(({ label, img }) => (
             <div key={label} className={styles.induCard}>
               {img ? (
-                <img src={img} alt={label} className={styles.induImg} />
+                <img src={img} alt={label} className={styles.induImg} loading="lazy" decoding="async" />
               ) : (
                 <>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(196,151,42,.35)" strokeWidth="1.5">

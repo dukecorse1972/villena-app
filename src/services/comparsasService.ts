@@ -6,6 +6,17 @@ import type { Comparsa } from '../types';
 
 type ComparsaUpdate = Database['public']['Tables']['comparsas']['Update'];
 
+// Mismo patrón de caché con TTL que eventsService: evita repetir consultas al
+// alternar entre Cristianas/Moras o volver a la pestaña, e invalida al editar.
+const CACHE_TTL_MS = 3 * 60 * 1000;
+const comparsasCache = new Map<string, { comparsas: Comparsa[]; fetchedAt: number }>();
+let allComparsasCache: { comparsas: Comparsa[]; fetchedAt: number } | null = null;
+
+function invalidateComparsasCache(): void {
+  comparsasCache.clear();
+  allComparsasCache = null;
+}
+
 /**
  * Mapea una fila de la tabla `comparsas` al tipo de dominio Comparsa.
  * La BD guarda `img_url`; el dominio usa `img`.
@@ -31,8 +42,12 @@ function rowToComparsa(row: Record<string, unknown>): Comparsa {
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
  */
 export async function getComparsas(side: 'Cristianas' | 'Moras'): Promise<Comparsa[]> {
+  const cached = comparsasCache.get(side);
+  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.comparsas;
+
   const bando = side === 'Moras' ? 'Moro' : 'Cristiano';
 
+  let comparsas: Comparsa[];
   if (isSupabaseConfigured) {
     const { data, error } = await supabase
       .from('comparsas')
@@ -40,10 +55,13 @@ export async function getComparsas(side: 'Cristianas' | 'Moras'): Promise<Compar
       .eq('bando', bando)
       .order('name');
 
-    return unwrapList({ data, error }).map(rowToComparsa);
+    comparsas = unwrapList({ data, error }).map(rowToComparsa);
+  } else {
+    comparsas = side === 'Moras' ? comparsasMoras : comparsasCristianas;
   }
 
-  return side === 'Moras' ? comparsasMoras : comparsasCristianas;
+  comparsasCache.set(side, { comparsas, fetchedAt: Date.now() });
+  return comparsas;
 }
 
 // ── Backoffice ────────────────────────────────────────────────────────────────
@@ -53,6 +71,8 @@ export async function getComparsas(side: 'Cristianas' | 'Moras'): Promise<Compar
  * Sin Supabase configurado, devuelve los datos locales tal cual.
  */
 export async function getAllComparsasAdmin(): Promise<Comparsa[]> {
+  if (allComparsasCache && Date.now() - allComparsasCache.fetchedAt < CACHE_TTL_MS) return allComparsasCache.comparsas;
+
   if (!isSupabaseConfigured) return allComparsas;
 
   const { data, error } = await supabase
@@ -61,7 +81,9 @@ export async function getAllComparsasAdmin(): Promise<Comparsa[]> {
     .order('bando')
     .order('name');
 
-  return unwrapList({ data, error }).map(rowToComparsa);
+  const comparsas = unwrapList({ data, error }).map(rowToComparsa);
+  allComparsasCache = { comparsas, fetchedAt: Date.now() };
+  return comparsas;
 }
 
 export async function updateComparsa(
@@ -87,4 +109,5 @@ export async function updateComparsa(
 
   const { error } = await supabase.from('comparsas').update(dbChanges).eq('id', id);
   assertNoError(error);
+  invalidateComparsasCache();
 }

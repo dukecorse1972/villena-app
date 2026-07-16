@@ -174,6 +174,8 @@ export default function InfoPage() {
                       src={l.img}
                       className={styles.langFlag}
                       style={{ width: l.imgW }}
+                      loading="lazy"
+                      decoding="async"
                       alt={l.name}
                       onError={() => setBrokenFlags(prev => new Set(prev).add(l.code))}
                     />
@@ -265,6 +267,8 @@ export default function InfoPage() {
                     <img
                       key={pi}
                       src={photo.thumb}
+                      loading="lazy"
+                      decoding="async"
                       onClick={() => setFocusedPhoto(photo.full ?? null)}
                       onKeyDown={onActivateKey(() => setFocusedPhoto(photo.full ?? null))}
                       role="button"
@@ -310,7 +314,7 @@ export default function InfoPage() {
             <div className={styles.revistas}>
               {REVISTAS.map((r, i) => (
                 <div key={i} className={styles.revistaCard} style={{ background: r.bg }}>
-                  <img src={r.img} className={styles.revistaImg} style={{ opacity: r.opacity }} alt="" />
+                  <img src={r.img} className={styles.revistaImg} style={{ opacity: r.opacity }} loading="lazy" decoding="async" alt="" />
                   <div
                     className={styles.revistaOverlay}
                     style={{ background: `linear-gradient(${r.overlay},rgba(0,0,0,.7) 55%,transparent)` }}
