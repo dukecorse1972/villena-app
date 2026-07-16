@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { Capacitor } from '@capacitor/core';
-import { App as CapacitorApp } from '@capacitor/app';
-import { Browser } from '@capacitor/browser';
+import { SocialLogin } from '@capgo/capacitor-social-login';
 import { supabase, isSupabaseConfigured } from '../services/supabase';
-import { NATIVE_AUTH_REDIRECT } from '../constants';
 
 export interface AuthActions {
   user:              User | null;
@@ -13,6 +11,37 @@ export interface AuthActions {
   signInWithEmail:   (email: string, password: string) => Promise<void>;
   signUpWithEmail:   (email: string, password: string) => Promise<void>;
   signOut:           () => Promise<void>;
+}
+
+// El picker de cuenta nativo de Google necesita el Client ID antes de la
+// primera llamada a login() — se inicializa una sola vez (mismo enfoque que
+// src/i18n/index.ts al arrancar), no en cada intento de login.
+let socialLoginInitPromise: Promise<void> | null = null;
+function ensureSocialLoginInitialized(): Promise<void> {
+  if (!socialLoginInitPromise) {
+    socialLoginInitPromise = SocialLogin.initialize({
+      google: {
+        webClientId: import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID,
+        iOSClientId: import.meta.env.VITE_GOOGLE_IOS_CLIENT_ID,
+        mode: 'online',
+      },
+    });
+  }
+  return socialLoginInitPromise;
+}
+
+// Supabase exige el nonce sin hashear; el SDK nativo de Google exige la
+// versión SHA-256 (hex) del mismo valor. `crypto.subtle` ya está disponible
+// en el WebView, sin dependencia nueva.
+function randomNonce(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 export function useAuth(): AuthActions {
@@ -38,38 +67,36 @@ export function useAuth(): AuthActions {
     return () => subscription.unsubscribe();
   }, []);
 
-  // En la app nativa el redirect de Google no puede volver a "window.location"
-  // (no existe una URL real que Supabase pueda abrir): en su lugar la vuelta
-  // llega como un deep link (es.villena.fiestas://auth-callback#access_token=...)
-  // que capturamos aquí y usamos para completar la sesión a mano.
-  useEffect(() => {
-    if (!isSupabaseConfigured || !Capacitor.isNativePlatform()) return;
-
-    const listenerPromise = CapacitorApp.addListener('appUrlOpen', async ({ url }) => {
-      if (!url.startsWith(NATIVE_AUTH_REDIRECT)) return;
-
-      const fragment = url.split('#')[1] ?? '';
-      const params = new URLSearchParams(fragment);
-      const access_token  = params.get('access_token');
-      const refresh_token = params.get('refresh_token');
-
-      if (access_token && refresh_token) {
-        await supabase.auth.setSession({ access_token, refresh_token });
-      }
-      await Browser.close();
-    });
-
-    return () => { listenerPromise.then((listener) => listener.remove()); };
-  }, []);
-
   const signInWithGoogle = async () => {
     if (Capacitor.isNativePlatform()) {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      // Selector de cuenta nativo (Android/iOS) en vez de un navegador con el
+      // flujo OAuth de Supabase — evita la pantalla "Ir a [dominio]" de Chrome
+      // Custom Tabs. Si el usuario cancela el selector, SocialLogin.login()
+      // lanza con code 'USER_CANCELLED', que se propaga tal cual a quien
+      // llame a signInWithGoogle (LoginSection ya lo captura y muestra).
+      await ensureSocialLoginInitialized();
+
+      const rawNonce = randomNonce();
+      const hashedNonce = await sha256Hex(rawNonce);
+
+      // No se pasan `scopes` custom: el plugin ya añade email/profile/openid
+      // por defecto, y pedirlos explícitamente exige modificar MainActivity.java
+      // (ver ee.forgr...GoogleProvider#login) sin aportar nada distinto.
+      const { result } = await SocialLogin.login({
         provider: 'google',
-        options: { redirectTo: NATIVE_AUTH_REDIRECT, skipBrowserRedirect: true },
+        options: { nonce: hashedNonce },
+      });
+
+      if (result.responseType !== 'online' || !result.idToken) {
+        throw new Error('No se pudo completar el inicio de sesión con Google');
+      }
+
+      const { error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: result.idToken,
+        nonce: rawNonce,
       });
       if (error) throw new Error(error.message);
-      if (data.url) await Browser.open({ url: data.url });
       return;
     }
 

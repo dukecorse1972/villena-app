@@ -26,7 +26,16 @@
 				<string>es.villena.fiestas</string>
 			</array>
 		</dict>
+		<!-- Login nativo de Google (cliente OAuth iOS creado en Google Cloud Console) -->
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.882993343843-s9tffo2uo7pl6f8itmb8ppui3e9usrpg</string>
+			</array>
+		</dict>
 	</array>
+	<key>GIDClientID</key>
+	<string>882993343843-s9tffo2uo7pl6f8itmb8ppui3e9usrpg.apps.googleusercontent.com</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
