@@ -11,10 +11,15 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
  *   VITE_SUPABASE_URL=https://xxxx.supabase.co
  *   VITE_SUPABASE_ANON_KEY=eyJ...
  *
- * Si las variables no están configuradas, el cliente existe pero
- * todas las llamadas fallarán con error de red.
+ * Sin esas variables, `createClient` lanzaría al construirse (exige URL y
+ * clave no vacías) — se le pasan valores de relleno solo para evitar ese
+ * crash al arrancar. Ningún servicio debe usar este cliente sin comprobar
+ * antes `isSupabaseConfigured`.
  */
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient<Database>(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-anon-key',
+);
 
 /**
  * Flag para saber si Supabase está configurado.

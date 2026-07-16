@@ -35,6 +35,12 @@ export default function AdminComparsasPanel() {
   // El formulario se resetea con los datos de la comparsa recién
   // seleccionada — no es un valor derivable en render porque el usuario
   // edita estos campos localmente antes de guardar.
+  //
+  // Depende de `selectedId`, no de `selected`: `selected` es un objeto nuevo
+  // cada vez que `comparsas` cambia (por ejemplo, tras guardar con éxito),
+  // aunque siga siendo la misma comparsa — si el efecto dependiera de
+  // `selected`, ese guardado retrigger-eaba este reset y borraba el aviso
+  // "Guardado." casi al instante.
   useEffect(() => {
     if (!selected) return;
     setDescription(selected.description ?? ''); // eslint-disable-line react-hooks/set-state-in-effect
@@ -42,7 +48,7 @@ export default function AdminComparsasPanel() {
     setNumSocios(selected.num_socios ? String(selected.num_socios) : '');
     setComparsaSaved(false);
     setComparsaError(null);
-  }, [selected]);
+  }, [selectedId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const {
     data: cargos,

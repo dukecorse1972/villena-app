@@ -5,6 +5,9 @@ node_modules/
 dist/
 tsconfig.tsbuildinfo
 
+# Reporte de cobertura de tests (npm run test:coverage)
+coverage/
+
 # Variables de entorno (contienen claves reales de Supabase)
 .env.local
 .env.*.local
