@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { festivalISODate } from '../utils/dates';
+import { allEvents } from '../data/events';
 
 // Forzar fallback a datos locales para que los tests sean deterministas
 // independientemente de si .env.local tiene claves de Supabase configuradas.
@@ -8,28 +9,28 @@ vi.mock('./supabase', () => ({
   supabase: {} as never,
 }));
 
-import { getEvents, toggleFavorite } from './eventsService';
+import { filterEventsByDayAndType, toggleFavorite } from './eventsService';
 
-describe('getEvents', () => {
-  it('devuelve solo los eventos del día solicitado', async () => {
-    const events = await getEvents(festivalISODate(4), 'Todos');
+describe('filterEventsByDayAndType', () => {
+  it('devuelve solo los eventos del día solicitado', () => {
+    const events = filterEventsByDayAndType(allEvents, festivalISODate(4), 'Todos');
     expect(events.length).toBeGreaterThan(0);
     expect(events.every((e) => e.date === festivalISODate(4))).toBe(true);
   });
 
-  it('filtra por tipo de evento', async () => {
-    const events = await getEvents(festivalISODate(4), 'Desfiles');
+  it('filtra por tipo de evento', () => {
+    const events = filterEventsByDayAndType(allEvents, festivalISODate(4), 'Desfiles');
     expect(events.every((e) => e.type === 'Desfiles')).toBe(true);
   });
 
-  it('devuelve array vacío para un día sin eventos', async () => {
-    const events = await getEvents(festivalISODate(30), 'Todos');
+  it('devuelve array vacío para un día sin eventos', () => {
+    const events = filterEventsByDayAndType(allEvents, festivalISODate(30), 'Todos');
     expect(events).toHaveLength(0);
   });
 
-  it('con filtro Todos devuelve todos los tipos del día', async () => {
-    const todos   = await getEvents(festivalISODate(8), 'Todos');
-    const desfiles = await getEvents(festivalISODate(8), 'Desfiles');
+  it('con filtro Todos devuelve todos los tipos del día', () => {
+    const todos    = filterEventsByDayAndType(allEvents, festivalISODate(8), 'Todos');
+    const desfiles = filterEventsByDayAndType(allEvents, festivalISODate(8), 'Desfiles');
     expect(todos.length).toBeGreaterThanOrEqual(desfiles.length);
   });
 });

@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
+import { assertConfigured, assertNoError, createPersistentCache, unwrapList, unwrapRow, withTimeout } from './serviceHelpers';
+import { STORAGE_KEYS } from '../constants';
 import type { Ruta } from '../types';
 
 /**
@@ -10,14 +11,16 @@ import type { Ruta } from '../types';
  */
 const LOCAL_RUTAS: Ruta[] = [];
 
-// Mismo patrón de caché con TTL que weatherService/eventsService. Importa
-// especialmente aquí: EventModal llama a getRutas() cada vez que se abre
-// cualquier evento con ruta, así que sin caché repite la consulta en cada clic.
+// Caché con TTL persistida en localStorage (ver serviceHelpers.createPersistentCache).
+// Importa especialmente aquí: EventModal llama a getRutas() cada vez que se
+// abre cualquier evento con ruta, así que sin caché repite la consulta en
+// cada clic; y si falla la red, se usa como último recurso en vez de dejar
+// el mapa de recorrido sin trazado.
 const CACHE_TTL_MS = 3 * 60 * 1000;
-let rutasCache: { rutas: Ruta[]; fetchedAt: number } | null = null;
+const rutasCache = createPersistentCache<Ruta[]>(STORAGE_KEYS.RUTAS_CACHE, CACHE_TTL_MS);
 
 function invalidateRutasCache(): void {
-  rutasCache = null;
+  rutasCache.clear();
 }
 
 function rowToRuta(row: { id: string; name: string; path: unknown }): Ruta {
@@ -27,20 +30,29 @@ function rowToRuta(row: { id: string; name: string; path: unknown }): Ruta {
 /**
  * Devuelve todos los recorridos de desfile.
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
+ *
+ * Si la petición falla y ya había una copia conocida (aunque expirada), se
+ * devuelve esa en vez de propagar el error — solo se lanza si nunca hubo
+ * ninguna copia real.
  */
 export async function getRutas(): Promise<Ruta[]> {
-  if (rutasCache && Date.now() - rutasCache.fetchedAt < CACHE_TTL_MS) return rutasCache.rutas;
+  const fresh = rutasCache.get();
+  if (fresh) return fresh;
 
-  let rutas: Ruta[];
-  if (isSupabaseConfigured) {
-    const { data, error } = await supabase.from('rutas').select('*').order('name');
-    rutas = unwrapList({ data, error }).map(rowToRuta);
-  } else {
-    rutas = LOCAL_RUTAS;
+  if (!isSupabaseConfigured) return LOCAL_RUTAS;
+
+  try {
+    const { data, error } = await withTimeout((signal) =>
+      supabase.from('rutas').select('*').order('name').abortSignal(signal),
+    );
+    const rutas = unwrapList({ data, error }).map(rowToRuta);
+    rutasCache.set(rutas);
+    return rutas;
+  } catch (err) {
+    const stale = rutasCache.getStale();
+    if (stale) return stale;
+    throw err;
   }
-
-  rutasCache = { rutas, fetchedAt: Date.now() };
-  return rutas;
 }
 
 // ── Backoffice ────────────────────────────────────────────────────────────────

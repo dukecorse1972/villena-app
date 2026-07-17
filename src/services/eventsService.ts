@@ -1,22 +1,22 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
+import { assertConfigured, assertNoError, createPersistentCache, unwrapList, unwrapRow, withTimeout } from './serviceHelpers';
+import { STORAGE_KEYS } from '../constants';
 import { allEvents } from '../data/events';
 import type { Database } from '../types/database';
 import type { FiestaEvent, EventType, Favorites } from '../types';
 
 type EventoRow = Database['public']['Tables']['eventos']['Row'];
 
-// Caché en memoria con TTL corto (mismo patrón que weatherService/newsService):
+// Caché con TTL persistida en localStorage (ver serviceHelpers.createPersistentCache):
 // evita repetir la misma consulta a Supabase al volver a Agenda o al abrir
-// varios eventos seguidos en EventModal. Se invalida al crear/editar/borrar
-// para que el backoffice nunca vea datos viejos tras guardar.
+// varios eventos seguidos en EventModal, sobrevive a cerrar la app, y sirve
+// de último recurso si falla la red. Se invalida al crear/editar/borrar para
+// que el backoffice nunca vea datos viejos tras guardar.
 const CACHE_TTL_MS = 3 * 60 * 1000;
-const eventsCache = new Map<string, { events: FiestaEvent[]; fetchedAt: number }>();
-let allEventosCache: { events: FiestaEvent[]; fetchedAt: number } | null = null;
+const allEventosCache = createPersistentCache<FiestaEvent[]>(STORAGE_KEYS.ALL_EVENTOS_CACHE, CACHE_TTL_MS);
 
 function invalidateEventsCache(): void {
-  eventsCache.clear();
-  allEventosCache = null;
+  allEventosCache.clear();
 }
 
 /** Convierte una fila de Supabase al modelo de dominio, normalizando `null` a `undefined`. */
@@ -35,42 +35,23 @@ function rowToEvent(row: EventoRow): FiestaEvent {
 }
 
 /**
- * Obtiene eventos filtrados por fecha y tipo.
- * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
+ * Filtra una lista de eventos por fecha y tipo — función pura, sin acceso a
+ * red. Agenda pide siempre el programa completo (`getAllEventos`, ya
+ * cacheado) y filtra aquí en el propio cliente en vez de repetir una
+ * consulta a Supabase por cada cambio de día o de filtro: son ~30 actos,
+ * filtrar en el cliente es instantáneo y evita una petición de red distinta
+ * por cada combinación día+filtro.
  *
- * `date` es una fecha ISO completa ('YYYY-MM-DD'), no un día suelto:
- * cada fila de `eventos` tiene su propia fecha real, así que distintas
- * ediciones del festival nunca pueden mezclarse en la misma consulta.
+ * `date` es una fecha ISO completa ('YYYY-MM-DD'), no un día suelto: cada
+ * evento tiene su propia fecha real, así que distintas ediciones del
+ * festival nunca pueden mezclarse.
  */
-export async function getEvents(date: string, filter: 'Todos' | EventType): Promise<FiestaEvent[]> {
-  const cacheKey = `${date}|${filter}`;
-  const cached = eventsCache.get(cacheKey);
-  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.events;
-
-  let events: FiestaEvent[];
-  if (isSupabaseConfigured) {
-    let query = supabase
-      .from('eventos')
-      .select('*')
-      .eq('date', date)
-      .order('time');
-
-    if (filter !== 'Todos') {
-      query = query.eq('type', filter);
-    }
-
-    const { data, error } = await query;
-    events = unwrapList({ data, error }).map(rowToEvent);
-  } else {
-    events = allEvents.filter((ev) => {
-      const matchDate = ev.date === date;
-      const matchType = filter === 'Todos' || ev.type === filter;
-      return matchDate && matchType;
-    });
-  }
-
-  eventsCache.set(cacheKey, { events, fetchedAt: Date.now() });
-  return events;
+export function filterEventsByDayAndType(
+  events: FiestaEvent[],
+  date: string,
+  filter: 'Todos' | EventType,
+): FiestaEvent[] {
+  return events.filter((ev) => ev.date === date && (filter === 'Todos' || ev.type === filter));
 }
 
 /**
@@ -115,24 +96,32 @@ export interface EventoInput {
 }
 
 /**
- * Todos los eventos, ordenados cronológicamente — para gestión en el
- * backoffice (a diferencia de getEvents, que filtra por un día concreto).
- * Sin Supabase configurado, devuelve los datos locales tal cual.
+ * Todos los eventos, ordenados cronológicamente — programa completo, tanto
+ * para Agenda (que filtra por día/tipo con `filterEventsByDayAndType`) como
+ * para el backoffice. Sin Supabase configurado, devuelve los datos locales.
+ *
+ * Si la petición falla y ya había una copia conocida (aunque expirada), se
+ * devuelve esa en vez de propagar el error — es el programa de actos, el
+ * dato más importante de toda la app durante las fiestas.
  */
 export async function getAllEventos(): Promise<FiestaEvent[]> {
-  if (allEventosCache && Date.now() - allEventosCache.fetchedAt < CACHE_TTL_MS) return allEventosCache.events;
+  const fresh = allEventosCache.get();
+  if (fresh) return fresh;
 
   if (!isSupabaseConfigured) return allEvents;
 
-  const { data, error } = await supabase
-    .from('eventos')
-    .select('*')
-    .order('date')
-    .order('time');
-
-  const events = unwrapList({ data, error }).map(rowToEvent);
-  allEventosCache = { events, fetchedAt: Date.now() };
-  return events;
+  try {
+    const { data, error } = await withTimeout((signal) =>
+      supabase.from('eventos').select('*').order('date').order('time').abortSignal(signal),
+    );
+    const events = unwrapList({ data, error }).map(rowToEvent);
+    allEventosCache.set(events);
+    return events;
+  } catch (err) {
+    const stale = allEventosCache.getStale();
+    if (stale) return stale;
+    throw err;
+  }
 }
 
 export async function createEvento(input: EventoInput): Promise<FiestaEvent> {

@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import { unwrapList } from './serviceHelpers';
+import { createPersistentCache, unwrapList, withTimeout } from './serviceHelpers';
+import { STORAGE_KEYS } from '../constants';
 import type { PointOfInterest } from '../types';
 
 /** POIs hardcodeados como fallback cuando Supabase no está disponible */
@@ -36,29 +37,35 @@ const LOCAL_POIS: PointOfInterest[] = [
 
 // Los POIs no tienen panel de administración (se gestionan solo por
 // migración), así que no hace falta invalidar por escritura — un TTL más
-// largo basta. Mismo patrón que weatherService/eventsService.
+// largo basta. Caché persistida en localStorage (ver
+// serviceHelpers.createPersistentCache): si falla la red, se usa como
+// último recurso en vez de dejar el mapa sin puntos.
 const CACHE_TTL_MS = 10 * 60 * 1000;
-let poisCache: { pois: PointOfInterest[]; fetchedAt: number } | null = null;
+const poisCache = createPersistentCache<PointOfInterest[]>(STORAGE_KEYS.POIS_CACHE, CACHE_TTL_MS);
 
 /**
  * Devuelve todos los puntos de interés.
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
+ *
+ * Si la petición falla y ya había una copia conocida (aunque expirada), se
+ * devuelve esa en vez de propagar el error.
  */
 export async function getPois(): Promise<PointOfInterest[]> {
-  if (poisCache && Date.now() - poisCache.fetchedAt < CACHE_TTL_MS) return poisCache.pois;
+  const fresh = poisCache.get();
+  if (fresh) return fresh;
 
-  let pois: PointOfInterest[];
-  if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from('pois')
-      .select('*')
-      .order('name');
+  if (!isSupabaseConfigured) return LOCAL_POIS;
 
-    pois = unwrapList({ data, error }) as PointOfInterest[];
-  } else {
-    pois = LOCAL_POIS;
+  try {
+    const { data, error } = await withTimeout((signal) =>
+      supabase.from('pois').select('*').order('name').abortSignal(signal),
+    );
+    const pois = unwrapList({ data, error }) as PointOfInterest[];
+    poisCache.set(pois);
+    return pois;
+  } catch (err) {
+    const stale = poisCache.getStale();
+    if (stale) return stale;
+    throw err;
   }
-
-  poisCache = { pois, fetchedAt: Date.now() };
-  return pois;
 }

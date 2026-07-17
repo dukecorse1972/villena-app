@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useAuth } from '../../hooks/useAuth';
-import { getEvents, toggleFavorite } from '../../services/eventsService';
+import { getAllEventos, filterEventsByDayAndType, toggleFavorite } from '../../services/eventsService';
 import { syncFavoritesFromDB, addFavorite, removeFavorite } from '../../services/favoritosService';
 import { isSupabaseConfigured } from '../../services/supabase';
 import { STORAGE_KEYS } from '../../constants';
@@ -21,28 +21,32 @@ export function useAgenda() {
   const [selectedEvent, setSelectedEvent] = useState<FiestaEvent | null>(null);
   const [favorites, setFavorites]         = useLocalStorage<Favorites>(STORAGE_KEYS.FAVORITES, {});
 
-  const [filteredEvents, setFilteredEvents] = useState<FiestaEvent[]>([]);
-  const [isLoading, setIsLoading]           = useState(false);
-  const [error, setError]                   = useState<string | null>(null);
+  const [allEventos, setAllEventos] = useState<FiestaEvent[]>([]);
+  const [isLoading, setIsLoading]   = useState(true);
+  const [error, setError]           = useState<string | null>(null);
 
   const selectedDate = festivalISODate(selectedDay);
 
-  // Carga eventos cuando cambia la fecha o el filtro.
-  // setIsLoading/setError se marcan de forma síncrona al principio del efecto
-  // a propósito, para que la UI muestre "cargando" desde el primer render tras
-  // el cambio — es el patrón de fetching en efectos que documenta React.
+  // El programa completo se pide una sola vez (getAllEventos ya cachea con
+  // persistencia y cae a la última copia conocida si falla la red); cambiar
+  // de día o de filtro filtra en el propio cliente (filterEventsByDayAndType,
+  // ~30 actos, instantáneo) en vez de disparar una petición de red distinta
+  // por cada combinación día+filtro.
   useEffect(() => {
     let cancelled = false;
-    setIsLoading(true); // eslint-disable-line react-hooks/set-state-in-effect
-    setError(null);
 
-    getEvents(selectedDate, filter)
-      .then((data) => { if (!cancelled) setFilteredEvents(data); })
+    getAllEventos()
+      .then((data) => { if (!cancelled) setAllEventos(data); })
       .catch((err: Error) => { if (!cancelled) setError(err.message); })
       .finally(() => { if (!cancelled) setIsLoading(false); });
 
     return () => { cancelled = true; };
-  }, [selectedDate, filter]);
+  }, []);
+
+  const filteredEvents = useMemo(
+    () => filterEventsByDayAndType(allEventos, selectedDate, filter),
+    [allEventos, selectedDate, filter],
+  );
 
   // Sincroniza favoritos desde Supabase cuando el usuario inicia sesión
   useEffect(() => {

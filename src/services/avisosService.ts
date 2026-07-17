@@ -1,13 +1,16 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import { assertConfigured, assertNoError, unwrapList, unwrapRow } from './serviceHelpers';
+import { assertConfigured, assertNoError, createPersistentCache, unwrapList, unwrapRow, withTimeout } from './serviceHelpers';
+import { STORAGE_KEYS } from '../constants';
 import type { Aviso } from '../types';
 
-// Mismo patrón de caché con TTL que weatherService/eventsService.
+// Caché con TTL persistida en localStorage (ver serviceHelpers.createPersistentCache):
+// sobrevive a cerrar la app, y en el catch de getAvisos() se usa como último
+// recurso si la red falla, en vez de dejar la pantalla de avisos en blanco.
 const CACHE_TTL_MS = 3 * 60 * 1000;
-let avisosCache: { avisos: Aviso[]; fetchedAt: number } | null = null;
+const avisosCache = createPersistentCache<Aviso[]>(STORAGE_KEYS.AVISOS_CACHE, CACHE_TTL_MS);
 
 function invalidateAvisosCache(): void {
-  avisosCache = null;
+  avisosCache.clear();
 }
 
 /** Avisos hardcodeados como fallback cuando Supabase no está disponible */
@@ -63,24 +66,30 @@ export function timeAgo(dateStr: string): string {
 /**
  * Devuelve los avisos ordenados por fecha descendente.
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
+ *
+ * Si la petición a Supabase falla (sin red, timeout...), cae a la última
+ * copia real conocida aunque el TTL haya expirado — solo si nunca hubo
+ * ninguna copia se propaga el error (no se sustituye por LOCAL_AVISOS: eso
+ * mostraría avisos de ejemplo como si fueran reales).
  */
 export async function getAvisos(): Promise<Aviso[]> {
-  if (avisosCache && Date.now() - avisosCache.fetchedAt < CACHE_TTL_MS) return avisosCache.avisos;
+  const fresh = avisosCache.get();
+  if (fresh) return fresh;
 
-  let avisos: Aviso[];
-  if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from('avisos')
-      .select('*')
-      .order('created_at', { ascending: false });
+  if (!isSupabaseConfigured) return LOCAL_AVISOS;
 
-    avisos = unwrapList({ data, error });
-  } else {
-    avisos = LOCAL_AVISOS;
+  try {
+    const { data, error } = await withTimeout((signal) =>
+      supabase.from('avisos').select('*').order('created_at', { ascending: false }).abortSignal(signal),
+    );
+    const avisos = unwrapList({ data, error });
+    avisosCache.set(avisos);
+    return avisos;
+  } catch (err) {
+    const stale = avisosCache.getStale();
+    if (stale) return stale;
+    throw err;
   }
-
-  avisosCache = { avisos, fetchedAt: Date.now() };
-  return avisos;
 }
 
 // ── Escritura (backoffice) ───────────────────────────────────────────────────

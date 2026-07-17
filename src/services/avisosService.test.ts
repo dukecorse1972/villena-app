@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 describe('avisosService — lectura (fallback local)', () => {
   beforeEach(() => {
     vi.resetModules();
+    localStorage.clear();
   });
 
   it('getAvisos devuelve los avisos locales sin Supabase configurado', async () => {
@@ -18,6 +19,53 @@ describe('avisosService — lectura (fallback local)', () => {
     const { timeAgo } = await import('./avisosService');
 
     expect(timeAgo(new Date().toISOString())).toBe('ahora mismo');
+  });
+});
+
+describe('avisosService — fallback a caché si falla la red', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    localStorage.clear();
+  });
+
+  it('si la petición falla y ya había una copia cacheada, devuelve esa en vez de lanzar', async () => {
+    const avisoReal = { id: 'a1', text: 'Aviso real', is_new: true, created_at: '2026-09-04T10:00:00.000Z' };
+    const order = vi.fn()
+      .mockReturnValueOnce({ abortSignal: () => Promise.resolve({ data: [avisoReal], error: null }) })
+      .mockReturnValueOnce({ abortSignal: () => Promise.reject(new Error('sin red')) });
+    vi.doMock('./supabase', () => ({
+      isSupabaseConfigured: true,
+      supabase: { from: () => ({ select: () => ({ order }) }) } as never,
+    }));
+
+    const { getAvisos } = await import('./avisosService');
+
+    const first = await getAvisos();
+    expect(first).toEqual([avisoReal]);
+
+    // Fuerza a que la caché en memoria se considere expirada para el segundo intento.
+    vi.useFakeTimers();
+    vi.advanceTimersByTime(4 * 60 * 1000);
+
+    const second = await getAvisos();
+    expect(second).toEqual([avisoReal]);
+    vi.useRealTimers();
+  });
+
+  it('si la petición falla y nunca hubo copia cacheada, propaga el error', async () => {
+    vi.doMock('./supabase', () => ({
+      isSupabaseConfigured: true,
+      supabase: {
+        from: () => ({
+          select: () => ({
+            order: () => ({ abortSignal: () => Promise.reject(new Error('sin red')) }),
+          }),
+        }),
+      } as never,
+    }));
+
+    const { getAvisos } = await import('./avisosService');
+    await expect(getAvisos()).rejects.toThrow('sin red');
   });
 });
 

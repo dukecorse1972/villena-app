@@ -1,19 +1,31 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import { assertConfigured, assertNoError, unwrapList } from './serviceHelpers';
+import { assertConfigured, assertNoError, createPersistentCache, unwrapList, withTimeout } from './serviceHelpers';
+import { STORAGE_KEYS } from '../constants';
 import { comparsasCristianas, comparsasMoras, allComparsas } from '../data/comparsas';
 import type { Database } from '../types/database';
 import type { Comparsa } from '../types';
 
 type ComparsaUpdate = Database['public']['Tables']['comparsas']['Update'];
 
-// Mismo patrón de caché con TTL que eventsService: evita repetir consultas al
-// alternar entre Cristianas/Moras o volver a la pestaña, e invalida al editar.
+// Caché con TTL persistida en localStorage (ver serviceHelpers.createPersistentCache):
+// evita repetir consultas al alternar entre Cristianas/Moras o volver a la
+// pestaña, sobrevive a cerrar la app, y sirve de último recurso si falla la
+// red. Solo dos bandos posibles, así que una instancia por bando basta (no
+// hace falta un Map genérico).
 const CACHE_TTL_MS = 3 * 60 * 1000;
-const comparsasCache = new Map<string, { comparsas: Comparsa[]; fetchedAt: number }>();
+const comparsasCacheBySide = {
+  Cristianas: createPersistentCache<Comparsa[]>(STORAGE_KEYS.COMPARSAS_CACHE_CRISTIANAS, CACHE_TTL_MS),
+  Moras:      createPersistentCache<Comparsa[]>(STORAGE_KEYS.COMPARSAS_CACHE_MORAS, CACHE_TTL_MS),
+} as const;
+
+// Caché del listado combinado para el backoffice (AdminComparsasPanel) — solo
+// en memoria: el panel de admin siempre requiere Supabase configurado y no
+// forma parte del problema de resiliencia offline de cara al usuario final.
 let allComparsasCache: { comparsas: Comparsa[]; fetchedAt: number } | null = null;
 
 function invalidateComparsasCache(): void {
-  comparsasCache.clear();
+  comparsasCacheBySide.Cristianas.clear();
+  comparsasCacheBySide.Moras.clear();
   allComparsasCache = null;
 }
 
@@ -40,28 +52,31 @@ function rowToComparsa(row: Record<string, unknown>): Comparsa {
 /**
  * Devuelve comparsas filtradas por bando.
  * Si Supabase está configurado, consulta la BD; si no, usa datos locales.
+ *
+ * Si la petición falla y ya había una copia conocida (aunque expirada), se
+ * devuelve esa en vez de propagar el error.
  */
 export async function getComparsas(side: 'Cristianas' | 'Moras'): Promise<Comparsa[]> {
-  const cached = comparsasCache.get(side);
-  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.comparsas;
+  const cache = comparsasCacheBySide[side];
+  const fresh = cache.get();
+  if (fresh) return fresh;
+
+  if (!isSupabaseConfigured) return side === 'Moras' ? comparsasMoras : comparsasCristianas;
 
   const bando = side === 'Moras' ? 'Moro' : 'Cristiano';
 
-  let comparsas: Comparsa[];
-  if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from('comparsas')
-      .select('*')
-      .eq('bando', bando)
-      .order('name');
-
-    comparsas = unwrapList({ data, error }).map(rowToComparsa);
-  } else {
-    comparsas = side === 'Moras' ? comparsasMoras : comparsasCristianas;
+  try {
+    const { data, error } = await withTimeout((signal) =>
+      supabase.from('comparsas').select('*').eq('bando', bando).order('name').abortSignal(signal),
+    );
+    const comparsas = unwrapList({ data, error }).map(rowToComparsa);
+    cache.set(comparsas);
+    return comparsas;
+  } catch (err) {
+    const stale = cache.getStale();
+    if (stale) return stale;
+    throw err;
   }
-
-  comparsasCache.set(side, { comparsas, fetchedAt: Date.now() });
-  return comparsas;
 }
 
 // ── Backoffice ────────────────────────────────────────────────────────────────

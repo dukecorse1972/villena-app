@@ -9,7 +9,7 @@ import { onActivateKey } from '../../utils/a11y';
 import styles from './AgendaPage.module.css';
 
 // Claves de traducción de agenda.filters — deben coincidir con los valores
-// literales que espera eventsService.getEvents() (columna `type` en BD).
+// literales de la columna `type` en BD (ver eventsService.filterEventsByDayAndType).
 const FILTER_KEYS: Record<string, string> = {
   Todos: 'todos',
   Desfiles: 'desfiles',
