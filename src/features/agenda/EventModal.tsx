@@ -51,7 +51,11 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
   if (!event) return null;
 
   const photo   = typePhotos[event.type]    ?? typePhotos['Cultural'];
-  const desc    = typeDescs[event.type]     ?? '';
+  // Si el admin escribió una descripción propia para este acto, tiene
+  // prioridad sobre el genérico por tipo — con `||` (no `??`) para que una
+  // descripción vaciada por error caiga igual al genérico en vez de dejar
+  // la ficha sin texto.
+  const desc    = event.description || typeDescs[event.type] || '';
   // "Plaza de Santiago (salida)" debe encontrar las coordenadas de "Plaza
   // de Santiago" — se busca primero el texto completo y, si no hay
   // coincidencia, sin el sufijo entre paréntesis.
