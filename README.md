@@ -70,5 +70,5 @@ npm run cap:ios       # build + sync + abre el proyecto en Xcode (requiere macOS
 
 - `capacitor.config.ts` — configuración de Capacitor (`appId`, `appName`, `webDir`).
 - `android/`, `ios/` — proyectos nativos generados por Capacitor. Se versionan en git (cada uno trae su propio `.gitignore` para excluir `build/`, `.gradle/`, `Pods/`, etc.), **no se regeneran a mano**.
-- `resources/` — icono (`icon.png`, 1024×1024) y splash (`splash.png`) de origen. Para regenerar todos los tamaños tras cambiar el icono: `npx capacitor-assets generate`.
+- `resources/` — icono (`icon.png`, 1024×1024) y splash (`splash.png`) de origen. Para regenerar todos los tamaños tras cambiar el icono: `npx @capacitor/assets generate`. El generador no es una dependencia del proyecto (arrastraba vulnerabilidades y solo hace falta al cambiar el icono), así que npx lo descarga en el momento — hay que indicar el nombre con scope: el paquete `capacitor-assets` sin scope no existe.
 - Compilar y firmar la app final para las tiendas requiere Android Studio (Android) o Xcode en macOS (iOS) — no es posible solo con Node.
