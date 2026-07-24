@@ -14,7 +14,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 24 trae npm 11, el mismo que genera el package-lock.json en
+          # desarrollo. npm 11 poda del lock los peers opcionales que no hacen
+          # falta (los binarios de esbuild 0.28.1 de vite 8, que vitest
+          # arrastra), pero npm 10 los exige y aborta con "Missing ... from
+          # lock file". Node 20 y 22 traen npm 10.x, así que el lock generado
+          # aquí solo instala de forma fiable con Node 24.
+          #
+          # Además @supabase/supabase-js y @capacitor/cli declaran
+          # engines.node >=22, que Node 20 tampoco cumplía.
+          node-version: 24
           cache: npm
 
       - run: npm ci
