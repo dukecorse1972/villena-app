@@ -1,0 +1,10 @@
+# Ficheros que regenera Capacitor (`npx cap sync`) siempre con LF.
+#
+# Con core.autocrlf=true git los saca en CRLF al hacer checkout, cap sync los
+# reescribe en LF y `git status` los marca como modificados aunque su contenido
+# sea idéntico (`git diff` sale vacío). Fijarlos a LF corta ese ruido.
+#
+# El índice ya los guarda en LF, así que esto no renormaliza nada.
+android/app/capacitor.build.gradle text eol=lf
+android/capacitor.settings.gradle  text eol=lf
+ios/App/CapApp-SPM/Package.swift   text eol=lf
