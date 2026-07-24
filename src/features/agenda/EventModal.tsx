@@ -1,10 +1,11 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { typePhotos, typeDescs, locCoords } from '../../data/events';
 import { getRutas } from '../../services/rutasService';
 import { getPois } from '../../services/poisService';
 import type { FiestaEvent, PointOfInterest } from '../../types';
 import { openExternalLink } from '../../utils/openExternalLink';
+import { useModalA11y } from '../../hooks/useModalA11y';
 import styles from './EventModal.module.css';
 
 // "Locales de las comparsas" no es un único sitio: cada comparsa tiene el
@@ -27,6 +28,9 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
   const { t } = useTranslation();
   const [routePath, setRoutePath] = useState<[number, number][] | undefined>(undefined);
   const [comparsaLocales, setComparsaLocales] = useState<PointOfInterest[]>([]);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useModalA11y(!!event, onClose, panelRef);
 
   useEffect(() => {
     // Responde a un cambio de evento (otro acto sin ruta), no a un valor
@@ -73,7 +77,15 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.panel} onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={panelRef}
+        className={styles.panel}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={event.title}
+        tabIndex={-1}
+      >
 
         {/* ── Foto superior ── */}
         <div className={styles.photoWrap}>

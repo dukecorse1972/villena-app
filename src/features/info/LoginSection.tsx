@@ -61,7 +61,12 @@ export default function LoginSection({ open, onClose }: Props) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} maxWidth="340px">
+    <Modal
+      open={open}
+      onClose={onClose}
+      maxWidth="340px"
+      ariaLabel={user ? t('loginSection.myAccount') : mode === 'login' ? t('loginSection.login') : t('loginSection.createAccount')}
+    >
       <div className={styles.modal}>
 
         {/* Cabecera */}
