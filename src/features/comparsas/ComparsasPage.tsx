@@ -9,10 +9,17 @@ import styles from './ComparsasPage.module.css';
 export default function ComparsasPage() {
   const { t } = useTranslation();
   const [side, setSide]                         = useState<'Cristianas' | 'Moras'>('Cristianas');
+  const [prevSide, setPrevSide]                 = useState<'Cristianas' | 'Moras'>('Cristianas');
+  const [gridSlideClass, setGridSlideClass]     = useState('');
   const [activeTab, setActiveTab]               = useState<'comparsas' | 'historia'>('comparsas');
   const [selectedComparsa, setSelectedComparsa] = useState<Comparsa | null>(null);
   const [showDetail, setShowDetail]             = useState(false);
   const [activeList, setActiveList]             = useState<Comparsa[]>([]);
+
+  if (side !== prevSide) {
+    setPrevSide(side);
+    setGridSlideClass(side === 'Moras' ? styles.slideFromRight : styles.slideFromLeft);
+  }
 
   useEffect(() => {
     getComparsas(side).then(setActiveList).catch(() => setActiveList([]));
@@ -72,7 +79,7 @@ export default function ComparsasPage() {
           </div>
 
           {/* Grid */}
-          <div key={side} className={styles.grid}>
+          <div key={side} className={`${styles.grid}${gridSlideClass ? ` ${gridSlideClass}` : ''}`}>
             {activeList.map((c, i) => {
               const isOddLast = activeList.length % 2 !== 0 && i === activeList.length - 1;
               return (

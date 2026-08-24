@@ -91,18 +91,36 @@
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 0 16px;
-  animation: gridFadeIn 160ms cubic-bezier(0.23, 1, 0.32, 1) both;
   will-change: opacity, transform;
 }
 
-@keyframes gridFadeIn {
+.slideFromRight {
+  animation: comparsaSlideRight 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.slideFromLeft {
+  animation: comparsaSlideLeft 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes comparsaSlideRight {
   from {
     opacity: 0;
-    transform: scale(0.985);
+    transform: translateX(16px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
+  }
+}
+
+@keyframes comparsaSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
