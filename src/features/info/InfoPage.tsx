@@ -5,6 +5,7 @@ import { getAvisos, timeAgo } from '../../services/avisosService';
 import { useAuth } from '../../hooks/useAuth';
 import UserAvatar from '../../components/UserAvatar';
 import LoginSection from './LoginSection';
+import LegalModal from './LegalModal';
 import { onActivateKey } from '../../utils/a11y';
 import { SUPPORTED_LANGUAGES } from '../../i18n/languages';
 import type { InfoView, Aviso } from '../../types';
@@ -38,7 +39,7 @@ const SERVICIOS = [
   { key: 'servicioDormir',      icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="12" y2="9"/></svg> },
   { key: 'servicioComer',       icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><line x1="7" y1="2" x2="7" y2="11"/><path d="M21 15V2a5 5 0 00-5 5v6h3l-1 11h3l-1-11h1z"/></svg> },
   { key: 'servicioTransporte',  icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 19v2M8 19v2M2 9h20"/><circle cx="7" cy="15" r="1"/><circle cx="17" cy="15" r="1"/></svg> },
-  { key: 'servicioQueVisitar',  icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> },
+  { key: 'servicioLegal',       icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
   { key: 'servicioParajes',     icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polyline points="22,2 2,22"/><polyline points="12,2 2,12"/><polyline points="22,12 12,22"/></svg> },
   { key: 'servicioComercio',    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> },
   { key: 'servicioMapa',        icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b1a0b" strokeWidth="2" strokeLinecap="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> },
@@ -68,6 +69,7 @@ export default function InfoPage() {
   const [avisos,     setAvisos]     = useState<Aviso[]>([]);
   const [loginOpen,  setLoginOpen]  = useState(false);
   const [showMap,    setShowMap]    = useState(false);
+  const [legalOpen,  setLegalOpen]  = useState(false);
   // Códigos de idioma cuya bandera (servida desde flagcdn.com/openmoji.org)
   // no ha cargado — se muestra el código en texto en su lugar.
   const [brokenFlags, setBrokenFlags] = useState<Set<string>>(new Set());
@@ -130,14 +132,22 @@ export default function InfoPage() {
           <div className={styles.serviciosGrid}>
             {SERVICIOS.map(s => {
               const isMap = s.key === 'servicioMapa';
+              const isLegal = s.key === 'servicioLegal';
+              const isClickable = isMap || isLegal;
               return (
                 <div
                   key={s.key}
                   className={styles.servicioItem}
-                  {...(isMap
+                  {...(isClickable
                     ? {
-                        onClick: () => setShowMap(true),
-                        onKeyDown: onActivateKey(() => setShowMap(true)),
+                        onClick: () => {
+                          if (isMap) setShowMap(true);
+                          if (isLegal) setLegalOpen(true);
+                        },
+                        onKeyDown: onActivateKey(() => {
+                          if (isMap) setShowMap(true);
+                          if (isLegal) setLegalOpen(true);
+                        }),
                         role: 'button',
                         tabIndex: 0,
                       }
@@ -340,6 +350,7 @@ export default function InfoPage() {
       )}
 
       {showMap && <MapPage onBack={() => setShowMap(false)} />}
+      <LegalModal open={legalOpen} onClose={() => setLegalOpen(false)} />
     </div>
   );
 }

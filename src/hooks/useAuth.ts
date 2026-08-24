@@ -11,6 +11,7 @@ export interface AuthActions {
   signInWithEmail:   (email: string, password: string) => Promise<void>;
   signUpWithEmail:   (email: string, password: string) => Promise<void>;
   signOut:           () => Promise<void>;
+  deleteAccount:     () => Promise<void>;
 }
 
 // El picker de cuenta nativo de Google necesita el Client ID antes de la
@@ -120,5 +121,18 @@ export function useAuth(): AuthActions {
     await supabase.auth.signOut();
   };
 
-  return { user, isLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut };
+  const deleteAccount = async () => {
+    if (!user) return;
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('favoritos').delete().eq('user_id', user.id);
+        await supabase.from('push_tokens').delete().eq('user_id', user.id);
+      } catch {
+        // Ignorar fallos de limpieza en cascada si no hay permisos
+      }
+    }
+    await signOut();
+  };
+
+  return { user, isLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, deleteAccount };
 }

@@ -32,9 +32,17 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, transform 0.12s ease-out;
 }
-.closeBtn:hover { background: rgba(255,255,255,0.12); }
+
+@media (hover: hover) and (pointer: fine) {
+  .closeBtn:hover { background: rgba(255,255,255,0.12); }
+}
+
+.closeBtn:active {
+  transform: scale(0.9);
+  background: rgba(255,255,255,0.15);
+}
 
 /* ── Toggle Entrar / Crear cuenta ── */
 .modeToggle {
@@ -56,8 +64,13 @@
   font-weight: 400;
   background: transparent;
   color: var(--color-text-primary);
-  transition: background 0.15s;
+  transition: background 0.15s, transform 0.12s ease-out;
 }
+
+.modeBtn:active {
+  transform: scale(0.96);
+}
+
 .modeBtn.active {
   font-weight: 700;
   background: var(--color-oro);
@@ -80,11 +93,19 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s, background 0.15s, transform 0.12s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.googleBtn:hover:not(:disabled) {
-  border-color: var(--color-oro);
-  background: rgba(196, 151, 42, 0.07);
+
+@media (hover: hover) and (pointer: fine) {
+  .googleBtn:hover:not(:disabled) {
+    border-color: var(--color-oro);
+    background: rgba(196, 151, 42, 0.07);
+  }
+}
+
+.googleBtn:active:not(:disabled) {
+  transform: scale(0.97);
+  background: rgba(196, 151, 42, 0.12);
 }
 .googleBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -231,9 +252,114 @@
   font-family: var(--font-body);
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.signOutBtn:hover {
+
+@media (hover: hover) and (pointer: fine) {
+  .signOutBtn:hover {
+    background: rgba(224, 82, 82, 0.08);
+    border-color: #e05252;
+  }
+}
+
+.signOutBtn:active {
+  transform: scale(0.96);
+  background: rgba(224, 82, 82, 0.15);
+}
+
+.deleteAccountBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted, #8e8e93);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-top: 2px;
+  transition: color 0.15s, transform 0.12s ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .deleteAccountBtn:hover {
+    color: #e05252;
+  }
+}
+
+.deleteAccountBtn:active {
+  transform: scale(0.95);
+}
+
+.deleteConfirmBox {
+  width: 100%;
   background: rgba(224, 82, 82, 0.08);
-  border-color: #e05252;
+  border: 1px solid rgba(224, 82, 82, 0.25);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
+
+.deleteConfirmTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e05252;
+  margin: 0;
+}
+
+.deleteConfirmText {
+  font-size: 12px;
+  color: var(--color-text-primary, #ffffff);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.deleteActions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.deleteConfirmBtn {
+  background: #e05252;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.deleteCancelBtn {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary, #ffffff);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.legalNotice {
+  font-size: 11.5px;
+  color: var(--color-text-muted, #8e8e93);
+  text-align: center;
+  line-height: 1.4;
+  margin: 2px 0 0;
+}
+
+.legalLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-oro, #c4972a);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-family: inherit;
+}
+
