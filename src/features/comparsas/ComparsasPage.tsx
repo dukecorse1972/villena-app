@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getComparsas } from '../../services/comparsasService';
 import type { Comparsa, Bando } from '../../types';
+import { triggerSelectionHaptic } from '../../utils/haptics';
 import ComparsaCard from './ComparsaCard';
 import ComparsaDetail from './ComparsaDetail';
 import styles from './ComparsasPage.module.css';
@@ -15,6 +16,7 @@ export default function ComparsasPage() {
   const [selectedComparsa, setSelectedComparsa] = useState<Comparsa | null>(null);
   const [showDetail, setShowDetail]             = useState(false);
   const [activeList, setActiveList]             = useState<Comparsa[]>([]);
+  const touchStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   if (side !== prevSide) {
     setPrevSide(side);
@@ -33,6 +35,33 @@ export default function ComparsasPage() {
   const handleBack = () => {
     setShowDetail(false);
     setSelectedComparsa(null);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    if (touch) {
+      touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touch = e.changedTouches[0];
+    if (!touch) return;
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+
+    // Gesto horizontal claro (> 45px y predomina sobre scroll vertical)
+    if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+      if (deltaX < 0 && side === 'Cristianas') {
+        // Deslizar hacia la izquierda -> ir a Moras
+        triggerSelectionHaptic();
+        setSide('Moras');
+      } else if (deltaX > 0 && side === 'Moras') {
+        // Deslizar hacia la derecha -> ir a Cristianas
+        triggerSelectionHaptic();
+        setSide('Cristianas');
+      }
+    }
   };
 
   return (
@@ -59,9 +88,13 @@ export default function ComparsasPage() {
         </button>
       </div>
 
-      {/* ── TAB: Comparsas (grid) ── */}
+      {/* ── TAB: Comparsas (grid con swipe táctil) ── */}
       {activeTab === 'comparsas' && (
-        <>
+        <div
+          className={styles.swipeContainer}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Toggle Cristianas / Moras */}
           <div className={styles.toggle}>
             <button
@@ -92,7 +125,7 @@ export default function ComparsasPage() {
               );
             })}
           </div>
-        </>
+        </div>
       )}
 
       {/* ── TAB: Historia ── */}

@@ -56,6 +56,12 @@
   font-weight: 700;
 }
 
+/* ── Swipe Container ── */
+.swipeContainer {
+  touch-action: pan-y;
+  min-height: 400px;
+}
+
 /* ── Toggle Cristianas / Moras ── */
 .toggle {
   display: flex;
