@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import TabBar from './components/TabBar';
 import InicioPage from './features/inicio/InicioPage';
@@ -55,23 +55,22 @@ export default function App() {
 
   const appBg = pathname === ROUTES.MUSICA ? '#02120a' : '#0b1a0b';
 
-  // Dirección del micro-slide
-  const prevPathRef = useRef(pathname);
-  const prevIndex = TAB_INDEX_MAP[prevPathRef.current] ?? 0;
-  const currentIndex = TAB_INDEX_MAP[pathname] ?? 0;
+  // Dirección del micro-slide mediante estado previo estándar de React
+  const [prevPath, setPrevPath] = useState(pathname);
+  const [transitionClass, setTransitionClass] = useState('');
 
-  let transitionClass = '';
-  if (pathname !== prevPathRef.current) {
-    if (currentIndex > prevIndex) {
-      transitionClass = 'route-slide-forward';
-    } else if (currentIndex < prevIndex) {
-      transitionClass = 'route-slide-backward';
-    }
+  if (pathname !== prevPath) {
+    const prevIndex = TAB_INDEX_MAP[prevPath] ?? 0;
+    const currentIndex = TAB_INDEX_MAP[pathname] ?? 0;
+    setPrevPath(pathname);
+    setTransitionClass(
+      currentIndex > prevIndex
+        ? 'route-slide-forward'
+        : currentIndex < prevIndex
+          ? 'route-slide-backward'
+          : ''
+    );
   }
-
-  useEffect(() => {
-    prevPathRef.current = pathname;
-  }, [pathname]);
 
   return (
     <div style={{ width: '100%', height: '100dvh', background: appBg, transition: 'background-color 0.25s ease', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
