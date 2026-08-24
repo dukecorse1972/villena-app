@@ -155,9 +155,23 @@ img {
   }
 }
 
+/* ── Cobertura Global de Accesibilidad: prefers-reduced-motion (Fase 3) ── */
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   .route-slide-forward,
-  .route-slide-backward {
-    animation: routeFadeIn 0.15s ease-out both;
+  .route-slide-backward,
+  .route-slide-none,
+  .route-transition {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

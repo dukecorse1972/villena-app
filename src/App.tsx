@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import TabBar from './components/TabBar';
 import InicioPage from './features/inicio/InicioPage';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -29,12 +28,12 @@ const MusicaPage    = lazy(() => import('./features/musica/MusicaPage'));
 const InfoPage      = lazy(() => import('./features/info/InfoPage'));
 const AdminPage     = lazy(() => import('./features/admin/AdminPage'));
 const EventModal    = lazy(() => import('./features/agenda/EventModal'));
+import RouteSkeleton from './components/RouteSkeleton';
 
 function RouteFallback({ appBg }: { appBg: string }) {
-  const { t } = useTranslation();
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', background: appBg, color: 'rgba(255,255,255,.6)', fontSize: 14 }}>
-      {t('common.loading')}
+    <div style={{ width: '100%', minHeight: '100%', background: appBg }}>
+      <RouteSkeleton />
     </div>
   );
 }
