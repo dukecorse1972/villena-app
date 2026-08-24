@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getAvisos, timeAgo } from '../../services/avisosService';
@@ -7,6 +7,7 @@ import UserAvatar from '../../components/UserAvatar';
 import LoginSection from './LoginSection';
 import LegalModal from './LegalModal';
 import { onActivateKey } from '../../utils/a11y';
+import { triggerLightImpact, triggerSelectionHaptic } from '../../utils/haptics';
 import { SUPPORTED_LANGUAGES } from '../../i18n/languages';
 import type { InfoView, Aviso } from '../../types';
 import MapPage from './MapPage';
@@ -74,16 +75,52 @@ export default function InfoPage() {
   // no ha cargado — se muestra el código en texto en su lugar.
   const [brokenFlags, setBrokenFlags] = useState<Set<string>>(new Set());
   const { user } = useAuth();
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     getAvisos().then(setAvisos).catch(() => setAvisos([]));
   }, []);
-  const [focusedPhoto, setFocusedPhoto] = useState<string | null>(null);
 
-  // Preparar columnas de galería
-  const cols: GalleryPhoto[][] = [[], [], []];
-  GALLERY_PHOTOS.forEach((d, i) => cols[i % 3].push(d));
-  const makeCol = (items: GalleryPhoto[]) => items.map((d, i) => ({
+  const nextPhoto = useCallback(() => {
+    setFocusedIndex((prev) => {
+      if (prev === null) return null;
+      triggerSelectionHaptic();
+      return (prev + 1) % GALLERY_PHOTOS.length;
+    });
+  }, []);
+
+  const prevPhoto = useCallback(() => {
+    setFocusedIndex((prev) => {
+      if (prev === null) return null;
+      triggerSelectionHaptic();
+      return (prev - 1 + GALLERY_PHOTOS.length) % GALLERY_PHOTOS.length;
+    });
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    triggerLightImpact();
+    setFocusedIndex(null);
+  }, []);
+
+  useEffect(() => {
+    if (focusedIndex === null) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') nextPhoto();
+      else if (e.key === 'ArrowLeft') prevPhoto();
+      else if (e.key === 'Escape') closeLightbox();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [focusedIndex, nextPhoto, prevPhoto, closeLightbox]);
+
+  // Preparar columnas de galería con su índice original
+  interface IndexedGalleryPhoto extends GalleryPhoto {
+    originalIndex: number;
+  }
+  const cols: IndexedGalleryPhoto[][] = [[], [], []];
+  GALLERY_PHOTOS.forEach((d, i) => cols[i % 3].push({ ...d, originalIndex: i }));
+  const makeCol = (items: IndexedGalleryPhoto[]) => items.map((d, i) => ({
     ...d,
     isLast: i === items.length - 1,
   }));
@@ -273,14 +310,14 @@ export default function InfoPage() {
             <div className={styles.galeria}>
               {[col1, col2, col3].map((col, ci) => (
                 <div key={ci} className={styles.galeriaCol}>
-                  {col.map((photo: GalleryPhoto, pi: number) => (
+                  {col.map((photo, pi: number) => (
                     <img
                       key={pi}
                       src={photo.thumb}
                       loading="lazy"
                       decoding="async"
-                      onClick={() => setFocusedPhoto(photo.full ?? null)}
-                      onKeyDown={onActivateKey(() => setFocusedPhoto(photo.full ?? null))}
+                      onClick={() => setFocusedIndex(photo.originalIndex)}
+                      onKeyDown={onActivateKey(() => setFocusedIndex(photo.originalIndex))}
                       role="button"
                       tabIndex={0}
                       className={styles.galeriaImg}
@@ -295,25 +332,79 @@ export default function InfoPage() {
                 </div>
               ))}
 
-              {/* Lightbox */}
-              {focusedPhoto && (
+              {/* Lightbox con gestos Swipe e indicadores táctiles */}
+              {focusedIndex !== null && (
                 <div
                   className={styles.lightbox}
-                  onClick={() => setFocusedPhoto(null)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-                      e.preventDefault();
-                      setFocusedPhoto(null);
+                  onClick={closeLightbox}
+                  onTouchStart={(e) => {
+                    const t = e.touches[0];
+                    if (t) touchStartRef.current = { x: t.clientX, y: t.clientY };
+                  }}
+                  onTouchEnd={(e) => {
+                    const t = e.changedTouches[0];
+                    if (!t) return;
+                    const deltaX = t.clientX - touchStartRef.current.x;
+                    const deltaY = t.clientY - touchStartRef.current.y;
+                    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                      if (deltaX < 0) nextPhoto();
+                      else prevPhoto();
+                    } else if (deltaY > 80 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                      closeLightbox();
                     }
                   }}
-                  role="button"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={t('info.verFotoAmpliada')}
                   tabIndex={0}
-                  aria-label={t('info.cerrarImagen')}
                 >
-                  <img src={focusedPhoto} className={styles.lightboxImg} alt="" />
-                  <div className={styles.lightboxClose}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  {/* Contador superior */}
+                  <div className={styles.lightboxCounter}>
+                    {focusedIndex + 1} / {GALLERY_PHOTOS.length}
                   </div>
+
+                  {/* Botón cerrar */}
+                  <button
+                    className={styles.lightboxClose}
+                    onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
+                    aria-label={t('info.cerrarImagen')}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                      <line x1="18" y1="6" x2="6" y2="18"/>
+                      <line x1="6"  y1="6" x2="18" y2="18"/>
+                    </svg>
+                  </button>
+
+                  {/* Botón anterior */}
+                  <button
+                    className={`${styles.lightboxNavBtn} ${styles.lightboxPrevBtn}`}
+                    onClick={(e) => { e.stopPropagation(); prevPhoto(); }}
+                    aria-label={t('musica.previousAria')}
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+
+                  {/* Imagen principal */}
+                  <img
+                    key={focusedIndex}
+                    src={GALLERY_PHOTOS[focusedIndex]?.full}
+                    className={styles.lightboxImg}
+                    onClick={(e) => e.stopPropagation()}
+                    alt={t('info.verFotoAmpliada')}
+                  />
+
+                  {/* Botón siguiente */}
+                  <button
+                    className={`${styles.lightboxNavBtn} ${styles.lightboxNextBtn}`}
+                    onClick={(e) => { e.stopPropagation(); nextPhoto(); }}
+                    aria-label={t('musica.nextAria')}
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                  </button>
                 </div>
               )}
             </div>
