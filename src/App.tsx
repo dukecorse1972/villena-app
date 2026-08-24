@@ -61,11 +61,13 @@ export default function App() {
   const prevIndex = TAB_INDEX_MAP[prevPathRef.current] ?? 0;
   const currentIndex = TAB_INDEX_MAP[pathname] ?? 0;
 
-  let transitionClass = 'route-slide-none';
-  if (currentIndex > prevIndex) {
-    transitionClass = 'route-slide-forward';
-  } else if (currentIndex < prevIndex) {
-    transitionClass = 'route-slide-backward';
+  let transitionClass = '';
+  if (pathname !== prevPathRef.current) {
+    if (currentIndex > prevIndex) {
+      transitionClass = 'route-slide-forward';
+    } else if (currentIndex < prevIndex) {
+      transitionClass = 'route-slide-backward';
+    }
   }
 
   useEffect(() => {

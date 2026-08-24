@@ -89,7 +89,8 @@ export default function TabBar() {
           <button
             key={tab.id}
             onClick={() => {
-              if (!isActive) triggerSelectionHaptic();
+              if (isActive) return;
+              triggerSelectionHaptic();
               navigate(TAB_ROUTES[tab.id]);
             }}
             className={`${styles.tab}${isActive ? ` ${styles.tabActive}` : ''}`}
