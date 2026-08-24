@@ -46,10 +46,10 @@
 
 .closeBtn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 30px;
-  height: 30px;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(196, 151, 42, 0.5);
@@ -57,6 +57,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.12s ease-out, background 0.15s;
+}
+
+.closeBtn:active {
+  transform: scale(0.9);
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .titleArea {

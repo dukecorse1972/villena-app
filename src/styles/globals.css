@@ -30,13 +30,28 @@ html, body {
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; -ms-overflow-style: none; }
 
-button {
+button, [role="button"] {
   font-family: var(--font-body);
   cursor: pointer;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Micro-feedback táctil elástico instantáneo en elementos interactivos */
+.pressable,
+button:not(:disabled) {
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.12s ease-out;
+}
+
+.pressable:active,
+button:not(:disabled):active {
+  transform: scale(0.96);
+  opacity: 0.88;
 }
 
 a {
   text-decoration: none;
+  -webkit-touch-callout: none;
 }
 
 /* Solo visible en navegación por teclado (:focus-visible no se activa con

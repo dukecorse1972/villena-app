@@ -22,6 +22,15 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  padding: 6px 10px;
+  margin-left: -10px;
+  min-height: 44px;
+  transition: transform 0.12s ease-out, opacity 0.12s ease-out;
+}
+
+.backBtn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 .backLabel {

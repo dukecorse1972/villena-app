@@ -6,6 +6,7 @@ import { getPois } from '../../services/poisService';
 import type { FiestaEvent, PointOfInterest } from '../../types';
 import { openExternalLink } from '../../utils/openExternalLink';
 import { useModalA11y } from '../../hooks/useModalA11y';
+import { triggerLightImpact } from '../../utils/haptics';
 import styles from './EventModal.module.css';
 
 // "Locales de las comparsas" no es un único sitio: cada comparsa tiene el
@@ -140,7 +141,10 @@ export default function EventModal({ event, isFavorite, onClose, onToggleFavorit
           <div className={styles.btnRow}>
             {/* Favorito */}
             <button
-              onClick={() => onToggleFavorite(event.id)}
+              onClick={() => {
+                triggerLightImpact();
+                onToggleFavorite(event.id);
+              }}
               className={`${styles.btnFav}${isFavorite ? ` ${styles.saved}` : ''}`}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill={isFavorite ? '#c4972a' : 'none'} stroke="#c4972a" strokeWidth="1.8">

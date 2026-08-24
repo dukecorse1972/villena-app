@@ -92,7 +92,7 @@
 }
 
 .calEmpty {
-  min-height: 40px;
+  min-height: 44px;
 }
 
 /* Day cell — base */
@@ -102,14 +102,18 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  min-height: 40px;
+  min-height: 44px;
   cursor: pointer;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 4px 2px;
   background: transparent;
   color: var(--color-text-primary);
   font-weight: 400;
   font-size: 14px;
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1), background 0.15s;
+}
+
+.calCell:active {
+  transform: scale(0.91);
 }
 
 /* Festive day */
@@ -160,7 +164,8 @@
 
 .chip {
   flex-shrink: 0;
-  padding: 7px 15px;
+  padding: 9px 16px;
+  min-height: 38px;
   border-radius: 20px;
   cursor: pointer;
   white-space: nowrap;
@@ -170,6 +175,11 @@
   background: transparent;
   color: var(--color-text-primary);
   border: 1.5px solid rgba(196, 151, 42, 0.25);
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1), background 0.15s, border-color 0.15s;
+}
+
+.chip:active {
+  transform: scale(0.94);
 }
 
 .chip.active {

@@ -74,8 +74,15 @@
   transition: opacity 0.15s ease, background 0.15s ease;
 }
 
-.dropzone:hover .preview + .overlay,
-.dropzone.active .preview + .overlay {
+@media (hover: hover) and (pointer: fine) {
+  .dropzone:hover .preview + .overlay {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.45);
+  }
+}
+
+.dropzone.active .preview + .overlay,
+.dropzone:active .preview + .overlay {
   opacity: 1;
   background: rgba(0, 0, 0, 0.45);
 }

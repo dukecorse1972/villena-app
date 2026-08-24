@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Marcha } from '../../types';
+import { triggerLightImpact, triggerMediumImpact, triggerSuccessHaptic } from '../../utils/haptics';
 import styles from './MusicaPage.module.css';
 
 const MARCHAS = [
@@ -49,6 +50,7 @@ export default function MusicaPage() {
 
   const startRecording = () => {
     if (isRecording) return;
+    triggerMediumImpact();
     stopAudioNodes();
     setIsRecording(true);
     setResult(null);
@@ -57,12 +59,14 @@ export default function MusicaPage() {
 
     setTimeout(() => {
       const pick = MARCHAS[Math.floor(Math.random() * MARCHAS.length)];
+      triggerSuccessHaptic();
       setIsRecording(false);
       setResult(pick);
     }, 3500);
   };
 
   const playAudio = () => {
+    triggerLightImpact();
     if (audioPlaying) {
       stopAudioNodes();
       setAudioPlaying(false);

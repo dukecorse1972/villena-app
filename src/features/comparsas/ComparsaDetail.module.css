@@ -33,6 +33,15 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  padding: 6px 8px;
+  margin-left: -8px;
+  min-height: 44px;
+  transition: transform 0.12s ease-out, opacity 0.12s ease-out;
+}
+
+.backBtn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 .backLabel {
@@ -43,13 +52,20 @@
 }
 
 .favIconBtn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 50%;
+  margin-right: -6px;
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1), background 0.2s;
+}
+
+.favIconBtn:active {
+  transform: scale(0.85);
+  background: rgba(196, 151, 42, 0.12);
 }
 
 /* ── Hero ── */
@@ -311,6 +327,11 @@
   font-size: 32px;
   cursor: pointer;
   padding: 4px;
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.starBtn:active {
+  transform: scale(1.25);
 }
 
 .submitBtn {
@@ -324,7 +345,11 @@
   background: rgba(196, 151, 42, 0.1);
   color: var(--color-text-muted);
   border: none;
-  transition: all 0.2s;
+  transition: all 0.2s, transform 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submitBtn:active {
+  transform: scale(0.97);
 }
 
 .submitBtn.ready {

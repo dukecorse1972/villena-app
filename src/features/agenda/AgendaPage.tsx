@@ -6,6 +6,7 @@ import { festiveDays, moroDays, ctianDays } from '../../data/events';
 import { FESTIVAL } from '../../constants';
 import { daysInMonth, firstWeekdayOffset } from '../../utils/dates';
 import { onActivateKey } from '../../utils/a11y';
+import { triggerSelectionHaptic } from '../../utils/haptics';
 import styles from './AgendaPage.module.css';
 
 // Claves de traducción de agenda.filters — deben coincidir con los valores
@@ -83,8 +84,14 @@ export default function AgendaPage() {
             return (
               <div
                 key={day}
-                onClick={() => setSelectedDay(day)}
-                onKeyDown={onActivateKey(() => setSelectedDay(day))}
+                onClick={() => {
+                  triggerSelectionHaptic();
+                  setSelectedDay(day);
+                }}
+                onKeyDown={onActivateKey(() => {
+                  triggerSelectionHaptic();
+                  setSelectedDay(day);
+                })}
                 role="button"
                 tabIndex={0}
                 aria-pressed={isSel}
@@ -109,7 +116,10 @@ export default function AgendaPage() {
           return (
             <button
               key={f}
-              onClick={() => setFilter(f)}
+              onClick={() => {
+                triggerSelectionHaptic();
+                setFilter(f);
+              }}
               className={`${styles.chip}${active ? ` ${styles.active}` : ''}`}
             >
               {t(`agenda.filters.${FILTER_KEYS[f]}`)}

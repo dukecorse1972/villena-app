@@ -17,17 +17,22 @@
 }
 
 .hamburger {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   gap: 5px;
   cursor: pointer;
-  padding-left: 8px;
-  border-radius: 8px;
-  transition: background 0.2s;
+  padding-left: 12px;
+  border-radius: 10px;
+  transition: background 0.2s, transform 0.12s ease-out;
+}
+
+.hamburger:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .hamburgerLine {
@@ -50,13 +55,14 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .weather {
   display: flex;
   align-items: center;
   gap: 4px;
+  padding: 4px 6px;
 }
 
 .weatherTemp {
@@ -67,20 +73,25 @@
 
 .bellWrap {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.12s ease-out;
+}
+
+.bellWrap:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .bellDot {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 9px;
+  right: 9px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -153,6 +164,12 @@
   border: none;
   cursor: pointer;
   flex-shrink: 0;
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.12s ease-out;
+}
+
+.watchBtn:active {
+  transform: scale(0.94);
+  opacity: 0.88;
 }
 
 .watchBtnLabel {
@@ -191,6 +208,12 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  transition: transform 0.12s ease-out, opacity 0.12s ease-out;
+}
+
+.seeAllBtn:active {
+  transform: scale(0.95);
+  opacity: 0.75;
 }
 
 /* ── Events carousel ── */
@@ -211,6 +234,11 @@
   position: relative;
   cursor: pointer;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.eventCard:active {
+  transform: scale(0.97);
 }
 
 .eventCardImg {

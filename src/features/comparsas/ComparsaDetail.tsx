@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Comparsa, Bando, Cargo } from '../../types';
 import { getCargosByComparsa } from '../../services/cargosService';
 import { onActivateKey } from '../../utils/a11y';
+import { triggerSelectionHaptic, triggerSuccessHaptic } from '../../utils/haptics';
 import styles from './ComparsaDetail.module.css';
 
 interface ComparsaDetailProps {
@@ -158,7 +159,10 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
             {[1, 2, 3, 4, 5].map(i => (
               <button
                 key={i}
-                onClick={() => setVoteStars(i)}
+                onClick={() => {
+                  triggerSelectionHaptic();
+                  setVoteStars(i);
+                }}
                 className={styles.starBtn}
                 style={{ color: i <= voteStars ? '#c4972a' : 'rgba(196,151,42,.2)' }}
               >
@@ -170,7 +174,12 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
             <div className={styles.thanks}>{t('comparsaDetail.thanks')}</div>
           ) : (
             <button
-              onClick={() => setVoteSubmitted(true)}
+              onClick={() => {
+                if (voteStars > 0) {
+                  triggerSuccessHaptic();
+                  setVoteSubmitted(true);
+                }
+              }}
               className={`${styles.submitBtn}${voteStars > 0 ? ` ${styles.ready}` : ''}`}
             >
               {t('comparsaDetail.submitVote')}

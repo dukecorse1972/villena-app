@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../constants';
+import { triggerSelectionHaptic } from '../utils/haptics';
 import type { TabId } from '../types';
 import styles from './TabBar.module.css';
 
@@ -87,7 +88,10 @@ export default function TabBar() {
         return (
           <button
             key={tab.id}
-            onClick={() => navigate(TAB_ROUTES[tab.id])}
+            onClick={() => {
+              if (!isActive) triggerSelectionHaptic();
+              navigate(TAB_ROUTES[tab.id]);
+            }}
             className={`${styles.tab}${isActive ? ` ${styles.tabActive}` : ''}`}
           >
             {tab.icon}

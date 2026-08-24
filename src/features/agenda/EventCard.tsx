@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { FiestaEvent } from '../../types';
 import { onActivateKey } from '../../utils/a11y';
+import { triggerLightImpact } from '../../utils/haptics';
 import styles from './EventCard.module.css';
 
 interface EventCardProps {
@@ -33,7 +34,11 @@ export default function EventCard({ event, isFavorite, onOpen, onToggleFavorite 
 
       {/* Botón favorito */}
       <button
-        onClick={(e) => { e.stopPropagation(); onToggleFavorite(event.id); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          triggerLightImpact();
+          onToggleFavorite(event.id);
+        }}
         className={`${styles.favBtn}${isFavorite ? ` ${styles.active}` : ''}`}
         aria-label={isFavorite ? t('eventCard.removeFavorite') : t('eventCard.addFavorite')}
       >
