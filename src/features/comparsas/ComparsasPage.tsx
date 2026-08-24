@@ -72,7 +72,7 @@ export default function ComparsasPage() {
           </div>
 
           {/* Grid */}
-          <div className={styles.grid}>
+          <div key={side} className={styles.grid}>
             {activeList.map((c, i) => {
               const isOddLast = activeList.length % 2 !== 0 && i === activeList.length - 1;
               return (

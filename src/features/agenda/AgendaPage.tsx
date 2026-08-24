@@ -129,7 +129,7 @@ export default function AgendaPage() {
       </div>
 
       {/* ── Lista de eventos ── */}
-      <div className={styles.eventList}>
+      <div key={`${selectedDay}-${filter}`} className={styles.eventList}>
         {isLoading && (
           <div className={styles.loading}>{t('agenda.loading')}</div>
         )}
