@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { Comparsa, Bando, Cargo } from '../../types';
 import { getCargosByComparsa } from '../../services/cargosService';
@@ -24,16 +25,20 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
   const [voteStars, setVoteStars]       = useState(0);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
   const [cargos, setCargos] = useState<Cargo[]>([]);
+  const pageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!comparsa) return;
     getCargosByComparsa(comparsa.id).then(setCargos).catch(() => setCargos([]));
+    if (pageRef.current) {
+      pageRef.current.scrollTop = 0;
+    }
   }, [comparsa]);
 
   if (!comparsa) return null;
 
-  return (
-    <div className={styles.page}>
+  return createPortal(
+    <div ref={pageRef} className={styles.page}>
 
       {/* ── Cabecera sticky ── */}
       <div className={styles.header}>
@@ -155,23 +160,33 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
         <h2 className={styles.ratingTitle}>{t('comparsaDetail.valoracion')}</h2>
         <div className={styles.ratingCard}>
           <p className={styles.ratingPrompt}>{t('comparsaDetail.ratingPrompt')}</p>
-          <div className={styles.stars}>
-            {[1, 2, 3, 4, 5].map(i => (
+          <div className={`${styles.stars}${voteSubmitted ? ` ${styles.starsSubmitted}` : ''}`}>
+            {[1, 2, 3, 4, 5].map((i, idx) => (
               <button
                 key={i}
                 onClick={() => {
-                  triggerSelectionHaptic();
-                  setVoteStars(i);
+                  if (!voteSubmitted) {
+                    triggerSelectionHaptic();
+                    setVoteStars(i);
+                  }
                 }}
                 className={styles.starBtn}
-                style={{ color: i <= voteStars ? '#c4972a' : 'rgba(196,151,42,.2)' }}
+                style={{
+                  color: i <= voteStars ? '#c4972a' : 'rgba(196,151,42,.2)',
+                  animationDelay: voteSubmitted ? `${idx * 40}ms` : undefined,
+                }}
+                disabled={voteSubmitted}
               >
                 ★
               </button>
             ))}
           </div>
           {voteSubmitted ? (
-            <div className={styles.thanks}>{t('comparsaDetail.thanks')}</div>
+            <div className={styles.thanks}>
+              <span>✨</span>
+              <span>{t('comparsaDetail.thanks')}</span>
+              <span>🎉</span>
+            </div>
           ) : (
             <button
               onClick={() => {
@@ -187,6 +202,7 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -124,7 +124,10 @@ export default function InicioPage({ onGoToServicios, onGoToAgenda, onGoToAvisos
         {/* ── Live Banner ── */}
         <div className={styles.liveBanner}>
           <div className={styles.liveIndicator}>
-            <div className={styles.liveDot} />
+            <div className={styles.liveDotWrapper}>
+              <div className={styles.liveRing} />
+              <div className={styles.liveDot} />
+            </div>
             <span className={styles.liveLabel}>{t('inicio.live')}</span>
           </div>
           <p className={styles.liveText}>Entrada Cristiana — Intercomarcal</p>

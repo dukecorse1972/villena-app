@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { PointOfInterest, Ruta } from '../../types';
 import { getPois } from '../../services/poisService';
@@ -25,7 +26,7 @@ export default function MapPage({ onBack }: MapPageProps) {
 
   const selectedRuta = rutas.find((r) => r.id === selectedRutaId);
 
-  return (
+  return createPortal(
     <div className={styles.page}>
       <div className={styles.header}>
         <div
@@ -65,6 +66,7 @@ export default function MapPage({ onBack }: MapPageProps) {
           <MapView pois={pois} route={selectedRuta?.path} height="100%" />
         </Suspense>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
