@@ -13,7 +13,7 @@
 
 <br />
 
-**Villena App** es una aplicación multiplataforma (*Web SPA + iOS / Android*) diseñada a medida para festeros, vecinos y visitantes de las emblemáticas **Fiestas de Moros y Cristianos de Villena** (del 5 al 9 de septiembre, *Fiesta de Interés Turístico Internacional*).
+**Villena App** es una aplicación multiplataforma (*Web SPA + iOS / Android*) diseñada a medida para festeros, vecinos y visitantes de las emblemáticas **Fiestas de Moros y Cristianos de Villena** (del 4 al 9 de septiembre, *Fiesta de Interés Turístico Internacional*).
 
 Combina una experiencia visual cuidada al detalle con una ingeniería orientada a la **máxima resiliencia y velocidad en entornos de alta concurrencia**.
 
