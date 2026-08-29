@@ -17,11 +17,25 @@
 
 Combina una experiencia visual cuidada al detalle con una ingeniería orientada a la **máxima resiliencia y velocidad en entornos de alta concurrencia**.
 
----
+## 📱 Capturas de la Aplicación
+
+<div align="center">
+
+| 🏰 Inicio & Cuenta Atrás | 📅 Agenda & Filtros | 🛡️ Ficha de Comparsa | 🎺 Villena Suena |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/01-inicio.png" width="220px" alt="Inicio" /> | <img src="docs/screenshots/02-Agenda.png" width="220px" alt="Agenda" /> | <img src="docs/screenshots/03.3-FichaComparsa.png" width="220px" alt="Ficha Comparsa" /> | <img src="docs/screenshots/04-VillenaSuena.png" width="220px" alt="Villena Suena" /> |
+
+<br />
+
+| ⚔️ Comparsas Cristianas | 🌙 Comparsas Moras | 🗺️ Servicios & Sedes | 🔔 Tablón de Avisos |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/03.1-ComparsasCristianas.png" width="220px" alt="Comparsas Cristianas" /> | <img src="docs/screenshots/03.2-ComparsasMoras.png" width="220px" alt="Comparsas Moras" /> | <img src="docs/screenshots/05.1-Servicios.png" width="220px" alt="Servicios" /> | <img src="docs/screenshots/06-2-Multi-Avisos.png" width="220px" alt="Avisos" /> |
 
 </div>
 
 <br />
+
+---
 
 ## ✨ Características Destacadas
 
