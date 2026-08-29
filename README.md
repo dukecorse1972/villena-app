@@ -44,7 +44,7 @@ Combina una experiencia visual cuidada al detalle con una ingeniería orientada 
     <td width="50%" valign="top">
       <h3>📅 Agenda Festera Inteligente</h3>
       <ul>
-        <li><strong>Cronograma completo (5 al 9 de Septiembre):</strong> Todos los actos oficiales clasificados por día y hora.</li>
+        <li><strong>Cronograma completo (4 al 9 de Septiembre):</strong> Todos los actos oficiales clasificados por día y hora.</li>
         <li><strong>Filtrado por categorías:</strong> <em>Desfiles</em>, <em>Religiosos</em>, <em>Música</em> y <em>Cultural</em>.</li>
         <li><strong>Mis Favoritos:</strong> Guarda tus actos imprescindibles con persistencia en el dispositivo.</li>
         <li><strong>Enlace directo a recorridos:</strong> Conoce por dónde pasa cada desfile con un solo clic.</li>
