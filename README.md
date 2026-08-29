@@ -72,3 +72,17 @@ npm run cap:ios       # build + sync + abre el proyecto en Xcode (requiere macOS
 - `android/`, `ios/` — proyectos nativos generados por Capacitor. Se versionan en git (cada uno trae su propio `.gitignore` para excluir `build/`, `.gradle/`, `Pods/`, etc.), **no se regeneran a mano**.
 - `resources/` — icono (`icon.png`, 1024×1024) y splash (`splash.png`) de origen. Para regenerar todos los tamaños tras cambiar el icono: `npx @capacitor/assets generate`. El generador no es una dependencia del proyecto (arrastraba vulnerabilidades y solo hace falta al cambiar el icono), así que npx lo descarga en el momento — hay que indicar el nombre con scope: el paquete `capacitor-assets` sin scope no existe.
 - Compilar y firmar la app final para las tiendas requiere Android Studio (Android) o Xcode en macOS (iOS) — no es posible solo con Node.
+
+## Diagramas de Arquitectura y Sistema
+
+La documentación técnica visual del proyecto está disponible en formato vectorial interactivo:
+
+- 🏛️ **[01. Arquitectura General Híbrida](docs/diagrams/01-architecture-overview.html)** — Capas React 18, Capacitor Bridge, Resiliencia y Supabase BaaS.
+- ⚡ **[02. Flujo de Resiliencia Offline-First](docs/diagrams/02-resilience-offline-flow.html)** — Algoritmo de triple rescate en aglomeraciones (Timeout 8s → TTL Cache → Stale LocalStorage → Static Seed).
+- 🗄️ **[03. Modelo Entidad-Relación y Dominio](docs/diagrams/03-database-er-model.html)** — Esquema PostgreSQL (eventos, comparsas, cargos, rutas geoespaciales, avisos y push tokens).
+- 🔔 **[04. Secuencia de Notificaciones Push](docs/diagrams/04-push-notifications-sequence.html)** — Registro de token (APNs/FCM) y emisión de avisos con trigger SQL.
+- 🗺️ **[05. Mapa de Navegación y Rutas SPA](docs/diagrams/05-navigation-state-map.html)** — Árbol de rutas React Router 7, lazy chunks y modales.
+- 📍 **[06. Edición de Rutas en Backoffice](docs/diagrams/06-admin-route-editor-process.html)** — Flujo interactivo de trazado de polilíneas GPS sobre Leaflet.
+
+> 💡 *Puedes abrir el **[Panel Central de Diagramas](docs/diagrams/index.html)** en tu navegador para explorarlos todos desde una misma galería.*
+

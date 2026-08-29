@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagramas de Sistema y Arquitectura | Villena App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Lato:wght@400;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #faf7f2;
+      --paper-card: #ffffff;
+      --ink: #1e241c;
+      --muted: #556350;
+      --soft: #7e8c79;
+      --accent: #c4972a;
+      --accent-tint: rgba(196, 151, 42, 0.08);
+      --link: #3b77cc;
+      --rule: rgba(30, 36, 28, 0.12);
+      --rule-solid: #baa883;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px;
+    }
+    .container {
+      max-width: 960px;
+      width: 100%;
+    }
+    .header {
+      margin-bottom: 36px;
+      border-bottom: 2px solid var(--rule-solid);
+      padding-bottom: 20px;
+    }
+    .header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.03em;
+    }
+    .header p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--accent-tint);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--paper-card);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196, 151, 42, 0.12);
+    }
+    .card-top {
+      margin-bottom: 16px;
+    }
+    .card-num {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .card h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .card p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--rule);
+      padding-top: 14px;
+      margin-top: 14px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--soft);
+    }
+    .card-type {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .card-action {
+      color: var(--link);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="badge">VILLENA APP · FIESTAS DE MOROS Y CRISTIANOS</div>
+      <h1>Galería de Diagramas Técnicos y Arquitectura</h1>
+      <p>Colección de 6 diagramas vectoriales interactivos para documentar la arquitectura híbrida, resiliencia offline, modelo de datos y flujos del sistema.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- Diagrama 1 -->
+      <a href="01-architecture-overview.html" class="card">
+        <div class="card-top">
+          <div class="card-num">DIAGRAMA 01</div>
+          <h2>Arquitectura General Híbrida</h2>
+          <p>Visión completa de las 4 capas del sistema: SPA React 18, Bridge Nativo Capacitor, Servicios de Resiliencia Offline y Supabase Cloud BaaS.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-type">Architecture Diagram</span>
+          <span class="card-action">Ver Diagrama →</span>
+        </div>
+      </a>
+
+      <!-- Diagrama 2 -->
+      <a href="02-resilience-offline-flow.html" class="card">
+        <div class="card-top">
+          <div class="card-num">DIAGRAMA 02</div>
+          <h2>Flujo de Resiliencia y Offline-First</h2>
+          <p>Algoritmo de triple rescate en aglomeraciones: withTimeout 8s, Persistent Cache en LocalStorage, Stale Recovery y Seed Estático.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-type">Data Flow Diagram</span>
+          <span class="card-action">Ver Diagrama →</span>
+        </div>
+      </a>
+
+      <!-- Diagrama 3 -->
+      <a href="03-database-er-model.html" class="card">
+        <div class="card-top">
+          <div class="card-num">DIAGRAMA 03</div>
+          <h2>Modelo Entidad-Relación y Dominio</h2>
+          <p>Estructura relacional de PostgreSQL en Supabase: eventos, comparsas, cargos, rutas geoespaciales, avisos y push tokens.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-type">ER / Data Model</span>
+          <span class="card-action">Ver Diagrama →</span>
+        </div>
+      </a>
+
+      <!-- Diagrama 4 -->
+      <a href="04-push-notifications-sequence.html" class="card">
+        <div class="card-top">
+          <div class="card-num">DIAGRAMA 04</div>
+          <h2>Secuencia de Notificaciones Push</h2>
+          <p>Traza temporal desde el alta del token en el móvil (APNs/FCM) hasta el disparo de avisos desde el backoffice y entrega al usuario.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-type">Sequence Diagram</span>
+          <span class="card-action">Ver Diagrama →</span>
+        </div>
+      </a>
+
+      <!-- Diagrama 5 -->
+      <a href="05-navigation-state-map.html" class="card">
+        <div class="card-top">
+          <div class="card-num">DIAGRAMA 05</div>
+          <h2>Mapa de Navegación y Rutas SPA</h2>
+          <p>Árbol de navegación con React Router 7, lazy loading por pestaña, modales globales y persistencia en LocalStorage.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-type">Navigation Tree</span>
+          <span class="card-action">Ver Diagrama →</span>
+        </div>
+      </a>
+
+      <!-- Diagrama 6 -->
+      <a href="06-admin-route-editor-process.html" class="card">
+        <div class="card-top">
+          <div class="card-num">DIAGRAMA 06</div>
+          <h2>Edición de Rutas en Backoffice</h2>
+          <p>Proceso de autenticación con AdminGuard, trazado interactivo de polilíneas sobre Leaflet y renderizado de recorridos en la app.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-type">Process Flowchart</span>
+          <span class="card-action">Ver Diagrama →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>
