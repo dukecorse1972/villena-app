@@ -1,0 +1,173 @@
+<svg viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Lato:wght@400;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+        text { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      </style>
+
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#556350"/>
+        </marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#c4972a"/>
+        </marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#3b77cc"/>
+        </marker>
+      </defs>
+
+      <!-- Fondo limpio -->
+      <rect width="100%" height="100%" fill="#faf7f2"/>
+
+      <!-- ── ZONAS / TIERS ────────────────────────────────────── -->
+      
+      <!-- Zona 1: Frontend SPA (React 18) -->
+      <rect x="30" y="30" width="280" height="550" rx="8" fill="rgba(30,36,28,0.02)" stroke="rgba(30,36,28,0.12)" stroke-width="1"/>
+      <rect x="42" y="38" width="160" height="18" rx="3" fill="#faf7f2" stroke="rgba(30,36,28,0.15)" stroke-width="0.8"/>
+      <text x="122" y="51" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">CAPA UI / REACT 18 SPA</text>
+
+      <!-- Zona 2: Integración Nativa (Capacitor Bridge) -->
+      <rect x="350" y="30" width="280" height="260" rx="8" fill="rgba(196,151,42,0.03)" stroke="rgba(196,151,42,0.30)" stroke-dasharray="4,4" stroke-width="1"/>
+      <rect x="362" y="38" width="170" height="18" rx="3" fill="#faf7f2" stroke="rgba(196,151,42,0.4)" stroke-width="0.8"/>
+      <text x="447" y="51" fill="#c4972a" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">CAPACITOR NATIVE BRIDGE</text>
+
+      <!-- Zona 3: Capa de Servicios & Resiliencia -->
+      <rect x="350" y="320" width="280" height="260" rx="8" fill="rgba(30,36,28,0.02)" stroke="rgba(30,36,28,0.12)" stroke-width="1"/>
+      <rect x="362" y="328" width="180" height="18" rx="3" fill="#faf7f2" stroke="rgba(30,36,28,0.15)" stroke-width="0.8"/>
+      <text x="452" y="341" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">SERVICIOS & OFFLINE CACHE</text>
+
+      <!-- Zona 4: Backend & Nube (Supabase + APIs) -->
+      <rect x="670" y="30" width="280" height="550" rx="8" fill="rgba(59,119,204,0.03)" stroke="rgba(59,119,204,0.25)" stroke-width="1"/>
+      <rect x="682" y="38" width="180" height="18" rx="3" fill="#faf7f2" stroke="rgba(59,119,204,0.35)" stroke-width="0.8"/>
+      <text x="772" y="51" fill="#3b77cc" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">CLOUD BACKEND & EXTERNOS</text>
+
+
+      <!-- ── CONECTORES / FLECHAS (dibujadas antes de cajas) ─── -->
+
+      <!-- UI -> Capacitor Plugins -->
+      <!-- App.tsx -> Native Hooks -->
+      <path d="M 270,110 H 305 Q 315,110 315,110 H 380" fill="none" stroke="#c4972a" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+      <rect x="290" y="96" width="70" height="14" rx="2" fill="#faf7f2"/>
+      <text x="325" y="106" fill="#c4972a" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">HARDWARE</text>
+
+      <!-- UI -> Servicios / Store -->
+      <path d="M 270,225 H 310 Q 320,225 320,245 V 390 Q 320,400 330,400 H 380" fill="none" stroke="#556350" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <rect x="290" y="270" width="60" height="14" rx="2" fill="#faf7f2"/>
+      <text x="320" y="280" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">QUERIES</text>
+
+      <!-- Native Plugins -> Dispositivo OS -->
+      <path d="M 590,110 H 625 Q 635,110 635,110 H 700" fill="none" stroke="#c4972a" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+      <rect x="615" y="96" width="68" height="14" rx="2" fill="#faf7f2"/>
+      <text x="649" y="106" fill="#c4972a" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">APNs / FCM</text>
+
+      <!-- Servicios -> Supabase Client -->
+      <path d="M 590,400 H 635 Q 645,400 645,400 H 700" fill="none" stroke="#3b77cc" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <rect x="615" y="386" width="65" height="14" rx="2" fill="#faf7f2"/>
+      <text x="647" y="396" fill="#3b77cc" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">POSTGREST</text>
+
+      <!-- Servicios -> APIs externas (AEMET/OpenMeteo) -->
+      <path d="M 590,490 H 635 Q 645,490 645,510 V 510 Q 645,510 655,510 H 700" fill="none" stroke="#556350" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <rect x="618" y="476" width="58" height="14" rx="2" fill="#faf7f2"/>
+      <text x="647" y="486" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">REST HTTP</text>
+
+
+      <!-- ── NODOS / CAJAS ───────────────────────────────────── -->
+
+      <!-- COLUMNA 1: UI / REACT -->
+      
+      <!-- Router & Layout Shell -->
+      <rect x="50" y="75" width="220" height="70" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="58" y="81" width="38" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="77" y="90" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">SHELL</text>
+      <text x="160" y="105" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">App & React Router 7</text>
+      <text x="160" y="123" fill="#7e8c79" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">TabBar · Suspense · Transitions</text>
+
+      <!-- Vistas Públicas (Lazy Chunks) -->
+      <rect x="50" y="165" width="220" height="120" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="58" y="171" width="36" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="76" y="180" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">PAGES</text>
+      <text x="160" y="195" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Vistas de Usuario</text>
+      <text x="160" y="215" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">• Inicio (Hero, Cuenta atrás, Clima)</text>
+      <text x="160" y="233" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">• Agenda (Filtrado actos 5-9 Sept)</text>
+      <text x="160" y="251" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">• Comparsas (Fichas Moros / Cristianos)</text>
+      <text x="160" y="269" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">• Música (Web Audio) · Info (Mapas)</text>
+
+      <!-- Backoffice Admin -->
+      <rect x="50" y="305" width="220" height="85" rx="6" fill="rgba(196,151,42,0.06)" stroke="#c4972a" stroke-width="1"/>
+      <rect x="58" y="311" width="36" height="12" rx="2" fill="transparent" stroke="rgba(196,151,42,0.6)" stroke-width="0.8"/>
+      <text x="76" y="320" fill="#c4972a" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">ADMIN</text>
+      <text x="160" y="335" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Backoffice Protegido</text>
+      <text x="160" y="353" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">AdminGuard (RBAC)</text>
+      <text x="160" y="371" fill="#7e8c79" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">CRUD Eventos · Avisos · RouteEditorMap</text>
+
+      <!-- Web Audio & Componentes Compartidos -->
+      <rect x="50" y="410" width="220" height="75" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="58" y="416" width="34" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="75" y="425" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">CORE</text>
+      <text x="160" y="440" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Componentes Base & Audio</text>
+      <text x="160" y="458" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">MapView (Leaflet) · ErrorBoundary</text>
+      <text x="160" y="473" fill="#7e8c79" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Web Audio API (Oscillators/Filters)</text>
+
+
+      <!-- COLUMNA 2: CAPACITOR & RESILIENCIA -->
+
+      <!-- Plugins Nativos Capacitor -->
+      <rect x="380" y="75" width="220" height="185" rx="6" fill="#ffffff" stroke="#c4972a" stroke-width="1"/>
+      <rect x="388" y="81" width="50" height="12" rx="2" fill="transparent" stroke="rgba(196,151,42,0.6)" stroke-width="0.8"/>
+      <text x="413" y="90" fill="#c4972a" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">PLUGINS</text>
+      <text x="490" y="105" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Capacitor APIs</text>
+      <text x="490" y="130" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">@capacitor/push-notifications</text>
+      <text x="490" y="152" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">@capacitor/geolocation</text>
+      <text x="490" y="174" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">@capacitor/haptics</text>
+      <text x="490" y="196" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">@capacitor/app (Back Button)</text>
+      <text x="490" y="218" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">DeviceOrientation (Brújula/Heading)</text>
+      <text x="490" y="244" fill="#7e8c79" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">iOS (Swift) / Android (Java/Kotlin)</text>
+
+      <!-- Persistent Storage & Timeout Cache -->
+      <rect x="380" y="365" width="220" height="190" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="388" y="371" width="40" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="408" y="380" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">CACHE</text>
+      <text x="490" y="395" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Capa de Resiliencia</text>
+      <text x="490" y="420" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">createPersistentCache (TTL + Stale)</text>
+      <text x="490" y="442" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">withTimeout(8000ms, AbortSignal)</text>
+      <text x="490" y="464" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">localStorage (Favoritos, Caché)</text>
+      <text x="490" y="486" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">Static Seed Fallback (/src/data)</text>
+      <text x="490" y="534" fill="#c4972a" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Cero pantallas vacías sin red</text>
+
+
+      <!-- COLUMNA 3: BACKEND & CLOUD -->
+
+      <!-- Supabase Hub -->
+      <rect x="700" y="75" width="220" height="340" rx="6" fill="rgba(59,119,204,0.06)" stroke="#3b77cc" stroke-width="1.2"/>
+      <rect x="708" y="81" width="60" height="12" rx="2" fill="transparent" stroke="rgba(59,119,204,0.6)" stroke-width="0.8"/>
+      <text x="738" y="90" fill="#3b77cc" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">SUPABASE</text>
+      <text x="810" y="105" fill="#1e241c" font-size="13" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Supabase BaaS</text>
+      
+      <!-- Subbloque Postgres -->
+      <rect x="715" y="125" width="190" height="70" rx="4" fill="#ffffff" stroke="rgba(59,119,204,0.3)" stroke-width="0.8"/>
+      <text x="810" y="145" fill="#1e241c" font-size="10.5" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">PostgreSQL + RLS</text>
+      <text x="810" y="163" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif" text-anchor="middle">Tablas: eventos, comparsas, rutas,</text>
+      <text x="810" y="179" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif" text-anchor="middle">cargos, avisos, pois, push_tokens</text>
+
+      <!-- Subbloque Auth & Storage -->
+      <rect x="715" y="205" width="190" height="60" rx="4" fill="#ffffff" stroke="rgba(59,119,204,0.3)" stroke-width="0.8"/>
+      <text x="810" y="224" fill="#1e241c" font-size="10.5" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Auth & Storage Buckets</text>
+      <text x="810" y="242" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif" text-anchor="middle">JWT Admin Claims · Buckets fotos</text>
+      <text x="810" y="256" fill="#7e8c79" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">comparsas/ · desfiles/ · trajes/</text>
+
+      <!-- Subbloque Triggers & Push Dispatch -->
+      <rect x="715" y="275" width="190" height="60" rx="4" fill="#ffffff" stroke="rgba(59,119,204,0.3)" stroke-width="0.8"/>
+      <text x="810" y="294" fill="#1e241c" font-size="10.5" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Push Dispatch Trigger</text>
+      <text x="810" y="312" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif" text-anchor="middle">Disparo automático en nuevo aviso</text>
+      <text x="810" y="326" fill="#7e8c79" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">Edge Webhook / FCM Broadcast</text>
+
+      <!-- Servicios Externos -->
+      <rect x="700" y="440" width="220" height="115" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="708" y="446" width="56" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="736" y="455" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">EXTERNAL</text>
+      <text x="810" y="470" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">Servicios Externos</text>
+      <text x="810" y="495" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">AEMET / Open-Meteo Weather API</text>
+      <text x="810" y="515" fill="#556350" font-size="9.5" font-family="'Lato', sans-serif" text-anchor="middle">OpenStreetMap / Carto Tiles</text>
+      <text x="810" y="538" fill="#7e8c79" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">CORS Direct Fetch / Tiles CDN</text>
+
+    </svg>

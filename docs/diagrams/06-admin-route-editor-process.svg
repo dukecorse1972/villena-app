@@ -1,0 +1,129 @@
+<svg viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Lato:wght@400;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+        text { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      </style>
+
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#556350"/>
+        </marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#c4972a"/>
+        </marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#3b77cc"/>
+        </marker>
+        <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#2a9d5c"/>
+        </marker>
+      </defs>
+
+      <!-- Fondo limpio -->
+      <rect width="100%" height="100%" fill="#faf7f2"/>
+
+      <!-- ── ZONAS / FASES HORIZONTALES ──────────────────────── -->
+      
+      <!-- Fase 1: Autenticación & Acceso -->
+      <rect x="30" y="30" width="280" height="550" rx="8" fill="rgba(30,36,28,0.02)" stroke="rgba(30,36,28,0.12)" stroke-width="1"/>
+      <rect x="42" y="38" width="160" height="18" rx="3" fill="#faf7f2" stroke="rgba(30,36,28,0.15)" stroke-width="0.8"/>
+      <text x="122" y="51" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">1. AUTENTICACIÓN & GUARD</text>
+
+      <!-- Fase 2: Editor Interactivo Leaflet -->
+      <rect x="350" y="30" width="280" height="550" rx="8" fill="rgba(196,151,42,0.03)" stroke="rgba(196,151,42,0.30)" stroke-width="1"/>
+      <rect x="362" y="38" width="170" height="18" rx="3" fill="#faf7f2" stroke="rgba(196,151,42,0.4)" stroke-width="0.8"/>
+      <text x="447" y="51" fill="#c4972a" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">2. TRAZADO GEOESPACIAL</text>
+
+      <!-- Fase 3: Persistencia y Render App -->
+      <rect x="670" y="30" width="280" height="550" rx="8" fill="rgba(42,157,92,0.03)" stroke="rgba(42,157,92,0.25)" stroke-width="1"/>
+      <rect x="682" y="38" width="170" height="18" rx="3" fill="#faf7f2" stroke="rgba(42,157,92,0.4)" stroke-width="0.8"/>
+      <text x="767" y="51" fill="#2a9d5c" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">3. VINCULACIÓN & CONSUMO</text>
+
+
+      <!-- ── CONECTORES ORTOGONALES ────────────────────────── -->
+
+      <!-- Auth -> Guard -->
+      <path d="M 170,140 V 185" fill="none" stroke="#556350" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Guard OK -> Panel Rutas -->
+      <path d="M 170,265 V 320 Q 170,335 185,335 H 370" fill="none" stroke="#c4972a" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+      <rect x="230" y="321" width="80" height="14" rx="2" fill="#faf7f2"/>
+      <text x="270" y="331" fill="#c4972a" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">ES ADMIN OK</text>
+
+      <!-- Panel Rutas -> Canvas Leaflet -->
+      <path d="M 490,390 V 435" fill="none" stroke="#c4972a" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+
+      <!-- Canvas Leaflet -> Guardado Supabase -->
+      <path d="M 590,475 H 635 Q 645,475 645,215 Q 645,200 660,200 H 690" fill="none" stroke="#3b77cc" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <rect x="600" y="275" width="85" height="14" rx="2" fill="#faf7f2"/>
+      <text x="642" y="285" fill="#3b77cc" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">UPSERT RUTAS</text>
+
+      <!-- Supabase -> Vinculación Eventos -->
+      <path d="M 810,245 V 305" fill="none" stroke="#556350" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Vinculación Eventos -> Vista Usuario -->
+      <path d="M 810,390 V 445" fill="none" stroke="#2a9d5c" stroke-width="1.2" marker-end="url(#arrow-green)"/>
+
+
+      <!-- ── NODOS / CAJAS ──────────────────────────────────── -->
+
+      <!-- Nodo 1: Login Admin -->
+      <rect x="50" y="75" width="240" height="65" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="58" y="81" width="40" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="78" y="90" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">AUTH</text>
+      <text x="170" y="105" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">LoginSection / Supabase Auth</text>
+      <text x="170" y="123" fill="#7e8c79" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Email + Password / Magic Link</text>
+
+      <!-- Nodo 2: AdminGuard & Claims -->
+      <rect x="50" y="185" width="240" height="80" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="58" y="191" width="44" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="80" y="200" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">GUARD</text>
+      <text x="170" y="215" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">AdminGuard (useIsAdmin)</text>
+      <text x="170" y="235" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">Verifica rol admin en JWT / metadata</text>
+      <text x="170" y="251" fill="#7e8c79" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Protege la ruta /admin</text>
+
+      <!-- Nodo 3: AdminRutasPanel -->
+      <rect x="370" y="295" width="240" height="95" rx="6" fill="rgba(196,151,42,0.06)" stroke="#c4972a" stroke-width="1.2"/>
+      <rect x="378" y="301" width="44" height="12" rx="2" fill="transparent" stroke="rgba(196,151,42,0.6)" stroke-width="0.8"/>
+      <text x="400" y="310" fill="#c4972a" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">PANEL</text>
+      <text x="490" y="325" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">AdminRutasPanel</text>
+      <text x="490" y="345" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">Listado de recorridos existentes</text>
+      <text x="490" y="362" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">Creación de nuevo desfile (La Entrada..)</text>
+      <text x="490" y="377" fill="#7e8c79" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Entrada del nombre de la ruta</text>
+
+      <!-- Nodo 4: RouteEditorMap Canvas -->
+      <rect x="370" y="435" width="240" height="115" rx="6" fill="#ffffff" stroke="#c4972a" stroke-width="1.2"/>
+      <rect x="378" y="441" width="48" height="12" rx="2" fill="transparent" stroke="rgba(196,151,42,0.6)" stroke-width="0.8"/>
+      <text x="402" y="450" fill="#c4972a" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">CANVAS</text>
+      <text x="490" y="465" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">RouteEditorMap (Leaflet)</text>
+      <text x="490" y="487" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">• Click en mapa: Añade vértice [lat, lng]</text>
+      <text x="490" y="505" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">• Click en marcador: Elimina punto</text>
+      <text x="490" y="523" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">• Trazado interactivo de Polyline</text>
+      <text x="490" y="538" fill="#7e8c79" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Formato JSONB: [[lat, lng], ...]</text>
+
+      <!-- Nodo 5: Supabase Rutas Storage -->
+      <rect x="690" y="165" width="240" height="80" rx="6" fill="#ffffff" stroke="#3b77cc" stroke-width="1"/>
+      <rect x="698" y="171" width="56" height="12" rx="2" fill="transparent" stroke="rgba(59,119,204,0.6)" stroke-width="0.8"/>
+      <text x="726" y="180" fill="#3b77cc" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">POSTGRES</text>
+      <text x="810" y="195" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">rutasService.saveRuta</text>
+      <text x="810" y="215" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">Persiste la polilínea en BD Supabase</text>
+      <text x="810" y="231" fill="#7e8c79" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Invalidación de caché de rutas</text>
+
+      <!-- Nodo 6: Asociación en AdminEventos -->
+      <rect x="690" y="305" width="240" height="85" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
+      <rect x="698" y="311" width="46" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
+      <text x="721" y="320" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">EVENTOS</text>
+      <text x="810" y="335" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">AdminEventosPanel</text>
+      <text x="810" y="355" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">Asigna 'ruta_id' a los actos de tipo</text>
+      <text x="810" y="371" fill="#3b77cc" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">'Desfiles' (Entrada, Cabalgata...)</text>
+
+      <!-- Nodo 7: Visualización Usuario Final -->
+      <rect x="690" y="445" width="240" height="105" rx="6" fill="rgba(42,157,92,0.06)" stroke="#2a9d5c" stroke-width="1.2"/>
+      <rect x="698" y="451" width="56" height="12" rx="2" fill="transparent" stroke="rgba(42,157,92,0.6)" stroke-width="0.8"/>
+      <text x="726" y="460" fill="#2a9d5c" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">CONSUMO</text>
+      <text x="810" y="475" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">MapView & EventModal</text>
+      <text x="810" y="495" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">El festero/turista ve el trazado</text>
+      <text x="810" y="513" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">completo del desfile en las calles</text>
+      <text x="810" y="534" fill="#2a9d5c" font-size="8.5" font-weight="bold" font-family="'Lato', sans-serif" text-anchor="middle">✓ Integrado con geolocalización GPS</text>
+
+    </svg>

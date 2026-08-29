@@ -73,16 +73,82 @@ npm run cap:ios       # build + sync + abre el proyecto en Xcode (requiere macOS
 - `resources/` — icono (`icon.png`, 1024×1024) y splash (`splash.png`) de origen. Para regenerar todos los tamaños tras cambiar el icono: `npx @capacitor/assets generate`. El generador no es una dependencia del proyecto (arrastraba vulnerabilidades y solo hace falta al cambiar el icono), así que npx lo descarga en el momento — hay que indicar el nombre con scope: el paquete `capacitor-assets` sin scope no existe.
 - Compilar y firmar la app final para las tiendas requiere Android Studio (Android) o Xcode en macOS (iOS) — no es posible solo con Node.
 
-## Diagramas de Arquitectura y Sistema
+## 📐 Diagramas de Arquitectura y Sistema
 
-La documentación técnica visual del proyecto está disponible en formato vectorial interactivo:
+Documentación técnica visual del proyecto. Los diagramas se muestran a continuación en formato vectorial SVG y también disponen de su versión interactiva en HTML:
 
-- 🏛️ **[01. Arquitectura General Híbrida](docs/diagrams/01-architecture-overview.html)** — Capas React 18, Capacitor Bridge, Resiliencia y Supabase BaaS.
-- ⚡ **[02. Flujo de Resiliencia Offline-First](docs/diagrams/02-resilience-offline-flow.html)** — Algoritmo de triple rescate en aglomeraciones (Timeout 8s → TTL Cache → Stale LocalStorage → Static Seed).
-- 🗄️ **[03. Modelo Entidad-Relación y Dominio](docs/diagrams/03-database-er-model.html)** — Esquema PostgreSQL (eventos, comparsas, cargos, rutas geoespaciales, avisos y push tokens).
-- 🔔 **[04. Secuencia de Notificaciones Push](docs/diagrams/04-push-notifications-sequence.html)** — Registro de token (APNs/FCM) y emisión de avisos con trigger SQL.
-- 🗺️ **[05. Mapa de Navegación y Rutas SPA](docs/diagrams/05-navigation-state-map.html)** — Árbol de rutas React Router 7, lazy chunks y modales.
-- 📍 **[06. Edición de Rutas en Backoffice](docs/diagrams/06-admin-route-editor-process.html)** — Flujo interactivo de trazado de polilíneas GPS sobre Leaflet.
+> 💡 *Puedes abrir el **[Panel Central de Diagramas (HTML interactivo)](docs/diagrams/index.html)** en tu navegador para explorar toda la galería interactiva.*
 
-> 💡 *Puedes abrir el **[Panel Central de Diagramas](docs/diagrams/index.html)** en tu navegador para explorarlos todos desde una misma galería.*
+---
+
+<details open>
+<summary><b>🏛️ 01. Arquitectura General y Topología Híbrida</b> (Clic para expandir/colapsar)</summary>
+<br />
+<p><i>Capas de presentación React 18, integración de hardware nativo con Capacitor, servicios de resiliencia y Supabase BaaS.</i></p>
+
+![01. Arquitectura General Híbrida](docs/diagrams/01-architecture-overview.svg)
+
+👉 [Abrir versión HTML interactiva](docs/diagrams/01-architecture-overview.html)
+</details>
+
+---
+
+<details open>
+<summary><b>⚡ 02. Flujo de Resiliencia de Datos y Estrategia Offline-First</b> (Clic para expandir/colapsar)</summary>
+<br />
+<p><i>Algoritmo de triple rescate en aglomeraciones (withTimeout 8s → Persistent TTL Cache → Stale LocalStorage → Static Seed Fallback).</i></p>
+
+![02. Flujo de Resiliencia Offline-First](docs/diagrams/02-resilience-offline-flow.svg)
+
+👉 [Abrir versión HTML interactiva](docs/diagrams/02-resilience-offline-flow.html)
+</details>
+
+---
+
+<details open>
+<summary><b>🗄️ 03. Modelo Entidad-Relación y Dominio</b> (Clic para expandir/colapsar)</summary>
+<br />
+<p><i>Esquema PostgreSQL en Supabase con tipos TypeScript (eventos, comparsas, cargos, rutas geoespaciales, avisos y push tokens).</i></p>
+
+![03. Modelo Entidad-Relación y Dominio](docs/diagrams/03-database-er-model.svg)
+
+👉 [Abrir versión HTML interactiva](docs/diagrams/03-database-er-model.html)
+</details>
+
+---
+
+<details open>
+<summary><b>🔔 04. Secuencia de Notificaciones Push y Alertas en Tiempo Real</b> (Clic para expandir/colapsar)</summary>
+<br />
+<p><i>Flujo temporal desde el registro del token en el terminal móvil (APNs/FCM) hasta el broadcast de avisos urgentes con Trigger SQL.</i></p>
+
+![04. Secuencia de Notificaciones Push](docs/diagrams/04-push-notifications-sequence.svg)
+
+👉 [Abrir versión HTML interactiva](docs/diagrams/04-push-notifications-sequence.html)
+</details>
+
+---
+
+<details open>
+<summary><b>🗺️ 05. Mapa de Navegación, Rutas y Estado de la SPA</b> (Clic para expandir/colapsar)</summary>
+<br />
+<p><i>Jerarquía de rutas en React Router 7, división en lazy chunks, modales interactivos y persistencia en LocalStorage.</i></p>
+
+![05. Mapa de Navegación y Rutas SPA](docs/diagrams/05-navigation-state-map.svg)
+
+👉 [Abrir versión HTML interactiva](docs/diagrams/05-navigation-state-map.html)
+</details>
+
+---
+
+<details open>
+<summary><b>📍 06. Proceso de Edición y Publicación de Rutas Geoespaciales</b> (Clic para expandir/colapsar)</summary>
+<br />
+<p><i>Flujo de backoffice con AdminGuard, trazado interactivo de polilíneas GPS sobre Leaflet y renderizado en la app de usuario.</i></p>
+
+![06. Edición de Rutas en Backoffice](docs/diagrams/06-admin-route-editor-process.svg)
+
+👉 [Abrir versión HTML interactiva](docs/diagrams/06-admin-route-editor-process.html)
+</details>
+
 
