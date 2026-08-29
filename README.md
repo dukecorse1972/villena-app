@@ -100,7 +100,6 @@ Documentación técnica visual del proyecto. Los diagramas se muestran a continu
 
 ![02. Flujo de Resiliencia Offline-First](docs/diagrams/02-resilience-offline-flow.svg)
 
-👉 [Abrir versión HTML interactiva](docs/diagrams/02-resilience-offline-flow.html)
 </details>
 
 ---
@@ -112,7 +111,6 @@ Documentación técnica visual del proyecto. Los diagramas se muestran a continu
 
 ![03. Modelo Entidad-Relación y Dominio](docs/diagrams/03-database-er-model.svg)
 
-👉 [Abrir versión HTML interactiva](docs/diagrams/03-database-er-model.html)
 </details>
 
 ---
@@ -124,7 +122,6 @@ Documentación técnica visual del proyecto. Los diagramas se muestran a continu
 
 ![04. Secuencia de Notificaciones Push](docs/diagrams/04-push-notifications-sequence.svg)
 
-👉 [Abrir versión HTML interactiva](docs/diagrams/04-push-notifications-sequence.html)
 </details>
 
 ---
@@ -136,7 +133,6 @@ Documentación técnica visual del proyecto. Los diagramas se muestran a continu
 
 ![05. Mapa de Navegación y Rutas SPA](docs/diagrams/05-navigation-state-map.svg)
 
-👉 [Abrir versión HTML interactiva](docs/diagrams/05-navigation-state-map.html)
 </details>
 
 ---
@@ -148,7 +144,6 @@ Documentación técnica visual del proyecto. Los diagramas se muestran a continu
 
 ![06. Edición de Rutas en Backoffice](docs/diagrams/06-admin-route-editor-process.svg)
 
-👉 [Abrir versión HTML interactiva](docs/diagrams/06-admin-route-editor-process.html)
 </details>
 
 
