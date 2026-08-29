@@ -102,6 +102,9 @@ const zh: Resources = {
     ratingPrompt: '你对这支队伍评价如何？',
     thanks: '感谢你的评价！⭐',
     submitVote: '提交评价',
+    updateVote: '更新评价',
+    loginToRate: '请登录后评价这支队伍',
+    saving: '正在保存…',
   },
   musica: {
     title: '比列纳之声',

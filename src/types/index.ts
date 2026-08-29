@@ -77,3 +77,12 @@ export interface Cargo {
 }
 
 export type Favorites = Record<string, boolean>;
+
+export interface ComparsaRating {
+  id: string;
+  comparsa_id: string;
+  user_id: string;
+  rating: number;
+  created_at: string;
+  updated_at: string;
+}

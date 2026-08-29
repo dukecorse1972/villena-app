@@ -102,6 +102,9 @@ const va: Resources = {
     ratingPrompt: 'Què et pareix esta comparsa?',
     thanks: 'Gràcies per la teua valoració! ⭐',
     submitVote: 'Enviar valoració',
+    updateVote: 'Actualitzar valoració',
+    loginToRate: 'Inicia sessió per a valorar esta comparsa',
+    saving: 'Guardant…',
   },
   musica: {
     title: 'VILLENA SONA',

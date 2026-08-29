@@ -124,11 +124,9 @@ export function useAuth(): AuthActions {
   const deleteAccount = async () => {
     if (!user) return;
     if (isSupabaseConfigured) {
-      try {
-        await supabase.from('favoritos').delete().eq('user_id', user.id);
-        await supabase.from('push_tokens').delete().eq('user_id', user.id);
-      } catch {
-        // Ignorar fallos de limpieza en cascada si no hay permisos
+      const { error } = await supabase.functions.invoke('delete-user');
+      if (error) {
+        throw new Error(error.message || 'No se pudo eliminar la cuenta');
       }
     }
     await signOut();

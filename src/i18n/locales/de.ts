@@ -102,6 +102,9 @@ const de: Resources = {
     ratingPrompt: 'Wie gefällt dir diese Comparsa?',
     thanks: 'Vielen Dank für deine Bewertung! ⭐',
     submitVote: 'Bewertung absenden',
+    updateVote: 'Bewertung aktualisieren',
+    loginToRate: 'Melde dich an, um diese Comparsa zu bewerten',
+    saving: 'Speichern…',
   },
   musica: {
     title: 'VILLENA KLÄNGE',

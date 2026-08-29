@@ -102,6 +102,9 @@ const es = {
     ratingPrompt: '¿Qué te parece esta comparsa?',
     thanks: '¡Gracias por tu valoración! ⭐',
     submitVote: 'Enviar valoración',
+    updateVote: 'Actualizar valoración',
+    loginToRate: 'Inicia sesión para valorar esta comparsa',
+    saving: 'Guardando…',
   },
   musica: {
     title: 'VILLENA SUENA',

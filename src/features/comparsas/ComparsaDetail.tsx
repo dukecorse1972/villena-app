@@ -3,8 +3,11 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { Comparsa, Bando, Cargo } from '../../types';
 import { getCargosByComparsa } from '../../services/cargosService';
+import { getUserComparsaRating, submitComparsaRating } from '../../services/ratingsService';
+import { useAuth } from '../../hooks/useAuth';
+import LoginSection from '../info/LoginSection';
 import { onActivateKey } from '../../utils/a11y';
-import { triggerSelectionHaptic, triggerSuccessHaptic } from '../../utils/haptics';
+import { triggerLightImpact, triggerSelectionHaptic, triggerSuccessHaptic } from '../../utils/haptics';
 import styles from './ComparsaDetail.module.css';
 
 interface ComparsaDetailProps {
@@ -22,20 +25,75 @@ const PersonIcon = () => (
 
 export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDetailProps) {
   const { t } = useTranslation();
-  const [voteStars, setVoteStars]       = useState(0);
-  const [voteSubmitted, setVoteSubmitted] = useState(false);
-  const [cargos, setCargos] = useState<Cargo[]>([]);
+  const { user } = useAuth();
+  const [voteStars, setVoteStars]           = useState(0);
+  const [savedRating, setSavedRating]       = useState<number | null>(null);
+  const [voteSubmitted, setVoteSubmitted]   = useState(false);
+  const [isSubmitting, setIsSubmitting]     = useState(false);
+  const [ratingError, setRatingError]       = useState<string | null>(null);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [cargos, setCargos]                 = useState<Cargo[]>([]);
   const pageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!comparsa) return;
     getCargosByComparsa(comparsa.id).then(setCargos).catch(() => setCargos([]));
+
+    // Cargar la valoración previa del usuario si está autenticado
+    getUserComparsaRating(comparsa.id, user?.id)
+      .then((rating) => {
+        if (rating !== null) {
+          setVoteStars(rating);
+          setSavedRating(rating);
+          setVoteSubmitted(true);
+        } else {
+          setVoteStars(0);
+          setSavedRating(null);
+          setVoteSubmitted(false);
+        }
+      })
+      .catch(() => {});
+
     if (pageRef.current) {
       pageRef.current.scrollTop = 0;
     }
-  }, [comparsa]);
+  }, [comparsa, user?.id]);
 
   if (!comparsa) return null;
+
+  const handleStarClick = (starIndex: number) => {
+    if (!user) {
+      triggerLightImpact();
+      setLoginModalOpen(true);
+      return;
+    }
+    triggerSelectionHaptic();
+    setVoteStars(starIndex);
+    setVoteSubmitted(false);
+    setRatingError(null);
+  };
+
+  const handleVoteSubmit = async () => {
+    if (!user) {
+      setLoginModalOpen(true);
+      return;
+    }
+    if (voteStars < 1 || voteStars > 5) return;
+
+    setIsSubmitting(true);
+    setRatingError(null);
+
+    try {
+      await submitComparsaRating(comparsa.id, user.id, voteStars);
+      setSavedRating(voteStars);
+      setVoteSubmitted(true);
+      triggerSuccessHaptic();
+    } catch (err) {
+      setRatingError(err instanceof Error ? err.message : 'Error al registrar valoración');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return createPortal(
     <div ref={pageRef} className={styles.page}>
@@ -159,49 +217,63 @@ export default function ComparsaDetail({ comparsa, bando, onBack }: ComparsaDeta
       <div className={styles.ratingSection}>
         <h2 className={styles.ratingTitle}>{t('comparsaDetail.valoracion')}</h2>
         <div className={styles.ratingCard}>
-          <p className={styles.ratingPrompt}>{t('comparsaDetail.ratingPrompt')}</p>
+          <p className={styles.ratingPrompt}>
+            {!user ? t('comparsaDetail.loginToRate') : t('comparsaDetail.ratingPrompt')}
+          </p>
           <div className={`${styles.stars}${voteSubmitted ? ` ${styles.starsSubmitted}` : ''}`}>
             {[1, 2, 3, 4, 5].map((i, idx) => (
               <button
                 key={i}
-                onClick={() => {
-                  if (!voteSubmitted) {
-                    triggerSelectionHaptic();
-                    setVoteStars(i);
-                  }
-                }}
+                type="button"
+                onClick={() => handleStarClick(i)}
                 className={styles.starBtn}
                 style={{
                   color: i <= voteStars ? '#c4972a' : 'rgba(196,151,42,.2)',
                   animationDelay: voteSubmitted ? `${idx * 40}ms` : undefined,
                 }}
-                disabled={voteSubmitted}
+                aria-label={`${i} estrellas`}
               >
                 ★
               </button>
             ))}
           </div>
+
+          {ratingError && (
+            <p style={{ color: '#e05252', fontSize: '12px', margin: '0 0 12px' }}>{ratingError}</p>
+          )}
+
           {voteSubmitted ? (
             <div className={styles.thanks}>
               <span>✨</span>
               <span>{t('comparsaDetail.thanks')}</span>
               <span>🎉</span>
             </div>
+          ) : !user ? (
+            <button
+              type="button"
+              onClick={() => setLoginModalOpen(true)}
+              className={`${styles.submitBtn} ${styles.ready}`}
+            >
+              {t('loginSection.login')}
+            </button>
           ) : (
             <button
-              onClick={() => {
-                if (voteStars > 0) {
-                  triggerSuccessHaptic();
-                  setVoteSubmitted(true);
-                }
-              }}
-              className={`${styles.submitBtn}${voteStars > 0 ? ` ${styles.ready}` : ''}`}
+              type="button"
+              onClick={handleVoteSubmit}
+              disabled={voteStars === 0 || isSubmitting}
+              className={`${styles.submitBtn}${voteStars > 0 && !isSubmitting ? ` ${styles.ready}` : ''}`}
             >
-              {t('comparsaDetail.submitVote')}
+              {isSubmitting
+                ? t('comparsaDetail.saving')
+                : savedRating !== null
+                ? t('comparsaDetail.updateVote')
+                : t('comparsaDetail.submitVote')}
             </button>
           )}
         </div>
       </div>
+
+      <LoginSection open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
     </div>,
     document.body
   );

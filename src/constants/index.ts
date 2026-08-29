@@ -26,6 +26,7 @@ export const STORAGE_KEYS = {
   POIS_CACHE:           'villena_pois_cache',
   COMPARSAS_CACHE_CRISTIANAS: 'villena_comparsas_cristianas_cache',
   COMPARSAS_CACHE_MORAS:      'villena_comparsas_moras_cache',
+  RATINGS_CACHE:              'villena_ratings_cache',
 } as const;
 
 // ── Configuración general del festival ───────────────────────────────────────

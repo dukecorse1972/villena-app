@@ -102,6 +102,9 @@ const fr: Resources = {
     ratingPrompt: 'Que pensez-vous de cette comparsa ?',
     thanks: 'Merci pour votre évaluation ! ⭐',
     submitVote: 'Envoyer l’évaluation',
+    updateVote: 'Mettre à jour l’évaluation',
+    loginToRate: 'Connectez-vous pour évaluer cette comparsa',
+    saving: 'Enregistrement…',
   },
   musica: {
     title: 'VILLENA SONS',

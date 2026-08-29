@@ -102,6 +102,9 @@ const en: Resources = {
     ratingPrompt: 'What do you think of this comparsa?',
     thanks: 'Thank you for your rating! ⭐',
     submitVote: 'Submit rating',
+    updateVote: 'Update rating',
+    loginToRate: 'Log in to rate this comparsa',
+    saving: 'Saving…',
   },
   musica: {
     title: 'VILLENA SOUNDS',

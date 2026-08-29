@@ -41,6 +41,41 @@ export type Database = {
         }
         Relationships: []
       }
+      comparsa_ratings: {
+        Row: {
+          comparsa_id: string
+          created_at: string
+          id: string
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comparsa_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comparsa_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comparsa_ratings_comparsa_id_fkey"
+            columns: ["comparsa_id"]
+            isOneToOne: false
+            referencedRelation: "comparsas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       avisos: {
         Row: {
           created_at: string

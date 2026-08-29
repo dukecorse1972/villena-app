@@ -28,6 +28,7 @@ const signInWithIdTokenMock = vi.fn();
 const signInWithPasswordMock = vi.fn();
 const signUpMock = vi.fn();
 const signOutMock = vi.fn();
+const functionsInvokeMock = vi.fn();
 let isSupabaseConfiguredMock = true;
 
 vi.mock('../services/supabase', () => ({
@@ -41,6 +42,9 @@ vi.mock('../services/supabase', () => ({
       signInWithPassword: (...args: unknown[]) => signInWithPasswordMock(...args),
       signUp: (...args: unknown[]) => signUpMock(...args),
       signOut: (...args: unknown[]) => signOutMock(...args),
+    },
+    functions: {
+      invoke: (...args: unknown[]) => functionsInvokeMock(...args),
     },
   },
 }));
@@ -64,6 +68,7 @@ describe('useAuth', () => {
     signInWithPasswordMock.mockReset().mockResolvedValue({ error: null });
     signUpMock.mockReset().mockResolvedValue({ error: null });
     signOutMock.mockReset().mockResolvedValue({ error: null });
+    functionsInvokeMock.mockReset().mockResolvedValue({ data: { success: true }, error: null });
   });
 
   afterEach(() => {
@@ -258,5 +263,35 @@ describe('useAuth', () => {
 
       expect(signOutMock).toHaveBeenCalled();
     });
+
+    it('deleteAccount invoca la Edge Function delete-user y hace signOut', async () => {
+      const user = { id: 'u1', email: 'festero@example.com' };
+      getSessionMock.mockResolvedValue({ data: { session: { user } } });
+      const { useAuth } = await import('./useAuth');
+      const { result } = renderHook(() => useAuth());
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+      await act(async () => { await result.current.deleteAccount(); });
+
+      expect(functionsInvokeMock).toHaveBeenCalledWith('delete-user');
+      expect(signOutMock).toHaveBeenCalled();
+    });
+
+    it('deleteAccount lanza error si la Edge Function falla', async () => {
+      const user = { id: 'u1', email: 'festero@example.com' };
+      getSessionMock.mockResolvedValue({ data: { session: { user } } });
+      functionsInvokeMock.mockResolvedValue({ data: null, error: { message: 'Fallo al borrar usuario' } });
+
+      const { useAuth } = await import('./useAuth');
+      const { result } = renderHook(() => useAuth());
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+      await expect(
+        act(async () => { await result.current.deleteAccount(); }),
+      ).rejects.toThrow('Fallo al borrar usuario');
+    });
   });
 });
+
