@@ -1,10 +1,6 @@
-<svg viewBox="0 0 1020 620" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 620" width="1020" height="620">
       <defs>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Lato:wght@400;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
-        text { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-      </style>
-
         <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="#556350"/>
         </marker>
@@ -40,7 +36,7 @@
       <path d="M 510,75 V 105 Q 510,120 525,120 H 890 Q 905,120 905,135 V 155" fill="none" stroke="#c4972a" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
 
       <!-- Conexiones a Modales / Subvistas -->
-      <!-- Inicio & Agenda -> EventModal -->
+      <!-- Inicio &amp; Agenda -> EventModal -->
       <path d="M 100,290 V 380 Q 100,395 115,395 H 175" fill="none" stroke="#3b77cc" stroke-width="1.2" marker-end="url(#arrow-link)"/>
       <path d="M 260,330 V 395 H 205" fill="none" stroke="#3b77cc" stroke-width="1.2" marker-end="url(#arrow-link)"/>
 
@@ -102,7 +98,7 @@
         <text x="10" y="55" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Selector de bando:</text>
         <text x="16" y="73" fill="#3b77cc" font-size="8" font-family="'Geist Mono', monospace">7 Cristianas</text>
         <text x="16" y="88" fill="#d94a4a" font-size="8" font-family="'Geist Mono', monospace">7 Moras</text>
-        <text x="10" y="108" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Emblemas & color</text>
+        <text x="10" y="108" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Emblemas &amp; color</text>
         <text x="10" y="126" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Año de fundación</text>
         <text x="10" y="144" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Número de socios</text>
       </g>
@@ -121,7 +117,7 @@
         <text x="10" y="128" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Feedback háptico</text>
       </g>
 
-      <!-- ── PESTAÑA 5: INFO & MAPAS ────────────────────────── -->
+      <!-- ── PESTAÑA 5: INFO &amp; MAPAS ────────────────────────── -->
       <g transform="translate(665, 155)">
         <rect x="0" y="0" width="160" height="195" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
         <rect x="6" y="6" width="48" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
@@ -133,7 +129,7 @@
         <text x="10" y="91" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• MapPage (Leaflet OSM)</text>
         <text x="16" y="108" fill="#7e8c79" font-size="8" font-family="'Geist Mono', monospace">POIs + Recorridos</text>
         <text x="10" y="126" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Teléfonos de guardia</text>
-        <text x="10" y="144" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Guía & Historia</text>
+        <text x="10" y="144" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Guía &amp; Historia</text>
         <text x="10" y="162" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• LoginSection (Admin)</text>
       </g>
 
@@ -151,7 +147,7 @@
       </g>
 
 
-      <!-- ── CAPA INFERIOR: MODALES & ESTADOS ────────────────── -->
+      <!-- ── CAPA INFERIOR: MODALES &amp; ESTADOS ────────────────── -->
 
       <!-- Modal de Evento -->
       <g transform="translate(25, 385)">
@@ -177,7 +173,7 @@
       <!-- Paneles CRUD Admin / RouteEditorMap -->
       <g transform="translate(635, 385)">
         <rect x="0" y="0" width="355" height="145" rx="6" fill="rgba(196,151,42,0.06)" stroke="#c4972a" stroke-width="1"/>
-        <text x="12" y="22" fill="#1e241c" font-size="11.5" font-weight="700" font-family="'Lato', sans-serif">RouteEditorMap & ImageDropzone</text>
+        <text x="12" y="22" fill="#1e241c" font-size="11.5" font-weight="700" font-family="'Lato', sans-serif">RouteEditorMap &amp; ImageDropzone</text>
         <text x="12" y="44" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Edición interactiva de polilíneas GPS de desfiles</text>
         <text x="12" y="62" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Carga de imágenes directas a Supabase Storage</text>
         <text x="12" y="80" fill="#556350" font-size="8.5" font-family="'Lato', sans-serif">• Emisión de avisos urgentes con push trigger</text>

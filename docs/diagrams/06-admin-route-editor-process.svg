@@ -1,10 +1,6 @@
-<svg viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 620" width="980" height="620">
       <defs>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Lato:wght@400;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
-        text { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-      </style>
-
         <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="#556350"/>
         </marker>
@@ -24,10 +20,10 @@
 
       <!-- ── ZONAS / FASES HORIZONTALES ──────────────────────── -->
       
-      <!-- Fase 1: Autenticación & Acceso -->
+      <!-- Fase 1: Autenticación &amp; Acceso -->
       <rect x="30" y="30" width="280" height="550" rx="8" fill="rgba(30,36,28,0.02)" stroke="rgba(30,36,28,0.12)" stroke-width="1"/>
       <rect x="42" y="38" width="160" height="18" rx="3" fill="#faf7f2" stroke="rgba(30,36,28,0.15)" stroke-width="0.8"/>
-      <text x="122" y="51" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">1. AUTENTICACIÓN & GUARD</text>
+      <text x="122" y="51" fill="#556350" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">1. AUTENTICACIÓN &amp; GUARD</text>
 
       <!-- Fase 2: Editor Interactivo Leaflet -->
       <rect x="350" y="30" width="280" height="550" rx="8" fill="rgba(196,151,42,0.03)" stroke="rgba(196,151,42,0.30)" stroke-width="1"/>
@@ -37,7 +33,7 @@
       <!-- Fase 3: Persistencia y Render App -->
       <rect x="670" y="30" width="280" height="550" rx="8" fill="rgba(42,157,92,0.03)" stroke="rgba(42,157,92,0.25)" stroke-width="1"/>
       <rect x="682" y="38" width="170" height="18" rx="3" fill="#faf7f2" stroke="rgba(42,157,92,0.4)" stroke-width="0.8"/>
-      <text x="767" y="51" fill="#2a9d5c" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">3. VINCULACIÓN & CONSUMO</text>
+      <text x="767" y="51" fill="#2a9d5c" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">3. VINCULACIÓN &amp; CONSUMO</text>
 
 
       <!-- ── CONECTORES ORTOGONALES ────────────────────────── -->
@@ -74,7 +70,7 @@
       <text x="170" y="105" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">LoginSection / Supabase Auth</text>
       <text x="170" y="123" fill="#7e8c79" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Email + Password / Magic Link</text>
 
-      <!-- Nodo 2: AdminGuard & Claims -->
+      <!-- Nodo 2: AdminGuard &amp; Claims -->
       <rect x="50" y="185" width="240" height="80" rx="6" fill="#ffffff" stroke="#1e241c" stroke-width="1"/>
       <rect x="58" y="191" width="44" height="12" rx="2" fill="transparent" stroke="rgba(30,36,28,0.4)" stroke-width="0.8"/>
       <text x="80" y="200" fill="#556350" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">GUARD</text>
@@ -121,7 +117,7 @@
       <rect x="690" y="445" width="240" height="105" rx="6" fill="rgba(42,157,92,0.06)" stroke="#2a9d5c" stroke-width="1.2"/>
       <rect x="698" y="451" width="56" height="12" rx="2" fill="transparent" stroke="rgba(42,157,92,0.6)" stroke-width="0.8"/>
       <text x="726" y="460" fill="#2a9d5c" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">CONSUMO</text>
-      <text x="810" y="475" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">MapView & EventModal</text>
+      <text x="810" y="475" fill="#1e241c" font-size="12" font-weight="700" font-family="'Lato', sans-serif" text-anchor="middle">MapView &amp; EventModal</text>
       <text x="810" y="495" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">El festero/turista ve el trazado</text>
       <text x="810" y="513" fill="#556350" font-size="9" font-family="'Lato', sans-serif" text-anchor="middle">completo del desfile en las calles</text>
       <text x="810" y="534" fill="#2a9d5c" font-size="8.5" font-weight="bold" font-family="'Lato', sans-serif" text-anchor="middle">✓ Integrado con geolocalización GPS</text>
