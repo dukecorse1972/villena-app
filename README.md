@@ -10,6 +10,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL%20%2B%20Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Capacitor](https://img.shields.io/badge/Capacitor-iOS%20%2F%20Android-119EFF?style=for-the-badge&logo=capacitor&logoColor=white)](https://capacitorjs.com/)
 [![Offline First](https://img.shields.io/badge/Offline-Resilient%20Cache-c4972a?style=for-the-badge&logo=pwa&logoColor=white)](#-arquitectura-offline-first--a-prueba-de-aglomeraciones)
+[![Licencia](https://img.shields.io/badge/Licencia-Todos%20los%20derechos%20reservados-e05d44?style=for-the-badge&logo=shield)](LICENSE)
 
 <br />
 
@@ -228,8 +229,8 @@ Documentación visual completa generada con diseño editorial y especificación 
 
 ```bash
 # 1. Clonar el repositorio e instalar dependencias
-git clone https://github.com/dukecorse1972/villena-ap.git
-cd villena-ap
+git clone https://github.com/dukecorse1972/villena-app.git
+cd villena-app
 npm install
 
 # 2. Configurar variables de entorno (opcional)
@@ -263,6 +264,20 @@ npm run cap:ios       # Sincroniza y abre el proyecto en Xcode (requiere macOS)
 ```
 
 </details>
+
+<br />
+
+---
+
+## ⚖️ Licencia y Menciones Legales
+
+Copyright © 2026 **Darío Perez Vidal** y **Manuel Aroca Pardo**. Todos los derechos reservados.
+
+Este repositorio y la totalidad de su contenido (código fuente, diseño, interfaz de usuario, arquitectura, documentación, assets y cualquier otro material incluido) son propiedad intelectual exclusiva de sus autores.
+
+- **Uso y distribución:** No se concede ningún permiso, licencia ni derecho de uso, copia, modificación, distribución, sublicencia, publicación o creación de obras derivadas, ya sea con fines comerciales o no comerciales, sin el consentimiento previo, explícito y por escrito de los autores.
+- **Acceso al repositorio:** El acceso público a este repositorio no constituye ni implica la concesión de ninguna licencia sobre su contenido.
+- **Texto completo:** Para más detalles, consulta el archivo [LICENSE](LICENSE).
 
 <br />
 
